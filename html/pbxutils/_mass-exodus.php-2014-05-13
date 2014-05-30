@@ -1,0 +1,194 @@
+<?php
+function matchSites ($src, $dst, $sites) {
+	$srcs = array();
+	$dsts = array();
+	$i = 0;
+	$j = 0;
+	foreach ($sites as $site) {
+		if (in_array($src, $site)) {
+			$srcs[$i] = $site['host']; 
+			$i += 1;
+		}
+		if (in_array($dst, $site)) {
+			$dsts[$j] = $site['host'];
+			$j += 1;
+		}
+	}
+	if (count($dsts) < count($srcs)) {
+		echo "<p class='red'>Not enough destinations or no destinations found!</p>";
+		echo "<p class='red'>Sources: ".(string)count($srcs)." <br> Destinations: ".(string)count($dsts)." </p>";
+		return false;
+	}
+	$matches = array();
+	foreach (range(0, count($srcs)-1) as $num) {
+		$matches[$srcs[$num]] = $dsts[$num];
+	}
+	return $matches;
+}
+
+function rekey ($multiArray, $key, $value) {
+	$newArray = Array();
+	foreach ($multiArray as $array) {
+		$newArray[$array[$key]] = $array[$value];
+	}
+	return $newArray;
+	return 0;
+}
+
+function addKey ($array, $valueSource, $commonKey, $newKey) {
+	$len = sizeof($array);
+	for ($i = 0; $i < $len; $i++) {
+		$array[$i][$newKey] = $valueSource[$array[$i][$commonKey]];
+	}
+	return $array;
+}
+
+function loadDistribute ($clients, $servers, $max) {
+	$len = sizeof($clients);
+	for ($i = 0; $i < $len; $i++) {
+		if (min($servers) >= $max) {
+			return Array($clients, 255);
+		}	
+		$server = array_keys($servers, min($servers));
+		$clients[$i]['assigned_server'] = $server[0];
+		$servers[$server[0]] += $clients[$i]['load'];
+	}
+	echo min($servers);
+	return Array($clients, 0);
+}
+
+if (isset($_REQUEST['action'])) {
+	$action = $_REQUEST['action'];
+	$method = $_REQUEST['method'];
+	$override = $_REQUEST['override'];
+	$destination = $_REQUEST['destination'];
+	$source = $_REQUEST['source'];
+}
+
+echo "<html>
+	<head>
+	<title>Mass Exodus</title>
+	<link rel='stylesheet' href='stylesheet.css'>
+	</head>
+	<body>
+	<h2>Mass Exodus</h2>
+	<p>Use this tool to move a large group from one site to another</p>
+	<form action='' method='POST'>
+		<div class='radio'>
+		<input id='pbx' type='radio' name='method' value='pbx' ";
+if ($method != "site") { echo "checked"; }
+echo "/><label for='pbx' />By PBX</label><br>
+	<input id='site' type='radio' name='method' value='site' ";
+if ($method == "site") { echo "checked"; }
+echo "/><label for='site' />By Site</label><br>
+		</div>
+		<br>
+		<input type='hidden' name='action' value='submit' />
+		<input type='text' name='source' placeholder='Location to Move From' />
+		<input type='submit' value='Begin Exodus!' />
+		<br>
+		<br>
+		<div class='checkbox'>
+			<input id='override' type='checkbox' name='override'><label for='override' />Override Destination [optional]</label><br>
+			<input type='text' name='destination' placeholder='Force Destination' /> 
+	    </div>	
+		</form>";
+
+if ($action == "submit")
+{
+
+	//================================
+	// MOVERS LOOKUP (who's leaving?)
+	//================================
+	$maxLoad = 14000000; //How many seconds of RTP in 7 days can a server handle? 
+	$sitesQuery = "SELECT host, location FROM pbxstatus WHERE status='active'";
+	$moveThem = false; //Unless everything looks correct, we don't want any migration to happen
+	$clientLoadQuery = "SELECT id, (load_in + load_out + load_custom) as load from loadmetrics";
+	// Things that are specific to the move method	
+	if ($method == "pbx") { //If pbx, then get everything for an assigned server
+		$clientsQuery = "SELECT id, assigned_server, location, secondary_location FROM resource_group WHERE assigned_server = '$source'";
+		$secondaryQuery = "SELECT DISTINCT secondary_location FROM resource_group WHERE assigned_server = '$source'";
+		$loadLevelsQuery = "SELECT ip, load FROM pbxstatus WHERE ip << '$destination/16' ORDER BY load ASC;";
+		$fnasQuery = "SELECT ip FROM nfs WHERE ip << '$source/16'";
+	} elseif ($method == "site") { //If site, then get everything for a location
+		$clientsQuery = "SELECT id, assigned_server, location, secondary_location FROM resource_group WHERE location = '$source'";
+		$secondaryQuery = "SELECT DISTINCT secondary_location FROM resource_group WHERE location = '$source'";
+		$loadLevelsQuery = "SELECT ip, load FROM pbxstatus WHERE location = '$destination' ORDER BY load ASC;";
+		$fnasQuery = "SELECT ip FROM nfs WHERE location = '$source'";
+	} else { //If nothing, then something is wrong. QUIT.
+		$clientsQuery = "";
+		echo "</body></html>";
+		exit ("Invalid location");
+	}
+
+// Open up the database and run the informational queries specified previously
+	$pbxsConn = pg_connect("host=rodb dbname=pbxs user=postgres ") or die('Could not connect to "pbxs" database: ' . pg_last_error());
+	$clients = pg_fetch_all(pg_query($pbxsConn, $clientsQuery)) or die('Could not find clients. Did you correctly select PBX/Site?<br>' . pg_last_error());
+	$secondaries = pg_fetch_all(pg_query($pbxsConn, $secondaryQuery)) or die('Could not fetch secondary locations' . pg_last_error());
+	pg_close($pbxsConn);
+
+	$cdrConn = pg_connect("host=cdr dbname=asterisk user=postgres ") or die ('Could not connect to "cdr" database: ' . pg_last_error());
+	$clientLoad = pg_fetch_all(pg_query($cdrConn, $clientLoadQuery)) or die ('Failed to get client specific load: '. pg_last_error());
+	$clientLoad = rekey($clientLoad, "id", "load");
+	pg_close($cdrConn);
+
+	//================================
+	// MATCHING (where to send them?)
+	//================================
+	$utilConn = pg_connect("host=rodb dbname=util user=postgres ") or die('Could not connect to "pbxs" database: ' . pg_last_error());
+	$loadLevelsResult = pg_fetch_all(pg_query($utilConn, $loadLevelsQuery)) or die ('Error getting load levels'. pg_last_error());
+	$loadLevels = rekey($loadLevelsResult, "ip", "load");
+	$sites = pg_fetch_all(pg_query($utilConn, $sitesQuery)) or die ('Could not fetch pbxs ' . pg_last_error());
+	$fnas = pg_fetch_all(pg_query($utilConn, $fnasQuery)) or die ('Could not find source FNAS ' . pg_last_error());
+	if (isset($override)) {
+		$matches = matchSites($source, $destination, $sites);
+	} else {
+		foreach ($secondaries as $secondary) {
+			$matches = matchSites($source, $secondary['secondary_location'], $sites);
+		}
+	}
+	echo "<br>";
+	pg_close($utilConn);
+
+	//===================================
+	// FILE SYNC (rsync files to sites)
+	//===================================
+	$syncTrigger = "ssh -i /var/www/.ssh/internal-only -T -o StrictHostKeyChecking=no root@".$fnas[0]['ip']." /root/datacenter-sync-cron.sh 2>&1";
+	##exec($syncTrigger, $sshReturns, $sshErrors);
+	//===============================
+	// DB UPDATE ("move" the movers)
+	//===============================
+	echo "<br> =================== <br>";
+	foreach ($clients as $client) {
+		print_r($client);
+		echo "<br>";
+	}
+	$clients = addKey ($clients, $clientLoad,"id", "load"); 
+	echo "<br>----------------------<br>";	
+	foreach ($clients as $client) {
+		print_r($client);
+		echo "<br>";
+	}
+	$distResults = loadDistribute($clients, $loadLevels, $maxLoad);
+	$clients = $distResults[0];
+	if ($distResults[1] != 0) {
+		echo "<p class='red'>Some clients not migrated! Not enough space for all clients at destination!</p>";
+	}
+	echo "<br>----------------------<br>";	
+	foreach ($clients as $client) {
+		print_r($client);
+		echo "<br>";
+	}
+//	foreach ($secondaries as $secondary) {
+//		$second = $secondary['secondary_location'];
+//		foreach ($matches as $src => $dst) {
+//			echo "<br>";
+//			echo "UPDATE resource_group SET assigned_server = '$dst' WHERE assigned_server = '$src' AND secondary_location = '$second';";	
+//		}
+//	}
+}
+
+echo"
+	</body>
+	</html>";
+?>

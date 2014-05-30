@@ -1,0 +1,93 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            eb:5a:9c:6e:ee:1f:1c:91
+        Signature Algorithm: sha1WithRSAEncryption
+        Issuer: C=US, ST=UT, L=Orem, O=IT, OU=util1.c1.jiveip.net, CN=util1.c1.jiveip.net
+        Validity
+            Not Before: Aug 27 06:57:56 2009 GMT
+            Not After : Aug 20 06:57:56 2036 GMT
+        Subject: C=US, ST=UT, L=Orem, O=IT, OU=util1.c1.jiveip.net, CN=util1.c1.jiveip.net
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+            RSA Public Key: (2048 bit)
+                Modulus (2048 bit):
+                    00:b2:c8:01:9f:3e:59:f6:55:24:75:0b:7f:61:e5:
+                    c5:58:d9:63:25:e5:80:e5:15:d0:75:84:51:20:ec:
+                    d1:b8:f7:e6:3c:12:da:c9:6e:42:2c:e6:8d:9e:fb:
+                    4e:b9:6f:57:21:99:e1:39:cb:80:2f:ec:93:9e:80:
+                    16:76:34:df:ee:5d:07:e1:2a:13:7d:39:ce:ea:ea:
+                    82:2b:8f:3a:e6:b1:b5:2c:3b:23:06:dd:a0:ec:c8:
+                    0f:dd:9e:79:ae:1c:da:41:b1:48:b0:c2:aa:f3:17:
+                    20:b6:5a:6d:0f:6a:56:7e:04:a6:4a:a0:0c:94:84:
+                    8d:20:44:6c:ff:d4:75:5f:e2:89:59:d9:6e:8b:9d:
+                    cf:a6:31:5f:9a:25:d7:56:d5:54:28:5d:7c:23:51:
+                    2f:5f:0c:94:6c:9c:1f:5d:4f:90:28:43:e1:e4:4b:
+                    ae:5d:ad:1e:c3:ca:48:a8:d6:11:58:c5:64:10:c3:
+                    2a:7d:c7:52:8a:99:ca:1d:3f:d7:f6:56:fc:1b:dd:
+                    e0:95:81:0b:70:6a:ea:68:74:d7:a6:fa:6a:bb:c7:
+                    16:c3:aa:6b:0e:d2:f9:f2:70:45:3d:c6:80:fe:e9:
+                    6b:01:29:9f:08:b6:30:27:d2:0c:30:29:1e:2f:32:
+                    2b:68:39:6f:dc:90:f6:53:ff:4c:62:61:e6:41:fb:
+                    4f:cb
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:TRUE
+            X509v3 Key Usage: 
+                Digital Signature, Key Encipherment, Certificate Sign
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication, TLS Web Client Authentication
+            Netscape Comment: 
+                RHN SSL Tool Generated Certificate
+            X509v3 Subject Key Identifier: 
+                51:7B:96:E1:14:8F:BD:53:C1:4A:AC:36:FC:DE:7C:CC:B1:85:43:8A
+            X509v3 Authority Key Identifier: 
+                keyid:51:7B:96:E1:14:8F:BD:53:C1:4A:AC:36:FC:DE:7C:CC:B1:85:43:8A
+                DirName:/C=US/ST=UT/L=Orem/O=IT/OU=util1.c1.jiveip.net/CN=util1.c1.jiveip.net
+                serial:EB:5A:9C:6E:EE:1F:1C:91
+
+    Signature Algorithm: sha1WithRSAEncryption
+        03:9d:3c:c3:87:6b:7a:05:df:d3:d1:c6:53:68:ec:7c:54:60:
+        fe:2a:d0:91:d4:a5:b3:47:91:8b:05:2e:9a:29:35:1c:59:cc:
+        85:54:83:d1:27:2a:54:89:f2:77:b5:1c:ed:1e:41:24:de:56:
+        60:76:e1:4b:71:28:1e:2d:8d:27:98:45:a7:b0:a3:98:8b:13:
+        b3:7b:6d:ad:79:bf:cd:75:32:88:ff:11:af:4e:e6:71:ca:6b:
+        e6:ad:0d:6c:d3:76:61:16:ea:5f:bf:3f:98:33:1d:ea:5f:02:
+        8b:e4:2d:b3:13:86:81:b2:28:8a:03:b5:26:ac:10:51:cb:a6:
+        2c:44:3a:e8:3d:4d:32:e1:0c:ba:be:3e:9f:eb:a3:4a:60:cc:
+        68:8e:71:3d:f2:a1:fb:90:22:7b:05:94:38:1f:d1:3d:1f:eb:
+        4c:21:1c:66:80:cc:66:ce:13:9f:78:7d:47:06:2e:d6:e2:cb:
+        aa:7d:ca:63:77:78:ec:ec:a5:24:2e:56:c2:47:e9:a0:52:fb:
+        0d:37:5a:5f:73:1e:35:04:01:84:fe:48:10:d3:a6:ee:c5:8e:
+        41:91:79:90:13:ef:ad:52:73:bc:56:11:97:e4:16:cd:ec:5e:
+        01:d3:12:86:4d:b5:d8:de:ca:fa:df:65:bb:f2:70:be:56:3a:
+        75:70:e5:ac
+-----BEGIN CERTIFICATE-----
+MIIEoDCCA4igAwIBAgIJAOtanG7uHxyRMA0GCSqGSIb3DQEBBQUAMHIxCzAJBgNV
+BAYTAlVTMQswCQYDVQQIEwJVVDENMAsGA1UEBxMET3JlbTELMAkGA1UEChMCSVQx
+HDAaBgNVBAsTE3V0aWwxLmMxLmppdmVpcC5uZXQxHDAaBgNVBAMTE3V0aWwxLmMx
+LmppdmVpcC5uZXQwHhcNMDkwODI3MDY1NzU2WhcNMzYwODIwMDY1NzU2WjByMQsw
+CQYDVQQGEwJVUzELMAkGA1UECBMCVVQxDTALBgNVBAcTBE9yZW0xCzAJBgNVBAoT
+AklUMRwwGgYDVQQLExN1dGlsMS5jMS5qaXZlaXAubmV0MRwwGgYDVQQDExN1dGls
+MS5jMS5qaXZlaXAubmV0MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+ssgBnz5Z9lUkdQt/YeXFWNljJeWA5RXQdYRRIOzRuPfmPBLayW5CLOaNnvtOuW9X
+IZnhOcuAL+yTnoAWdjTf7l0H4SoTfTnO6uqCK4865rG1LDsjBt2g7MgP3Z55rhza
+QbFIsMKq8xcgtlptD2pWfgSmSqAMlISNIERs/9R1X+KJWdlui53PpjFfmiXXVtVU
+KF18I1EvXwyUbJwfXU+QKEPh5EuuXa0ew8pIqNYRWMVkEMMqfcdSipnKHT/X9lb8
+G93glYELcGrqaHTXpvpqu8cWw6prDtL58nBFPcaA/ulrASmfCLYwJ9IMMCkeLzIr
+aDlv3JD2U/9MYmHmQftPywIDAQABo4IBNzCCATMwDAYDVR0TBAUwAwEB/zALBgNV
+HQ8EBAMCAqQwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMDEGCWCGSAGG
++EIBDQQkFiJSSE4gU1NMIFRvb2wgR2VuZXJhdGVkIENlcnRpZmljYXRlMB0GA1Ud
+DgQWBBRRe5bhFI+9U8FKrDb83nzMsYVDijCBpAYDVR0jBIGcMIGZgBRRe5bhFI+9
+U8FKrDb83nzMsYVDiqF2pHQwcjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAlVUMQ0w
+CwYDVQQHEwRPcmVtMQswCQYDVQQKEwJJVDEcMBoGA1UECxMTdXRpbDEuYzEuaml2
+ZWlwLm5ldDEcMBoGA1UEAxMTdXRpbDEuYzEuaml2ZWlwLm5ldIIJAOtanG7uHxyR
+MA0GCSqGSIb3DQEBBQUAA4IBAQADnTzDh2t6Bd/T0cZTaOx8VGD+KtCR1KWzR5GL
+BS6aKTUcWcyFVIPRJypUifJ3tRztHkEk3lZgduFLcSgeLY0nmEWnsKOYixOze22t
+eb/NdTKI/xGvTuZxymvmrQ1s03ZhFupfvz+YMx3qXwKL5C2zE4aBsiiKA7UmrBBR
+y6YsRDroPU0y4Qy6vj6f66NKYMxojnE98qH7kCJ7BZQ4H9E9H+tMIRxmgMxmzhOf
+eH1HBi7W4suqfcpjd3js7KUkLlbCR+mgUvsNN1pfcx41BAGE/kgQ06buxY5BkXmQ
+E++tUnO8VhGX5BbN7F4B0xKGTbXY3sr632W78nC+Vjp1cOWs
+-----END CERTIFICATE-----
