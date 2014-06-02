@@ -140,7 +140,7 @@ if ($action=="search")
 		$eventArray = pg_fetch_all(pg_query($eventsDB, $eventQ)); //or die("<h2>No events for: " .$search ."</h2>");
 		$timeArray = pg_fetch_all(pg_query($eventsDB, "SELECT date '".$search."' + integer '1' as next, date '".$search."' - integer '1' as pre"));
 		pg_close($eventsDB);
-		echo '<h2>'.sizeof($eventArray)." Events that occured on: ".$search . "</h2>";
+		echo '<h2>'.sizeof($eventArray)." Events that occured on: ".strftime('%m-%d-%Y', strtotime($search)) . "</h2>";
 
 		echo "<form action='' method='POST'>
 			  <input type='hidden' name='action' value='search'>
