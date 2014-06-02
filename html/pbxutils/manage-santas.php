@@ -13,19 +13,19 @@ echo "<html><head><title>Manage Santas</title>
 #topleft {width: 60%; float: left;}
 #topright {width: 40%; float: right;}
 </style>
-<link rel='stylesheet' href='stylesheet.css'>
-<script type='text/javascript'>
+<link rel='stylesheet' href='stylesheet.css'>";
+//<script type='text/javascript'>
 
-  function iframeLoaded() {
-      var iFrameID = document.getElementById('theframe');
-      if(iFrameID) {
+//  function iframeLoaded() {
+//      var iFrameID = document.getElementById('theframe');
+//      if(iFrameID) {
             // here you can make the height, I delete it first, then I make it again
-            iFrameID.height = '';
-            iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 'px';
-      }   
-  }
+//            iFrameID.height = '';
+ //           iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 'px';
+//      }   
+//  }
 
-</script>
+echo "</script>
 </head><body>";
 
 $gobutton = "I'm feeling lucky!";
@@ -204,7 +204,8 @@ echo "<td><input type='text' name='status' placeholder='e.g. Active'></td></tr>"
 echo '<tr><td colspan="4" align="center"><input type="submit" name="action" value="'.$gobutton.'"></td></tr></table>';
 echo '</div>';
 sleep(1);
-echo '<iframe id="theframe" onload="iframeLoaded()" src="presence-status.php" width="100%" height="100%" frameborder="0" seamless>';
-
+//echo '<iframe id="theframe" onload="iframeLoaded()" src="presence-status.php" width="100%" height="100%" frameborder="0" seamless>';
+echo "<div><table margin-top ='50'><tr><th>IP</th><th>Name</th><th width ='100' >Site</th><th width ='100' >Status</th><th width = '900'>Message</th></tr>";
+echo "</table></div>";
 echo "</body></html>";
 ?>

@@ -34,10 +34,15 @@ function printRecordInfo($host) {
 	return;
 }
 
-echo "<table border=3>";
+echo "<table border=1>";
 echo "<tr><th>host</th><th>type</th><th>pri</th><th>weight</th><th>port</th><th>target</th><th>ip</th><th>class</th><th>ttl</th><th>txt</th></tr>\n";
 
 printRecordInfo("_agi._tcp.agi.4-10.c1.jiveip.net");
+printRecordInfo("_agi._tcp.agi.4-10.c18.jiveip.net");
+printRecordInfo("_agi._tcp.agi.4-10.c19.jiveip.net");
+printRecordInfo("_agi._tcp.agi.4-10.c20.jiveip.net");
+printRecordInfo("_agi._tcp.agi.4-10.c21.jiveip.net");
+printRecordInfo("_agi._tcp.agi.4-10.c22.jiveip.net");
 printRecordInfo("_sip._udp.cr.4-10.c1.jiveip.net");
 printRecordInfo("_sip._udp.gw.c1.jiveip.net");
 printRecordInfo("_sip._udp.tcr");

@@ -10,13 +10,23 @@ if (isset($_GET["server"]))
 	die("No server specified");
 }
 
+if (isset($_GET["state"]))
+{
+	$requested_state = $_GET["state"];
+	$query_state = " AND state = '" . $_GET["state"] . "' ";
+} else
+{
+	$requested_state = "";
+	$query_state = "";
+}
+
 $count = 0;
 $limit = 5000;
 
 $dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ")
     or die('Could not connect: ' . pg_last_error());
 
-$query = "SELECT id,domain,name,state,assigned_server,presence_server,location FROM resource_group WHERE assigned_server='" . $assigned_server . "' ORDER BY state,domain LIMIT " . $limit;
+$query = "SELECT id,domain,name,state,assigned_server,presence_server,location FROM resource_group WHERE assigned_server='" . $assigned_server . "' " . $query_state . " ORDER BY state,domain LIMIT " . $limit;
 $result = pg_query($query) or die('Query failed: ' . pg_last_error());
 
 echo "<br/><h2>" . $assigned_server . "</h2><br/>\n";

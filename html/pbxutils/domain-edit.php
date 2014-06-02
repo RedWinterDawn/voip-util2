@@ -58,6 +58,12 @@ if ($showList == true){
 	$domainQuery = "SELECT domain,name,assigned_server,id,outbound_proxy,presence_server,state,id FROM resource_group WHERE domain='" . $domain . "';";
 	$domainResult = pg_query($domainQuery) or die('Domain query failed: ' . pg_last_error());
 
+	//Get Santa servers
+	$santadb = pg_connect("host=rodb dbname=util user=postgres ") or die('Could not connect to util: '.pg_last_error());
+	
+	$santaQuery = "SELECT ip, name, site FROM presence ORDER BY site, ip;";
+	$santas = pg_fetch_all(pg_query($santadb, $santaQuery)) or die ('Failed to get santas: '.pg_last_error());
+
 	if($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
         if ($domainRow['presence_server'] != ''){
             $santa = "v5 (" . $domainRow['presence_server'] . ")";
@@ -77,14 +83,12 @@ if ($showList == true){
 		echo "<table border=1>\n";
 		echo "<th colspan=2>Change Presence Server</th>\n";
 		echo "<tr><td>Current Setting</td><td>" . $santa . "</td></tr>\n";
-        echo "<tr><td colspan=2>"
-			. " <a disabled href='domain-edit.php?domain=" . $domainRow['domain'] . "&newPresenceServer=10.101.40.1'>CHI Santa1 (10.101.40.1)</a><br/> "
-            . " <a disabled href='domain-edit.php?domain=" . $domainRow['domain'] . "&newPresenceServer=10.101.40.2'>CHI Santa2 (10.101.40.2)</a><br/> "
-            . " <a href='domain-edit.php?domain=" . $domainRow['domain'] . "&newPresenceServer=10.120.255.25'>NYC Santa1 (10.120.255.25)</a><br/> "
-            . " <a href='domain-edit.php?domain=" . $domainRow['domain'] . "&newPresenceServer=10.120.255.225'>NYC Santa2 (10.120.255.225)</a><br/> "
-            . " <a href='domain-edit.php?domain=" . $domainRow['domain'] . "&newPresenceServer=10.117.255.25'>PVU Santa1 (10.117.255.25)</a><br/> "
-            . " <a href='domain-edit.php?domain=" . $domainRow['domain'] . "&newPresenceServer=10.117.255.225'>PVU Santa2 (10.117.255.225)</a><br/> "
-            . " <a href='domain-edit.php?domain=" . $domainRow['domain'] . "&newPresenceServer=v4'>[v4]</a><br/> " 
+        echo "<tr><td colspan=2>";
+			foreach($santas as $santa)
+			{
+				echo " <a href='domain-edit.php?domain=" . $domainRow['domain'] . "&newPresenceServer=".$santa['ip']."'>".$santa['site']." ".$santa['name']." (".$santa['ip'].")</a><br/> ";
+			}
+        echo " <a href='domain-edit.php?domain=" . $domainRow['domain'] . "&newPresenceServer=v4'>[v4]</a><br/> " 
             . "</td></tr>\n";
 		echo "</table>\n";
 		echo "<br/>\n";
@@ -93,8 +97,7 @@ if ($showList == true){
 		echo "Error: Domain " . $domain . " not found\r\n"; 
 	}
 
-
-
+	pg_close($santadb);
 	pg_free_result($domainResult);
 	pg_close($dbconn);
 }

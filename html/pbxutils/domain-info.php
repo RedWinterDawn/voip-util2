@@ -4,6 +4,25 @@
 $guiltyParty = $_SERVER['REMOTE_ADDR'];
 $requestTime = strftime('%Y-%m-%d %H:%M:%S');
 
+function eventTable($id)
+{
+	// Get last 10 events for domain
+	$eventdb = pg_connect("host=rodb dbname=events user=postgres") or die('Could not connect: ' . pg_last_error());
+	$eventQuery = "SELECT added, description from event, (SELECT event_id FROM event_domain WHERE domain_id='".$id."') as domain WHERE event.id = domain.event_id order by number desc limit 10;";
+	$eventArray = pg_fetch_all(pg_query($eventdb, $eventQuery)); //or die('Event query failed: ' . pg_last_error());
+	pg_close($eventdb);
+	echo "<tr><td></td><td></td><td colspan=5 rowspan=13 valign=top>
+		<table>
+		<tr><th colspan=2 width='700'>Last 10 Events</th></tr>
+		<tr><th>Date</th><th>Description</th></tr>";
+	foreach ($eventArray as $event)
+	{
+		echo "<tr><td>".strftime('%m-%d-%Y %T', strtotime($event['added']))."</td><td>".$event['description']."</td></tr>";
+	}
+
+	echo "</table></td>";
+}
+
 if (isset($_GET["domain"]))
 {
 	$domain = $_GET["domain"];
@@ -58,15 +77,31 @@ while ($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
 
     $typeQuery = "SELECT type_id, count(type_id) as count FROM user_agent WHERE resource_group_id='" . $domainRow['id'] . "' GROUP BY type_id ORDER BY count DESC;";
     $typeResult = pg_query($typeQuery) or die('Type query failed: ' . pg_last_error());
+	$event = true;
+	$count = 0;
 
     echo "<tr><th>Type</th><th>Count</th><td colspan=5 rowspan=10><h3>Enabled Feature Flags</h3><pre>" . $domainFlags . "</pre></td></tr>\n";	
     while ($typeRow = pg_fetch_array($typeResult, null, PGSQL_ASSOC)) {
         echo "\t<tr>";
         foreach ($typeRow as $col_value) { echo "\t\t<td>$col_value</td>\n"; }
 //		echo "<td>" . $typeRow[''] . "</td>";
+		$count ++;
+		if ($count == 9)
+		{
+			eventTable($domainRow['id']);
+			$event = false;
+		}
         echo "</tr>\n";
     }
-
+	while ($count < 10)
+	{
+		echo "<tr></tr>";
+		$count ++;
+	}
+	if ($event)			
+	{
+		eventTable($domainRow['id']);
+	}		
     echo "</table>\n";
 }
 
