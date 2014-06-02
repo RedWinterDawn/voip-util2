@@ -4,7 +4,12 @@
   </head>
   <body>
     <br/>
-    <h1>Production PBX Utilities</h1>
+	<?php 
+	if ($_SERVER['SERVER_ADDR'] == '10.101.8.1') {
+		echo "<h1>Production PBX Utilities</h1>";
+	} else {
+		echo "<h1>Dev PBX Utilities</h1>";
+	} ?>
 	<ul>
 	  <li class="dvdr"></li>
 	  <li class="top">
