@@ -163,27 +163,10 @@ switch ($action)
 		break;
 }
 
-$servers = "SELECT ip, site, status FROM presence ORDER BY site;";
+$servers = "SELECT ip, name, site, status, message FROM presence ORDER BY site, ip;";
 $serverResults = pg_fetch_all(pg_query($servers)) or die ("Available PBXs Search Failed: ".pg_last_error());
 pg_close($dbconn);
 
-$clean = array();
-foreach ($serverResults as $arr)
-{   
-    $clean[] = $arr['site'];
-}
-$unique = array_unique($clean);
-$locationOpts = "";
-foreach ($unique as $uni)
-{
-	$locationOpts .= "<option value='".$uni."'>".$uni."</option>";
-}
-
-$serverList = ""; 
-foreach ($serverResults as $server)
-{ //Here we color and label each host based on status. We also prepare to pass host and status to the next step.        
-    $serverList .= "<option class='".$server['status']."' value='".$server['ip']."'>".$server['ip']." (".$server['status'].")</option>";
-}   
 echo '<div id="topright">';
 echo "<table><tr><th width='100'></th><th width='75'>Santa IP</th><th width='75'>Name</th><th width='75'>Site</th><th width='75'>Status</th></tr>
 	<tr><td>Delete</td><td>X</td><td></td><td></td><td></td></tr>
@@ -205,7 +188,11 @@ echo '<tr><td colspan="4" align="center"><input type="submit" name="action" valu
 echo '</div>';
 sleep(1);
 //echo '<iframe id="theframe" onload="iframeLoaded()" src="presence-status.php" width="100%" height="100%" frameborder="0" seamless>';
-echo "<div><table margin-top ='50'><tr><th>IP</th><th>Name</th><th width ='100' >Site</th><th width ='100' >Status</th><th width = '900'>Message</th></tr>";
-echo "</table></div>";
+echo "<br>&nbsp;<br>&nbsp;<br>&nbsp;<br>&nbsp;<br><table><tr><th width = '100'>IP</th><th width ='100'>Name</th><th width ='100' >Site</th><th width ='100' >Status</th><th width = '400'>Message</th></tr>";
+foreach ($serverResults as $santa)
+{
+	echo "<tr><td>".$santa['ip']."</td><td>".$santa['name']."</td><td>".$santa['site']."</td><td>".$santa['status']."</td><td>".$santa['message']."</td></tr>";
+}
+echo "</table>";
 echo "</body></html>";
 ?>

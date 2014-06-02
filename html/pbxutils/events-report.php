@@ -66,7 +66,7 @@ switch ($action) {
 		break;
 	default:
 		$action = "search";
-		$search = date('m-d-y');
+		$search = date('m-d-Y');
 }
 
 //========
@@ -137,10 +137,21 @@ if ($action=="search")
 		//Actually connect to postgres for the queries we'll be making
     	$eventsDB = pg_connect("host=rodb dbname=events user=postgres ") or die('Could not connect to "events" database: ' . pg_last_error());
 		$eventQ = "SELECT added AT TIME ZONE 'UTC', id, description FROM event WHERE added BETWEEN (timestamp '".$search."' AT TIME ZONE 'America/Boise') AND ((timestamp '".$search."' + interval '1 day') AT TIME ZONE 'America/Boise');";
-		$eventArray = pg_fetch_all(pg_query($eventsDB, $eventQ)) or die("<h2>No events for: " .$search ."</h2>");
+		$eventArray = pg_fetch_all(pg_query($eventsDB, $eventQ)); //or die("<h2>No events for: " .$search ."</h2>");
+		$timeArray = pg_fetch_all(pg_query($eventsDB, "SELECT date '".$search."' + integer '1' as next, date '".$search."' - integer '1' as pre"));
 		pg_close($eventsDB);
-		echo '<h2>'.sizeof($eventArray)." Events that occured on: " .$search . "</h2>";	
-		echo "<h4> All times are in MDT </h4>"; 
+		echo '<h2>'.sizeof($eventArray)." Events that occured on: ".$search . "</h2>";
+
+		echo "<form action='' method='POST'>
+			  <input type='hidden' name='action' value='search'>
+			  <input type='hidden' name='search' value='".$timeArray[0]['pre']."'>
+  			  <input type='submit' value='previous'></form>";			  
+
+		echo "<form action='' method='POST'>
+			  <input type='hidden' name='action' value='search'>
+			  <input type='hidden' name='search' value='".$timeArray[0]['next']."'>
+			  <input type='submit' value='  next  '></form>";
+
 		echo "<table border='1'><tr><th>Date</th><th>Description</th><th>Affected</th></tr>";
 		foreach($eventArray as $event)
 		{
