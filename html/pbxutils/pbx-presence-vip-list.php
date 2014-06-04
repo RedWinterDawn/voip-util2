@@ -75,24 +75,26 @@ while ($vipcount > 0) {
     $query = "SELECT domain,assigned_server,presence_server,state,name FROM resource_group WHERE domain = '" . $viplist[$vipcount] . "';";
     $result = pg_query($dbconnpbxs,$query) or die('Query failed: ' . pg_last_error());
 	if ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
-		echo "<td><a href='domain-info.php?domain=" . $line['domain'] . "'>" . $line['domain'] . "</a></td>"
+		echo "<td><a href='domain-info.php?domain=" . $line['domain'] . "'>" . $viplist[$vipcount] . "</a></td>"
 			. "<td><a href='pbx-server-info.php?server=" . $line['assigned_server'] . "'>" . $line['assigned_server'] . "</a></td>"
 		   	. "<td><a href='presence-server-info.php?server=" . $line['presence_server'] . "'>" . $line['presence_server'] . "</a></td><td>" . $line['name'] . "</td>";
-	}
 
-	$query = "SELECT count(*) FROM resource_group
-		 left join user_agent on (user_agent.resource_group_id = resource_group.id) WHERE domain = '" . $viplist[$vipcount] . "';";
-    $result = pg_query($dbconnpbxs,$query) or die('Query failed: ' . pg_last_error());
-	if ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
-			echo "<td>" . $line['count'] . "</td>";
-	}
+		$query = "SELECT count(*) FROM resource_group
+			 left join user_agent on (user_agent.resource_group_id = resource_group.id) WHERE domain = '" . $viplist[$vipcount] . "';";
+	    $result = pg_query($dbconnpbxs,$query) or die('Query failed: ' . pg_last_error());
+		if ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
+				echo "<td>" . $line['count'] . "</td>";
+		}
 
-	$query = "SELECT count(*) FROM resource_group
-		left join user_agent on (user_agent.resource_group_id = resource_group.id) WHERE domain = '" . $viplist[$vipcount] . "'
-		and substring(user_agent.type_id for 11)='polycom.vvx';";
-    $result = pg_query($dbconnpbxs,$query) or die('Query failed: ' . pg_last_error());
-	if ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
-			echo "<td>" . $line['count'] . "</td>";
+		$query = "SELECT count(*) FROM resource_group
+			left join user_agent on (user_agent.resource_group_id = resource_group.id) WHERE domain = '" . $viplist[$vipcount] . "'
+			and substring(user_agent.type_id for 11)='polycom.vvx';";
+	    $result = pg_query($dbconnpbxs,$query) or die('Query failed: ' . pg_last_error());
+		if ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
+				echo "<td>" . $line['count'] . "</td>";
+		}
+	} else {
+		echo "<td>" . $viplist[$vipcount] . "</td><td colspan=5>*** not found ***</td>";
 	}
 
     $vipcount = $vipcount - 1;
