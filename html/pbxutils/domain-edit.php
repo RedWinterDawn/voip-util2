@@ -42,9 +42,22 @@ if (isset($newPresenceServer)){
 
 	$domainUpdateResult = pg_query($rwdb,$domainUpdateQuery) or die('Presence update query failed: ' . pg_last_error());
 
-	echo "<b>Updated " . $domain . " to use " . $newPresenceServer . " for presence</b><br/><br/>\n";
+	$message = "<b>Updated " . $domain . " to use " . $newPresenceServer . " for presence</b><br/><br/>\n";
+    echo $message;
     pg_free_result($domainUpdateResult);
+
+    //get domain id
+    $domainID = pg_fetch_row(pg_query($rwdb, "SELECT id FROM resource_group WHERE domain='".$domain."';"));
+
     pg_close($rwdb);
+    
+    //record to events DB
+    $eventsdb = pg_connect("host=rwdb dbname=events user=postgres ") or die('Could not connect to events: ' . pg_last_error()):
+    $eventInsert = "INSERT INTO event VALUES ('".$message."') RETURNING id;";
+    $eventID = pg_fetch_row(pg_query($eventsdb, $eventsInsert));
+    pg_query($eventsdb, "INSERT INTO event_domain VALUES('".$eventID[0]."', ".$domainID[0]."')");
+    pg_close($eventsdb);
+
 }
 
 //#####################//
