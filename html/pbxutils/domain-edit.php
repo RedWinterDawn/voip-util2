@@ -53,9 +53,11 @@ if (isset($newPresenceServer)){
     
     //record to events DB
     $eventsdb = pg_connect("host=rwdb dbname=events user=postgres ") or die('Could not connect to events: ' . pg_last_error());
-    $eventInsert = "INSERT INTO event VALUES ('".$message."') RETURNING id;";
-    $eventID = pg_fetch_row(pg_query($eventsdb, $eventsInsert));
-    pg_query($eventsdb, "INSERT INTO event_domain VALUES('".$eventID[0]."', ".$domainID[0]."')");
+    $eventInsert = "INSERT INTO event (description) VALUES ('".$message."') RETURNING id;";
+	$eventID = pg_fetch_row(pg_query($eventsdb, $eventInsert)) or die('Counld not insert into event');
+	echo "eventid: ".$eventID[0];
+	echo " doamin id: ".$domainID[0];
+    pg_query($eventsdb, "INSERT INTO event_domain VALUES('".$eventID[0]."', '".$domainID[0]."')") or die(pg_last_error());
     pg_close($eventsdb);
 
 }

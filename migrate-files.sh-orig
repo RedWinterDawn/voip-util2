@@ -25,7 +25,7 @@ fi
 if [ $2 == $old_location ]
 then
 	printf "PBX $1 already in $2\n"
-	exit 12
+	exit 0 
 fi
 
 # Check required location are mounted
@@ -54,7 +54,7 @@ case $2 in
 		        nfs="10.120.61.1" ;;
 		    ord)
 		        nfs="10.121.61.1" ;;
-		    atlanta)
+		    atl)
 		        nfs="10.122.61.1" ;;
 		    geg)
 		        nfs="10.123.61.1" ;;
@@ -72,7 +72,7 @@ case $2 in
 		nfs="10.120.61.1" ;;
 	ord)
 		nfs="10.121.61.1" ;;
-	atlanta)
+	atl)
 		nfs="10.122.61.1" ;;
 	geg)
 		nfs="10.123.61.1" ;;
@@ -91,7 +91,7 @@ case $old_location in
         old_nfs="10.120.61.1" ;;
     ord)
         old_nfs="10.121.61.1" ;;
-    atlanta)
+    atl)
         old_nfs="10.122.61.1" ;;
     geg)
         old_nfs="10.123.61.1" ;;
@@ -108,7 +108,8 @@ if [ $2 == "chicago-legacy" ]
 then
 	if [[ -e $basedir/$old_location/pbxs/$pbx ]]
 	then
-		rsync -rav --delete-after $nfs::v4/pbxs/$pbx/ $basedir/$2/pbxs/$pbx/ 1>/dev/null 2>&1
+		rsync -ra $nfs::v4/pbxs/$pbx/ $basedir/$2/pbxs/$pbx/ 1>/dev/null 2>&1
+		rsync -ra --delete-after $nfs::v4/pbxs/$pbx/voicemail/ $basedir/$2/pbxs/$pbx/voicemail 1>/dev/null 2>&1
 	else
 		mkdir $basedir/$2/pbxs/$pbx 1>/dev/null 2>&1
     	mkdir $basedir/$2/pbxs/$pbx/holdmusic 1>/dev/null 2>&1
@@ -121,7 +122,8 @@ elif [ $old_location == "chicago-legacy" ]
 then
     if [[ -e $basedir/$old_location/pbxs/$pbx ]]
     then
-        rsync -rav --delete-after $basedir/chicago-legacy/pbxs/$pbx/ $nfs::v4/pbxs/$pbx/ 1>/dev/null 2>&1
+        rsync -ra $basedir/chicago-legacy/pbxs/$pbx/ $nfs::v4/pbxs/$pbx/ 1>/dev/null 2>&1
+		rsync -ra --delete-after $basedir/chicago-legacy/pbxs/$pbx/voicemail/ $nfs::v4/pbxs/$pbx/voicemail/ 1>/dev/null 2>&1
     else
         mkdir $basedir/$2/pbxs/$pbx 1>/dev/null 2>&1
         mkdir $basedir/$2/pbxs/$pbx/holdmusic 1>/dev/null 2>&1
@@ -133,7 +135,7 @@ then
 else
 	if [[ -e $basedir/$old_location/pbxs/$pbx ]]
 	then
-		ssh -i /root/.ssh/internal-only -T -o StrictHostKeyChecking=no root@${old_nfs} "rsync -rav --delete-after /NFSStorage/pbx/pbxs/$pbx/ $nfs::v4/pbxs/$pbx/" 
+		ssh -i /root/.ssh/internal-only -T -o StrictHostKeyChecking=no root@${old_nfs} "rsync -ra /NFSStorage/pbx/pbxs/$pbx/ $nfs::v4/pbxs/$pbx/; rsync -ra --delete-after /NFSStorage/pbx/pbxs/$pbx/voicemail/ $nfs::v4/pbxs/$pbx/voicemail/" 2>&1
 	else
 		mkdir $basedir/$2/pbxs/$pbx 1>/dev/null 2>&1
 		mkdir $basedir/$2/pbxs/$pbx/holdmusic 1>/dev/null 2>&1
