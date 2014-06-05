@@ -1,7 +1,7 @@
 <?php
 echo "<html><body>\n\n";
 echo "<html><head><link rel='stylesheet' href='stylesheet.css'></head><body>\n";
-
+include('menu.html');
 if (isset($_GET["action"]))
 {
 	$action = $_GET["action"];

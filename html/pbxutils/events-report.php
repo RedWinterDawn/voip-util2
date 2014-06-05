@@ -14,8 +14,9 @@ echo '<html><head><title>Event Reports</title>
 #</style><link rel="stylesheet" href="stylesheet.css"></head>';
 
 //"Header"
-echo '<body onload="init()"><div id="head" class="head">
-    <h2>Event Reports';
+echo '<body onload="init()"><div id="head" class="head">';
+include('menu.html');
+echo '<h2>Event Reports';
 if ($_SERVER['SERVER_ADDR'] == '10.101.8.1')
 {
 	echo " (PRODUCTION)";

@@ -24,7 +24,9 @@ echo '<html><head><title>Single Customer Migration</title>
 </style><link rel="stylesheet" href="stylesheet.css"></head>';
 
 //"Header"
-echo '<body onload="init()"><div id="head" class="head">
+echo '<body onload="init()">';
+include('menu.html');
+echo '<div id="head" class="head">
 	<h2>Move a Single Customer';
 if ($_SERVER['SERVER_ADDR'] == '10.101.8.1')
 {

@@ -1,5 +1,6 @@
 <link rel='stylesheet' href='stylesheet.css'>
 <?php
+include('menu.html');
 // Connecting, selecting database
 $dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ")
     or die('Could not connect: ' . pg_last_error());
