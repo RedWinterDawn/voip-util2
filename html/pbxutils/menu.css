@@ -1,0 +1,68 @@
+ul.jmenu li a:hover, ul.jmenu li a.selected{
+	color: #DDD;
+	background: -moz-linear-gradient(top, rgba(0,50,250,0.1) 0%, rgba(0,255,120,.9) 100%), url('background.gif');
+	background: -webkit-linear-gradient(top, rgba(0,50,250,0.1) 0%, rgba(0,255,120,.9) 100%), url('background.gif');
+	background: -webkit-gradient(top, rgba(0,50,250,0.1) 0%, rgba(0,255,120,.9) 100%), url('background.gif');
+	background: -o-linear-gradient(top, rgba(0,50,250,0.1) 0%, rgba(0,255,120,.9) 100%), url('background.gif');
+	background: -ms-linear-gradient(top, rgba(0,50,250,0.1) 0%, rgba(0,255,120,.9) 100%), url('background.gif');
+	background: linear-gradient(top, rgba(0,50,250,0.1) 0%, rgba(0,255,120,.9) 100%), url('background.gif');
+	
+}
+
+.jmenu, .jmenu ul{
+     margin:0;
+     padding:0;
+     list-style-type:none;
+     list-style-position:outside;
+     position:relative;
+     line-height:1.5em;
+}
+
+.jmenu a:link, .jmenu a:active, .jmenu a:visited {
+    display:block;
+    padding:.2em .4em;
+    border:1px solid #333;
+    color:#DDD;
+	font-size:large;
+    text-decoration:none;
+    background:#555 url('background.gif') repeat fixed;
+}
+
+.jmenu a:hover {
+    background-color:#fff;
+    color:#333;
+}
+
+.jmenu li{
+    float:left;
+    position:relative;
+}
+
+.jmenu ul {
+    position:absolute;
+    width:8em;
+    top:2.0em;
+    display:none;
+}
+
+.jmenu li ul a{
+    width:8em;
+    float:left;
+}
+
+.jmenu ul ul{
+	top:auto;
+}
+
+.jmenu li ul ul {
+    left:8em;
+    margin:0px 0 0 10px;
+}
+
+.jmenu li:hover ul ul, .jmenu li:hover ul ul ul, .jmenu li:hover ul ul ul ul{
+    display:none;
+}
+
+.jmenu li:hover ul, .jmenu li li:hover ul, .jmenu li li li:hover ul, .jmenu li li li li:hover ul {
+    display:block;
+}
