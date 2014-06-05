@@ -56,7 +56,6 @@ ul.jmenu li a:hover, ul.jmenu li a.selected{
 
 .jmenu li ul ul {
     left:8em;
-    margin:0px 0 0 10px;
 }
 
 .jmenu li:hover ul ul, .jmenu li:hover ul ul ul, .jmenu li:hover ul ul ul ul{
