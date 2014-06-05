@@ -27,7 +27,7 @@ echo "<html><head><title>Manage Santas</title>
 
 echo "</script>
 </head><body>";
-
+include('menu.html');
 $gobutton = "I'm feeling lucky!";
 $killbutton = "Destroy things!";
 $requestTime = strftime('%Y-%m-%d %H:%M:%S');
