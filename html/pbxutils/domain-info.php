@@ -3,6 +3,7 @@
 include('menu.html');
 $guiltyParty = $_SERVER['REMOTE_ADDR'];
 $requestTime = strftime('%Y-%m-%d %H:%M:%S');
+$resource_group_id = "";
 
 function eventTable($id)
 {
@@ -46,6 +47,7 @@ $domainQuery = "SELECT domain,name,assigned_server,id,outbound_proxy,presence_se
 $domainResult = pg_query($domainQuery) or die('Domain query failed: ' . pg_last_error());
 
 while ($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
+	$resource_group_id = $domainRow['id'];
 
     // Get feature flags for domain
     $url = "http://feature-flags:8083/features/" . $domainRow['id'] . "/enabled";
@@ -105,9 +107,19 @@ while ($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
     echo "</table>\n";
 }
 
+echo "<br/>";
+
+$didQuery = "SELECT count(*) as count FROM master_did WHERE destination_pbx_id = '" . $resource_group_id . "' AND active = 't';";
+$didResult = pg_query($didQuery) or die('DID query failed (for ' . $resource_group_id . ') ' . pg_last_error());
+
+if ($didRow = pg_fetch_array($didResult, null, PGSQL_ASSOC)) {
+	echo "Active DID count: " . $didRow['count'] . "<br/>";
+}
+
 // Free resultset
 pg_free_result($domainResult);
 pg_free_result($typeResult);
+pg_free_result($didResult);
 
 // Closing connection
 pg_close($dbconn);
