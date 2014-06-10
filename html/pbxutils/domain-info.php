@@ -12,7 +12,7 @@ function eventTable($id)
 	$eventQuery = "SELECT added, description from event, (SELECT event_id FROM event_domain WHERE domain_id='".$id."') as domain WHERE event.id = domain.event_id order by number desc limit 10;";
 	$eventArray = pg_fetch_all(pg_query($eventdb, $eventQuery)); //or die('Event query failed: ' . pg_last_error());
 	pg_close($eventdb);
-	echo "<tr><td></td><td></td><td colspan=6 rowspan=13 valign=top>
+	echo "<tr><td></td><td></td><td colspan=7 rowspan=13 valign=top>
 		<table>
 		<tr><th colspan=2 width='700'>Last 10 Events</th></tr>
 		<tr><th>Date</th><th>Description</th></tr>";
@@ -87,7 +87,7 @@ while ($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
 		. "<th>" . $domainRow['outbound_proxy'] . "</th>"
 		. "<th>" . $santa . " </th>"
 		. "<th>" . $domainRow['state'] . "</th>"
-		. "<th>...</th>"
+		. "<th>" . $domainRow['local_area_code'] . "</th>"
 		. "<th>" . $mpls . "</th>\n";
 
     $typeQuery = "SELECT type_id, count(type_id) as count FROM user_agent WHERE resource_group_id='" . $domainRow['id'] . "' GROUP BY type_id ORDER BY count DESC;";
