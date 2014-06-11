@@ -9,7 +9,17 @@ $dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ")
 $santaServer[0] = '';
 $santaServerCount = 1;
 
-/////////////////////////////
+//////////////////////////////////
+// Count of deactivated domains assigned to Santa servers
+$deactivatedCountQuery = "SELECT count(*) as count FROM resource_group WHERE state != 'ACTIVE' AND presence_server IS NOT NULL;";
+$deactivatedCountResult = pg_query($deactivatedCountQuery) or die('deactivatedCountQuery failed: ' . pg_last_error());
+$deactivatedCount = pg_fetch_array($deactivatedCountResult, null, PGSQL_ASSOC);
+
+if ($deactivatedCount['count'] != 0) {
+	echo "<table border=2><th>Deactivated count: </th><th>" . $deactivatedCount['count'] . "</th><th><a href=\"pbx-presence-cleanup.php\">remove inactive domains</a></th></table><br/>\n";
+}
+
+//////////////////////////////////
 // Summary count by Santa server
 $query = "select presence_server,count(*) from resource_group where state='ACTIVE' group by presence_server order by presence_server asc;";
 $result = pg_query($query) or die('Query failed: ' . pg_last_error());
