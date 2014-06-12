@@ -132,7 +132,7 @@ if ($action=="search")
 	//Actually connect to postgres for the queries we'll be making
 
 	$dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ") or die('Could not connect to "pbxs" database: ' . pg_last_error());
-	$curAssignmentQ = "SELECT domain, assigned_server, location, id FROM resource_group WHERE domain LIKE '".$search."' ORDER BY domain LIMIT 50;";
+	$curAssignmentQ = "SELECT name, domain, assigned_server, location, id FROM resource_group WHERE domain LIKE '".$search."' ORDER BY domain LIMIT 50;";
 	$curAssignment = pg_fetch_all(pg_query($curAssignmentQ)) or die ("Current Placement Search Failed or No Results: ".pg_last_error());
 	pg_close($dbconn);
 
@@ -231,7 +231,7 @@ if ($action=="search")
 	</script>';
 
 	//Output HTML (note and the beginning of the table including column headers
-	echo "<table border='1'><tr><th>Domain</th><th>Location</th><th>Server</th><th>New Location</th><th>New Server</th><th>Move this Domain</th></tr>";
+	echo "<table border='1'><tr><th>Name</th><th>Domain</th><th>Location</th><th>Server</th><th>New Location</th><th>New Server</th><th>Move this Domain</th></tr>";
 	$striped=false; //This is just a bool that we use to alternate blue and white rows (for readability)
 	$i = 0;
 	foreach($curAssignment as $dom) //Loop through the domains we found in our first query
@@ -249,8 +249,8 @@ if ($action=="search")
 		//-------------------
 		// Building the table
 		//-------------------
-		echo "<td>
-			<a href=\"domain-info.php?domain=" . $dom['domain'] . "\">".$dom['domain']."</a></td>
+		echo "<td>".$dom['name']."</td>
+			<td><a href=\"domain-info.php?domain=" . $dom['domain'] . "\">".$dom['domain']."</a></td>
 			<td>".$dom['location']."</td>
 			<td>".$dom['assigned_server']."</td>
 			<form action='' method='POST'>
@@ -276,6 +276,12 @@ if ($action=="search")
 //================
 } elseif ($action=="move")
 {
+	$utilconn = pg_connect("host=rodb dbname=util user=postgres ") or die('Could not connectto utildb: '.pg_last_error());
+	$mpls = pg_fetch_row(pg_query($utilconn, "SELECT id FROM mpls WHERE domain='".$domain."'"));
+	if ($mpls !='')
+	{
+		echo "<p class='red'><b>WARNING!!!</b> ".$domain." is a MPLS customer. </p>";
+	}	
 	echo "<div id='confirm' class='confirm'>
 		<script type='text/javascript'>
 		function working()

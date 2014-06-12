@@ -6,12 +6,19 @@
  * This page written by Jake Lasley
  * 	Large portions stolen from Adam Jensen's simple-migration script
  */
-
-//CSS Styling:
-echo '<html><head><title>Event Reports</title>
-<style type="text/css">
-#pretty {vertical-align: bottom;}
-#</style><link rel="stylesheet" href="stylesheet.css"></head>';
+$print = 'false';
+if (isset($_REQUEST["print"]))
+{
+	$print = $_REQUEST["print"];
+}
+if ($print=='false')
+{
+	//CSS Styling:
+	echo '<html><head><title>Event Reports</title>
+	<style type="text/css">
+	#pretty {vertical-align: bottom;}
+	#</style><link rel="stylesheet" href="stylesheet.css"></head>';
+}
 
 //"Header"
 echo '<body onload="init()"><div id="head" class="head">';
@@ -206,6 +213,13 @@ if ($action=="domainList" && isset($eventID) && isset($eventDescrip))
 			  </tr>";
 	}
 	echo "</table>";
+	echo"<p><br></p>";
+	echo "<form action='' method='POST'>	
+		<input type='hidden' name='action' value='domainList'>
+		<input type='hidden' name='print' value='print'>
+		<input type='hidden' name='eventID' value='".$eventID."'>
+		<input type='hidden' name='eventDescrip' value='".$eventDescrip."'>
+		<input type='submit' value='Print View' /></form>";
 }
 //===========
 //List Events==========================================================================================================

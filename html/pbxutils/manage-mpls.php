@@ -110,7 +110,7 @@ if ($action == $gobutton)
 		}
 		//If both status and location were set, "action" would have been set at least twice by now
 		//So we'll check to see if they're both set and update "action" if they are.
-		if (($order != "") && ($customer != "") && ($location != "") && ($carrier != "") && ($lan != "") && ($wan != ""))
+		if (($order != "") && ($customer != "") && ($location != ""))
 		{
 			$action = "add";
 		}

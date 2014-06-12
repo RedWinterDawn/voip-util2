@@ -11,6 +11,10 @@
 		echo "<h1>Dev PBX Utilities</h1>";
 	} ?>
 	<ul>
+		Use this menu. It's better.
+      <li class="top">
+        <? include('menu.html'); ?>
+	  </li>
 	  <li class="dvdr"></li>
 	  <li class="top">
 		<div class="button_location">

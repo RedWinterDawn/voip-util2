@@ -221,15 +221,20 @@ if ($action == "submit")
 
 			}
 		}
-		echo "<br>=============================";
+		echo "<br>============================= flushing memcache between sites =================================</br>";
+		exec('/root/flush_memcached ', $flushOutput, $exitcode);
 	}
    	pg_close($eventDb); //Close the event DB connection
 	pg_close($cdrConn);
 	pg_close($utilConn);
 	pg_close($pbxsConn);
 
-}
+echo "<h3>Migration Finished!</h3>";
 
+exec('bash -c "exec nohup /root/loadMetrics.py > /dev/null 2>&1 &"');
+echo "Started load metrics update in the background. You don't need to wait for it.";
+
+}
 echo"
 	</body>
 	</html>";

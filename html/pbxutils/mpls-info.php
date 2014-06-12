@@ -13,6 +13,68 @@ if (isset($_REQUEST["action"]))
     $action = "list";
 }
 
+if ($action == "update")
+{
+	if(isset($_REQUEST["id"]))
+	{
+		$id = $_REQUEST["id"];
+		$order = $_REQUEST["order"];
+		$customer = $_REQUEST["customer"];
+		$location = $_REQUEST["location"];
+		$carrier = $_REQUEST["carrier"];
+		$lec = $_REQUEST["lec"];
+		$lan = $_REQUEST["lan"];
+		$wan = $_REQUEST["wan"];
+
+		echo "Update successful!";
+		//database upadte goes here//
+
+		$action = "info";
+		//domain goeds here so info know what to show
+ 
+	}else
+	{
+		echo "no id set";
+	}
+}
+if ($action == "validate")
+{
+	$invalid = false;
+
+	$customer = $_REQUEST["customer"];
+	$order = $_REQUEST["order"];
+	$location = $_REQUEST["location"];
+	$carrier = $_REQUEST["carrier"];
+	$lec = $_REQUEST["lec"];
+	$lan = $_REQUEST["lan"];
+	$wan = $_REQUEST["wan"];
+
+	if (preg_match('/[^0-9]/i', $order) OR $order=='')
+	{
+	    echo "<p class='red'> Invalid Input for Order#! <br/> Use numbers only.</p><hr>";
+		$invalid = true;
+	}
+	if (preg_match('/[^0-9]/i', $customer) OR $customer=='')
+	{
+	    echo "<p class='red'> Invalid Input for Customer#! <br/> Use numbers only.</p><hr>";
+		$invalid = true;
+	}
+	if (!preg_match('&^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/[0-9]{1,2}$&', $lan))
+	{
+		echo "<p class='red'> Invalid Input for LAN IP! <br/> Use numbers and periods only (valid LAN IP address required).</p><hr>";
+		$invalid = true;
+	}
+	if (!preg_match('&^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/[0-9]{1,2}$&', $wan))
+	{
+		echo "<p class='red'> Invalid Input for WAN IP! <br/> Use numbers and periods only (valid LAN IP address required).</p><hr>";
+		$invalid = true;
+	}
+	if (preg_match('/[^a-z_\-0-9 ]/i', $location) OR $location=='')
+	{
+		echo "<p class='red'> Invalid Input for Location! <br/> Use letters, numbers, underscores, and hyphens only.</p><hr>";
+		$invalid = true;
+	}
+}
 if ($action == "info")
 {
     if(isset($_REQUEST["domain"]))
@@ -44,7 +106,7 @@ if ($action == "info")
 			echo "</td></tr>
 				<tr><th>Public LAN IPs</th><td>".$mpls['public_lan_ips']."</td></tr>
 				<tr><th>Private WAN IPs</th><td>".$mpls['private_wan_ips']."</td></tr>
-				</table>";
+				</table><br>";
 		}
 	
 		pg_close($dbconn);
@@ -56,12 +118,12 @@ if ($action == "info")
 }
 if ($action == "edit")
 {
-	if(isset($_REQUEST["domain"]))
+	if(isset($_REQUEST["id"]))
 	{
-		$domain = $_REQUEST["domain"];
+		$id = $_REQUEST["id"];
 		
 		$dbconn = pg_connect("host=rodb dbname=util user=postgres ") or die('Could not connect to database' . pg_last_error());
-		$mplsQ = "SELECT * FROM mpls WHERE domain='".$domain."';";
+		$mplsQ = "SELECT * FROM mpls WHERE id='".$id."';";
 		$mpls = pg_fetch_row(pg_query($dbconn, $mplsQ));
 		echo "<table><tr><th colspan='2'>".$mpls['6']." MPLS Circuits</th></tr>
 			<tr><th>Domain</th><td>".$mpls['2']."</td></tr>
@@ -75,7 +137,7 @@ if ($action == "edit")
 			<tr><th>Private WAN IPs</th><td><input type='text' name='wan' value='".$mpls['8']."' size=150/></td></tr>
 			<input type='hidden' name='action' value='confirm'>
 			<input type='hidden' name='id' value='".$mpls['3']."'>
-			<tr><th><a href='mpls-info.php?action=info&domain=".$domain."'>Cancel</a></th>
+			<tr><th><a href='mpls-info.php?action=info&domain=".$mpls['2']."'>Cancel</a></th>
 			<th><input type='submit' value='Save' name='confirm'></th></tr></table>
 			</form>";
 		
@@ -83,7 +145,7 @@ if ($action == "edit")
 
 	}else
 	{
-		echo "No domain set!";
+		echo "No id set!";
 	}
 }
 if ($action == "confirm")
@@ -115,46 +177,45 @@ if ($action == "confirm")
        	    <tr><th>Customer #</th><td>".$mpls['1']."</td><td>".$customer."</td></tr>
        	    <tr><th>Location</th><td>".$mpls['5']."</td><td>".$location."</td></tr>
        	    <tr><th>Carrier Circuit ID</th><td>";
-   		foreach ($carrier0 as $id)
+   		foreach ($carrier0 as $value)
         {
-            echo $id."<br>";
+            echo $value."<br>";
         }
 		echo "</td><td>";
-   		foreach ($carrier as $id)
+   		foreach ($carrier as $value)
         {
-            echo $id."<br>";
+            echo $value."<br>";
 		}
 		echo "</td></tr><tr><th>LEC Circuit ID</th><td>";
-		foreach ($lec0 as $id)
+		foreach ($lec0 as $value)
 		{
-			echo $id."<br>";
+			echo $value."<br>";
 		}
 		echo "</td><td>";
-		foreach ($lec as $id)
+		foreach ($lec as $value)
 		{
-			echo $id."<br>";
+			echo $value."<br>";
 		}
 		echo "</td></tr>
 			<tr><th>Public LAN IPs</th><td>".$mpls['9']."</td><td>".$lan."</td></tr>
 			<tr><th>Private WAN IPs</th><td>".$mpls['8']."</td><td>".$wan."</td></tr>
-			
+			<tr><th></th>
 			<form action='' method='POST'>
-			<input type='hidden' name='order' value='".$order."'/></td></tr>
-			<input type='hidden' name='customer' value='".$customer."'/></td></tr>
-			<input type='hidden' name='location' value='".$location."'/></td></tr>
-			<input type='hidden' name='carrier' value='".$carrier."'/></td></tr>
-			<input type='hidden' name='lec' value='".$lec."'/></td></tr>
-			<input type='hidden' name='lan' value='".$lan."'/></td></tr>
-			<input type='hidden' name='wan' value='".$wan."'/></td></tr>
-			<input type='hidden' name='action' value='insert'>
-			<input type='hidden' name='id' value='".$id."'>
-			<tr><th><input type='submit' value='Confirm' name='confirm'></th>
-			</form>
-			<form action='' method='get'>
 			<input type='hidden' name='action' value='edit'>
-			<input type='hidden' name='domain' value='".$mpls['2']."'>
-			<th><input type='submit' value='Cancel' /></th></tr>
+			<input type='hidden' name='id' value='".$id."'>
+			<th><input type='submit' value='Keep Current' /></th>
 			</form>
+			<form action='' method='POST'>
+			<input type='hidden' name='order' value='".$order."'/>
+			<input type='hidden' name='customer' value='".$customer."'/>
+			<input type='hidden' name='location' value='".$location."'/>
+			<input type='hidden' name='carrier' value='".$carrier."'/>
+			<input type='hidden' name='lec' value='".$lec."'/>
+			<input type='hidden' name='lan' value='".$lan."'/>
+			<input type='hidden' name='wan' value='".$wan."'/>
+			<input type='hidden' name='action' value='update'>
+			<input type='hidden' name='id' value='".$id."'>
+			<th><input type='submit' value='Save Changes' name='confirm'></th></tr>
 			</table>";
 	
 	}else
@@ -172,7 +233,7 @@ if ($action == "list")
 		<tr><th>Domain</th><th>Name</th><th>Location</th></tr>";
 	foreach($mpls as $cir)
 	{
-		echo "<tr><td>".$cir['domain']."</td><td>".$cir['name']."</td><td>".$cir['location']."</td></tr>";
+		echo "<tr><td>".$cir['domain']."</td><td>".$cir['name']."</td><td><a href='mpls-info.php?action=info&domain=".$cir['domain']."'>".$cir['location']."</a></td></tr>";
 	}
 	echo "</table>";
 }
