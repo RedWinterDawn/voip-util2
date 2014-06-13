@@ -52,9 +52,8 @@ function drawTables($domains) {
 			<input type='submit' value='Go to Migration Page' /> 
 			</form></td>
 		<td><form action='events-report.php' method='POST'>
-			<input type='hidden' name='action' value='search' />
-			<input type='hidden' name='exact' value='true' />
-			<input type='hidden' name='search' value='$dom' />
+			<input type='hidden' name='action' value='eventList' />
+			<input type='hidden' name='domain' value='$dom' />
 			<input type='submit' value='Go to Events Page' /> 
 			</form></td>
 		<td><a href='customer-call-report.php?domain=$dom&birthday=$today&action=doSearch'>
