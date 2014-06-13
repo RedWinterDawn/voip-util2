@@ -91,7 +91,8 @@ if ($rwutil = pg_connect("host=rwdb dbname=util user=postgres"))
                  pg_close($events);
 
 				echo "<p>".$santaRow['ip']." abandoned to ".$standbySantaRow['ip']."</p>";
-				echo "<p><a href='presence-status.php'>Pressence List</a></p>";
+				echo "<p><a href='presence-status.php'>Pressence List</a></p>
+					<p> After 5 min run the Evict commad on the santa server.    curl -XDELETE http://localhost/system/subscriptions</p>";
 				echo "<img src=\"abandonSleigh.jpg\" alt=\"Santa Gave UP!\">";
 				
 			}else
