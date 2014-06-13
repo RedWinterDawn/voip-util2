@@ -15,6 +15,11 @@ if (isset($_GET["action"]))
 
 if ($action == "ShowSelector") {
 	// Show domain and date selection controls
+	echo '<form>' . "\n";
+	echo 'Domain: <input type="search" name="domain"><br/>' . "\n";
+	echo 'Date: <input type="date" name="birthday"><br/>' . "\n";
+	echo '<input type="submit"><br/>' . "\n";
+	echo '</form><br/>' . "\n";
 }
 
 

@@ -28,9 +28,11 @@ if ($action == "update")
 
 		echo "Update successful!";
 		//database upadte goes here//
-
+		$dbconn = pg_connect("host=rwdb dbname=util user=postgres ") or die('Could not connect to utildb' . pg_last_error());
+		$update = "UPDATE mpls SET order_number=".$order.", customer=".$customer.", location='".$location."', carrier_circuit_id='".$carrier."', lec_circuit_id='".$lec."', public_lan_ips='".$lan."', private_wan_ips='".$wan."' WHERE id=".$id;
+		pg_query($dbconn, $update);
+		pg_close($dbconn);
 		$action = "info";
-		//domain goeds here so info know what to show
  
 	}else
 	{
@@ -69,10 +71,27 @@ if ($action == "validate")
 		echo "<p class='red'> Invalid Input for WAN IP! <br/> Use numbers and periods only (valid LAN IP address required).</p><hr>";
 		$invalid = true;
 	}
-	if (preg_match('/[^a-z_\-0-9 ]/i', $location) OR $location=='')
+	if (preg_match('/[\'\"]/i', $location) OR $location=='')
 	{
-		echo "<p class='red'> Invalid Input for Location! <br/> Use letters, numbers, underscores, and hyphens only.</p><hr>";
+		echo "<p class='red'> Invalid Input for Location!</p><hr>";
 		$invalid = true;
+	}
+	if (preg_match('/[\'\"]/i', $carrier))
+	{
+		echo "<p class='red'> Invalid Input for Carrier Circuit ID! <br/> Use commas (no spaces) to seperate multiple ids.</p><hr>";
+		$invalid = true;
+	}
+	if (preg_match('/[\'\"]/i', $lec))
+	{
+		echo "<p class='red'> Invalid Input for LEC Circuit ID! <br/> Use commas (no spaces) to seperate multiple ids.</p><hr>";
+		$invalid = true;
+	}
+	if (!$invalid)
+	{
+		$action = 'confirm';
+	}else
+	{
+		$action = 'edit';
 	}
 }
 if ($action == "info")
@@ -106,7 +125,13 @@ if ($action == "info")
 			echo "</td></tr>
 				<tr><th>Public LAN IPs</th><td>".$mpls['public_lan_ips']."</td></tr>
 				<tr><th>Private WAN IPs</th><td>".$mpls['private_wan_ips']."</td></tr>
-				</table><br>";
+				<form action='' method='POST'>
+				</table>
+				<input type='hidden' name='action' value='edit'>
+				<input type='hidden' name='id' value='".$mpls['id']."'>
+				<input type='submit' value='Edit'><br>
+				</form><br>";
+			
 		}
 	
 		pg_close($dbconn);
@@ -135,7 +160,7 @@ if ($action == "edit")
 			<tr><th>LEC Circuit ID</th><td><input type='text' name='lec' value='".$mpls['4']."' size=150/></td></tr>
 			<tr><th>Public LAN IPs</th><td><input type='text' name='lan' value='".$mpls['9']."' size=150/></td></tr>
 			<tr><th>Private WAN IPs</th><td><input type='text' name='wan' value='".$mpls['8']."' size=150/></td></tr>
-			<input type='hidden' name='action' value='confirm'>
+			<input type='hidden' name='action' value='validate'>
 			<input type='hidden' name='id' value='".$mpls['3']."'>
 			<tr><th><a href='mpls-info.php?action=info&domain=".$mpls['2']."'>Cancel</a></th>
 			<th><input type='submit' value='Save' name='confirm'></th></tr></table>
@@ -164,10 +189,10 @@ if ($action == "confirm")
         $dbconn = pg_connect("host=rodb dbname=util user=postgres ") or die('Could not connect to database' . pg_last_error());
         $mplsQ = "SELECT * FROM mpls WHERE id='".$id."';";
 		$mpls = pg_fetch_row(pg_query($dbconn, $mplsQ));
-       	$carrier = explode( ',' , $carrier);
+       	$carrierA = explode( ',' , $carrier);
       	$carrier0 = explode( ',' , $mpls['0']);
     	$lec0 = explode( ',' , $mpls['4']);
-     	$lec = explode( ',' , $lec);
+     	$lecA = explode( ',' , $lec);
 		pg_close($dbconn);
 		echo "<p class='red'>Please confirm your changes.</p>
 			<table><tr><th colspan='3'>".$mpls['6']." MPLS Circuits</th></tr>
@@ -182,7 +207,7 @@ if ($action == "confirm")
             echo $value."<br>";
         }
 		echo "</td><td>";
-   		foreach ($carrier as $value)
+   		foreach ($carrierA as $value)
         {
             echo $value."<br>";
 		}
@@ -192,7 +217,7 @@ if ($action == "confirm")
 			echo $value."<br>";
 		}
 		echo "</td><td>";
-		foreach ($lec as $value)
+		foreach ($lecA as $value)
 		{
 			echo $value."<br>";
 		}
@@ -206,6 +231,7 @@ if ($action == "confirm")
 			<th><input type='submit' value='Keep Current' /></th>
 			</form>
 			<form action='' method='POST'>
+			<input type='hidden' name='domain' value='".$mpls['2']."'/>
 			<input type='hidden' name='order' value='".$order."'/>
 			<input type='hidden' name='customer' value='".$customer."'/>
 			<input type='hidden' name='location' value='".$location."'/>
