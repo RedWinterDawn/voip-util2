@@ -22,14 +22,21 @@ if (isset($_GET["state"]))
 
 $count = 0;
 $limit = 5000;
-
+if ($utilConn = pg_connect("host=rodb dbname=util user=postgres")) {
+	$pbxDCresult = pg_fetch_array(pg_query($utilConn, "SELECT location FROM pbxstatus WHERE host = '$assigned_server'"));
+	$pbxDC = $pbxDCresult['location'];
+	pg_close($utilConn);
+} 
+if (!$pbxDC) {
+	$pbxDC = 'a site, somewhere, almost probably';
+}
 $dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ")
     or die('Could not connect: ' . pg_last_error());
 
 $query = "SELECT id,domain,name,state,assigned_server,presence_server,location FROM resource_group WHERE assigned_server='" . $assigned_server . "' " . $query_state . " ORDER BY state,domain LIMIT " . $limit;
 $result = pg_query($query) or die('Query failed: ' . pg_last_error());
 
-echo "<br/><h2>" . $assigned_server . "</h2><br/>\n";
+echo "<br/><h2>$assigned_server in <a href='site-info.php#$pbxDC'>$pbxDC</a></h2><br/>\n";
 
 echo "<table border=1>\n";
 echo "<tr><th>domain</th><th>name</th><th>state</th><th>assigned_server</th><th>presence_server</th><th>location</th></tr>\n";

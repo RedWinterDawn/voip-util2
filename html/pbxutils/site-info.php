@@ -4,123 +4,6 @@
 <link rel='stylesheet' href='expand.css'>
 <link rel='stylesheet' href='stylesheet.css'>
 
-<script type="text/javascript">
-/* Copied from jdstiles.com */
-var collapseDivs, collapseLinks;
-
-function createDocumentStructure (tagName) {
-  if (document.getElementsByTagName) {
-    var elements = document.getElementsByTagName(tagName);
-    collapseDivs = new Array(elements.length);
-    collapseLinks = new Array(elements.length);
-    for (var i = 0; i < elements.length; i++) {
-      var element = elements[i];
-      var siblingContainer;
-      if (document.createElement && 
-          (siblingContainer = document.createElement('div')) &&
-          siblingContainer.style) 
-      {
-        var nextSibling = element.nextSibling;
-        element.parentNode.insertBefore(siblingContainer, nextSibling);
-        var nextElement = elements[i + 1];
-        while (nextSibling != nextElement && nextSibling != null) {
-          var toMove = nextSibling;
-          nextSibling = nextSibling.nextSibling;
-          siblingContainer.appendChild(toMove);
-        }
-        siblingContainer.style.display = 'none';
-        
-        collapseDivs[i] = siblingContainer;
-        
-        createCollapseLink(element, siblingContainer, i);
-      }
-      else {
-        // no dynamic creation of elements possible
-        return;
-      }
-    }
-    createCollapseExpandAll(elements[0]);
-  }
-}
-
-function createCollapseLink (element, siblingContainer, index) {
-  var span;
-  if (document.createElement && (span = document.createElement('span'))) {
-    span.appendChild(document.createTextNode(String.fromCharCode(160)));
-    var link = document.createElement('a');
-    link.collapseDiv = siblingContainer;
-    link.href = '#';
-    link.appendChild(document.createTextNode('expand'));
-    link.onclick = collapseExpandLink;
-    collapseLinks[index] = link;
-    span.appendChild(link);
-    element.appendChild(span);
-  }
-}
-
-function collapseExpandLink (evt) {
-  if (this.collapseDiv.style.display == '') {
-    this.parentNode.parentNode.nextSibling.style.display = 'none';
-    this.firstChild.nodeValue = 'expand';
-  }
-  else {
-    this.parentNode.parentNode.nextSibling.style.display = '';
-    this.firstChild.nodeValue = 'collapse';
-  }
-
-  if (evt && evt.preventDefault) {
-    evt.preventDefault();
-  }
-  return false;
-}
-
-function createCollapseExpandAll (firstElement) {
-  var div;
-  if (document.createElement && (div = document.createElement('div'))) {
-    var link = document.createElement('a');
-    link.href = '#';
-    link.appendChild(document.createTextNode('expand all'));
-    link.onclick = expandAll;
-    div.appendChild(link);
-    div.appendChild(document.createTextNode(' '));
-    link = document.createElement('a');
-    link.href = '#';
-    link.appendChild(document.createTextNode('collapse all'));
-    link.onclick = collapseAll;
-    div.appendChild(link);
-    firstElement.parentNode.insertBefore(div, firstElement);
-  }
-}
-
-function expandAll (evt) {
-  for (var i = 0; i < collapseDivs.length; i++) {
-    collapseDivs[i].style.display = '';
-    collapseLinks[i].firstChild.nodeValue = 'collapse';
-  }
-  
-  if (evt && evt.preventDefault) {
-    evt.preventDefault();
-  }
-  return false;
-}
-
-function collapseAll (evt) {
-  for (var i = 0; i < collapseDivs.length; i++) {
-    collapseDivs[i].style.display = 'none';
-    collapseLinks[i].firstChild.nodeValue = 'expand';
-  }
-  
-  if (evt && evt.preventDefault) {
-    evt.preventDefault();
-  }
-  return false;
-}
-</script>
-<script type="text/javascript">
-window.onload = function (evt) {
-  createDocumentStructure('h3');
-}
-</script>
 <?
 $subnetSites = array('101'=>'chicago-legacy','117'=>'pvu','118'=>'dfw','119'=>'lax','120'=>'nyc','121'=>'ord','122'=>'atl','123'=>'geg','124'=>'lon');
 function rekey ($multiArray, $key, $value) {
@@ -143,7 +26,7 @@ function countKey ($inArray, $key) {
 <body>
 <? include('menu.html'); ?>
 <h2>Site Info Page</h2>
-Expand sections below to see information.
+Click a site name below. 
 <br><br>
 <?
 
@@ -186,6 +69,12 @@ pg_close($pbxsConn);
 $sitesQuery = "SELECT DISTINCT location FROM pbxstatus";
 $sites = pg_fetch_all(pg_query($utilConn, $sitesQuery)) or die ("Failed to fetch sites ".pg_last_error());
 
+echo "<table><tr>";
+foreach ($sites as $site) {
+	echo "<td style='padding: 5; font-weight: bold;'><a href='#${site['location']}'>${site['location']}</a></td>";
+}
+echo "</tr></table>";
+echo "<hr align='left' width='900px'>";
 foreach ($sites as $site) {
 	$perSite = "SELECT ip, load, status FROM pbxstatus WHERE location = '${site['location']}' ORDER BY ip";
 	$activeCounts = "SELECT count(*) FROM pbxstatus WHERE location = '${site['location']}' AND status = 'active'";
@@ -196,8 +85,7 @@ foreach ($sites as $site) {
 	$standbyR = pg_fetch_all(pg_query($utilConn, $standbyCounts));
 	$standby = $standbyR[0]['count'];
 ?>
-<h3><? echo "${site['location']}"; ?></h3>
-<hr align='left' width='900px'>
+<h2><? echo "<a id='${site['location']}'> --==| ${site['location']} |==-- </a>"; ?></h2>
 <div class='leftpanel'>
 <h4>Overview</h4>
 <table border='1'>
@@ -243,7 +131,7 @@ foreach ($siteInfo["Data"] as $record) {
 	$devs = $devices[$record['ip']];
 	$pbxMPLS = $mplsPbxs[$record['ip']];
 	echo "<tr>
-		<td>${record['ip']}</td>
+		<td><a href='pbx-server-info.php?server=${record['ip']}'>${record['ip']}</a></td>
 		<td align='right' style='color: $color'>$load%</td>
 		<td align='center'>$custs</td>
 		<td align='center'>$devs</td>
