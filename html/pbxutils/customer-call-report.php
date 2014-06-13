@@ -16,7 +16,7 @@ if (isset($_GET["action"])) {
 }
 
 if (isset($_GET["domain"])) {
-	$domain = $_GET["domain"];
+	$domain = pg_escape_string($_GET["domain"]);
 } else {
 	$domain = "";
 	$action = "ShowSelector";
@@ -24,7 +24,7 @@ if (isset($_GET["domain"])) {
 }
 
 if (isset($_GET["birthday"])) {
-	$reportDate = $_GET["birthday"];
+	$reportDate = pg_escape_string($_GET["birthday"]);
 } else {
 	$reportDate = strftime('%Y-%m-%d');
 	$action = "ShowSelector";
@@ -46,7 +46,7 @@ if ($action == "doSearch") {
 	$dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ")
 		or die('Could not connect: ' . pg_last_error());
 	$pbxQuery = "SELECT id,name FROM resource_group WHERE domain = '" . $domain . "'";
-	$pbxResult = pg_query($pbxQuery) or die('PBX query failed: ' . pg_last_error());
+	$pbxResult = pg_query($pbxQuery) or die('PBX query failed: ' . pg_last_error() . " \n" . $pbxQuery);
 	pg_close($dbconn);
 	if ($pbxRow = pg_fetch_array($pbxResult, null, PGSQL_ASSOC)) {
 		$pbxID = $pbxRow['id'];
