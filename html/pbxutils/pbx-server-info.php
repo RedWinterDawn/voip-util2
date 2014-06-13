@@ -1,7 +1,7 @@
 <html><head><link rel='stylesheet' href='stylesheet.css'></head><body>
 
 <?php
-
+include 'menu.html';
 if (isset($_GET["server"]))
 {
 	$assigned_server = $_GET["server"];
