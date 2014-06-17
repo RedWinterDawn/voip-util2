@@ -16,6 +16,7 @@ ul.jmenu li a:hover, ul.jmenu li a.selected{
      list-style-position:outside;
      position:relative;
      line-height:1.5em;
+	 z-index: 9999;
 }
 
 .jmenu a:link, .jmenu a:active, .jmenu a:visited {

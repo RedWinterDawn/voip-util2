@@ -1,7 +1,7 @@
 <?php
 include('menu.html');
-$lax = array('WA', 'OR', 'CA', 'ID', 'NV', 'AZ', 'AK', 'HI');
-$dfw = array('MT', 'WY', 'UT', 'CO',  'NM', 'TX');
+$lax = array('WA', 'OR', 'CA', 'ID', 'NV', 'AZ', 'AK', 'HI', 'UT');
+$dfw = array('MT', 'WY', 'CO',  'NM', 'TX', 'UT');
 $atl = array('LA', 'AR', 'MO', 'FL', 'MS', 'AL', 'GA', 'SC', 'TN', 'NC', 'KY', 'OK', 'KS', 'ND', 'SD', 'NE');
 $nyc = array('DC', 'MN', 'IA', 'WI', 'IL', 'MI', 'IN', 'OH', 'WV', 'VA', 'PA', 'MD', 'NJ', 'DE', 'NY', 'VT', 'NH', 'MA', 'CT', 'RI', 'ME');
 echo "script inactive";
@@ -33,11 +33,11 @@ function getAreaCodes ($siteArray)
 	return $codes;
 }
 
-$areaCodes = getAreaCodes ($nyc);
+$areaCodes = getAreaCodes ($dfw);
 //print_r($areaCodes);
 
 $pbxsdb = pg_connect("host=rwdb dbname=pbxs user=postgres ") or die('could not connect to pbxs' . pg_last_error());
-$updateQ = "SELECT q.domain from (SELECT domain, local_area_code, location from resource_group where location='chicago-legacy' AND state='ACTIVE' AND secondary_location='chicago-legacy') as q where";
+$updateQ = "SELECT q.domain from (SELECT domain, local_area_code, location from resource_group where location='chicago-legacy' AND state='ACTIVE') as q where";
 $first = true;
 foreach ($areaCodes as $area)
 {
@@ -64,7 +64,7 @@ print_r($domains);
 
 foreach($domains as $key)
 {
-	$inserts[] = "UPDATE resource_group SET secondary_location='nyc' WHERE domain='".$key."'";
+	$inserts[] = "UPDATE resource_group SET secondary_location='atl' WHERE domain='".$key."'";
 }
 echo "<br><br><br>";
 print_r($inserts);

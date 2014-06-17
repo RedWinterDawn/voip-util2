@@ -47,8 +47,8 @@ $mplsPbxs = countKey($mplsData, "assigned_server");
 $deviceQuery = "SELECT rg.assigned_server, count(*) FROM user_agent AS ua INNER JOIN resource_group AS rg ON ua.resource_group_id = rg.id WHERE rg.state = 'ACTIVE' GROUP BY rg.assigned_server";
 $siteDeviceQuery = "SELECT rg.location, count(*) FROM user_agent AS ua INNER JOIN resource_group AS rg ON ua.resource_group_id = rg.id WHERE rg.state = 'ACTIVE' GROUP BY rg.location";
 $santaQuery = "SELECT presence_server, count(*) FROM resource_group WHERE state = 'ACTIVE' GROUP BY presence_server";
-$countQuery = "SELECT assigned_server, count(*) FROM resource_group GROUP BY assigned_server";
-$siteCountQuery = "SELECT location, count(*) FROM resource_group GROUP BY location";
+$countQuery = "SELECT assigned_server, count(*) FROM resource_group WHERE state = 'ACTIVE' GROUP BY assigned_server";
+$siteCountQuery = "SELECT location, count(*) FROM resource_group WHERE state= 'ACTIVE' GROUP BY location";
 
 $deviceR = pg_fetch_all(pg_query($pbxsConn, $deviceQuery)) or die ("Failed to fetch devices".pg_last_error());
 $siteDeviceR = pg_fetch_all(pg_query($pbxsConn, $siteDeviceQuery)) or die ("Failed to fetch devices".pg_last_error());

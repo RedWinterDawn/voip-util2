@@ -112,6 +112,7 @@ echo "<html>
 	<body>";
 include('menu.html');
 echo "<h2>Mass Exodus</h2>
+	<h1>TESTING UNDERWAY<br><br><br>NOT OPERATIONAL!</h1>
 	<p>Use this tool to move a large group from one site to another</p>
 	<p><a href='index.php'>Back to PBX Utils</a></p>
 	<form onsubmit='return confirm(\"WARNING: THIS SCRIPT IS FUNCTIONAL!!!\\n\\nPlease review your choices. Do you really want to continue?\\nCareless use of this script can cause DOWNTIME for REAL CLIENTS!\");' action='' method='POST'>
@@ -141,7 +142,7 @@ if (preg_match('/[^a-z\-0-9\.]/i', $source)) {
 	die ("INVALID SOURCE!");
 }
 
-if (isset($destination) && preg_match('/[^a-z]/i', $destination)) {
+if (isset($destination) && preg_match('/[^a-z\-]/i', $destination)) {
 	die ("INVALID DESTINATION. Give site code only, no IP addresses.");
 }
 if ($action == "submit")
@@ -151,54 +152,85 @@ if ($action == "submit")
 		<input type='submit' value='KILL IT WITH FIRE' /> 
 		</form>";
 	$maxLoad = 14000000; //How many seconds of RTP in 7 days can a server handle? default 14,000,000 
+	//Find out how much load the clients cause on our servers: 
 	$clientLoadQuery = "SELECT id, (load_in + load_out + load_custom) as load from loadmetrics";
-	$secondaryQuery = "SELECT DISTINCT secondary_location FROM resource_group WHERE assigned_server = '$source' OR location = '$source'";
+	//Find out how many secondary locations there are so we can loop over them
+	$secondaryQuery = "SELECT DISTINCT secondary_location FROM resource_group WHERE (assigned_server = '$source' OR location = '$source') AND state = 'ACTIVE'";
+	//Get a list of MPLS customers that we will avoid moving. These have to be moved manually
+	$mplsQuery = "SELECT id, domain FROM mpls";
 
+	//Connect to the databases
 	$pbxsConn = pg_connect("host=db dbname=pbxs user=postgres ") or die('Could not connect to "pbxs" database: ' . pg_last_error());
 	$utilConn = pg_connect("host=rodb dbname=util user=postgres ") or die('Could not connect to "pbxs" database: ' . pg_last_error());
 	$cdrConn = pg_connect("host=cdr dbname=asterisk user=postgres ") or die('Could not connect to "pbxs" database: ' . pg_last_error());
 	$eventDb = pg_connect("host=db dbname=events user=postgres") or die('Could not connect: '. pg_last_error());
+	//Get the load results and rekey them to be easier to use
 	$clientLoad = pg_fetch_all(pg_query($cdrConn, $clientLoadQuery)) or die ('Failed to get client specific load: '. pg_last_error());
 	$clientLoad = rekey($clientLoad, "id", "load");
 	
+	$mpls = pg_fetch_all(pg_query($utilConn, $mplsQuery)) or die ('Failed to get MPLS data'.pg_last_error());
+	$mpls = rekey($mpls, "id", "domain");
+	//Determine how to move clients (autmoatically or by override)
 	if (isset($override)) {
 		$secondaries = Array ('0' => Array('secondary_location' => $destination)); //Really hacky way to not have to change other code
 	} else {
 		$secondaries = pg_fetch_all(pg_query($pbxsConn, $secondaryQuery)) or die('Could not fetch secondary locations' . pg_last_error());
 	}
 
+	//======================
+	//Major Loop --- This Loop goes through the secondary locations one at a time and moves customers
+	//======================
 	foreach ($secondaries as $secondary) {
 		$second = $secondary['secondary_location'];
     	$description = $guiltyParty." performed a large scale migration from ".$source." going to ".$second;
         $eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description) VALUES(DEFAULT, '" . $description . "') RETURNING id;"));
+		//SQL Select has to change based on whether or not an override is being used
 		if (isset($override)) {
-			$clientsQuery = "SELECT domain, id, assigned_server, location, secondary_location FROM resource_group WHERE assigned_server = '$source' OR location = '$source';";
+			$clientsQuery = "SELECT domain, id, assigned_server, location, secondary_location FROM resource_group WHERE (assigned_server = '$source' OR location = '$source') AND state = 'ACTIVE';";
 		} else {
-			$clientsQuery = "SELECT domain, id, assigned_server, location, secondary_location FROM resource_group WHERE (assigned_server = '$source' OR location = '$source') AND secondary_location = '$second';";
+			$clientsQuery = "SELECT domain, id, assigned_server, location, secondary_location FROM resource_group WHERE (assigned_server = '$source' OR location = '$source') AND secondary_location = '$second' AND state = 'ACTIVE';";
 		}
+		//Find out which PBXs are most and least loaded--we want to fill the least loaded first
 		$serverLoadQuery = "SELECT ip, load FROM pbxstatus WHERE location = '$second' AND status = 'active' ORDER BY load ASC;";	
 
+		//Get the clients for this specific secondary_location
 		$clients = pg_fetch_all(pg_query($pbxsConn, $clientsQuery)) or die('Could not find clients. Did you correctly select PBX/Site?<br>' . pg_last_error());
 		$serverLoadResult = pg_fetch_all(pg_query($utilConn, $serverLoadQuery)) or die ('Error getting load levels'. pg_last_error());
 		
+		//Rekey the load data so it's easier to use
 		$serverLoad = rekey($serverLoadResult, "ip", "load");
+		//Add load metrics into the clients array so that we can adjust server load as we go
 		$clients = addkey ($clients, $clientLoad, "id", "load");
+		//Load Distribute will assign the clients to new servers
 		$distResults = loadDistribute($clients, $serverLoad, $second, $maxLoad);
 		$clients = $distResults[0];
+		//The second return value from loadDistribute is the number of clients that couldn't be assigned to a server at the secondary location. We can assume that if this is not == 0, then some people won't get moved
 		if ($distResults[1] != 0) {
-			echo "<p class='red'>Some clients were not migrated because $second ran out of space!</p>";
-			echo "<p>".$distResults[1]." clients were not moved</p>";
+			echo "<p class='red'>Some clients will not be migrated because $second lacks space!</p>";
+			echo "<p>".$distResults[1]." clients not being moved</p>";
 		}
+		//======================
+		//Major Loop --- This loop actually moves the files and updates the database for each customer
+		//based on the results of the loadDistribute function
+		//======================
 		foreach ($clients as $client) {
-			flushOutput();
-			sleep(1);
+			flushOutput(); //Flushing the output works to update the webpage that the user is viewing and keeps the session alive
+
+			//The if a file named "STOPMIGRATION is placed in the same directory as this script, it will stop. The emhalt.php script does this automatically for convenience. 
 			if (file_exists("STOPMIGRATION")) {
 				echo "<p class='red'>This script received an EMERGENCY HALT and has stopped</p>";
 				echo "<br>If this was not intentional, check the contents of /var/www/html/pbxutils/STOPMIGRATION<br>";
 				die ("--EXECUTION COULD NOT CONTINUE... DYING--");
 			}
+			//Check to see if the DATACENTER has been changed for the client. 
+			//
+			//This check is not perfect--it won't work if you're moving clients from a single PBX or if you're trying to redistribute load on a single datacenter. 
+			if (in_array($client['domain'], $mpls)) {
+				echo "<p class='purple'>${client['domain']} staying in .$source. because customer is MPLS! DATABASE NOT UPDATED.</p>";
+				continue;
+			}
 			if ($client['location'] == $source) {
-				echo "<p class='yellow'>${client['domain']} staying on ${client['assigned_server']} in $source</p>";
+				echo "<p class='yellow'>${client['domain']} staying on ${client['assigned_server']} in $source. DATABASE NOT UPDATED.</p>";
 			} else {
 				$thisID = $client['id'];
 				$thisName = $client['domain'];
@@ -206,7 +238,9 @@ if ($action == "submit")
 				$thisLocation = $client['location'];
 				$thisSecLocation = $client['secondary_location'];
 				echo "<p class='green'>$thisName ($thisID) moving to $thisServer in $thisLocation</p>";	
+				//Execute an SSH call to move the client's files
 				exec("ssh -T -o StrictHostKeyChecking=no -i /var/www/.ssh/internal-only root@enc1 /root/migrate-files.sh $thisName $thisLocation", $sshOutput, $sshStatus);
+				//As long as the ssh returned an ok status, continue
 				if ($sshStatus != 0) {
 					echo "<br>ERROR<br>";
 					print_r($sshOutput);
@@ -214,9 +248,11 @@ if ($action == "submit")
 					print_r($sshStatus);
 					die();
 				}
+				//The database query for updating
 				$thisMove = "UPDATE resource_group SET assigned_server = '$thisServer', secondary_location = location, location = '$thisLocation' WHERE id = '$thisID'";
+				//The actual update
 			    pg_query($pbxsConn, $thisMove) or die ('Updating the database failed! '.pg_last_error());	
-
+				//And the event update
             	pg_query($eventDb, "INSERT INTO event_domain VALUES('" . $eventID['0'] . "', '" .$thisID. "')");
 
 			}
@@ -224,13 +260,14 @@ if ($action == "submit")
 		echo "<br>============================= flushing memcache between sites =================================</br>";
 		exec('/root/flush_memcached ', $flushOutput, $exitcode);
 	}
-   	pg_close($eventDb); //Close the event DB connection
+   	pg_close($eventDb); //Close the event DB connections
 	pg_close($cdrConn);
 	pg_close($utilConn);
 	pg_close($pbxsConn);
 
 echo "<h3>Migration Finished!</h3>";
 
+//Start a load update in the background
 exec('bash -c "exec nohup /root/loadMetrics.py > /dev/null 2>&1 &"');
 echo "Started load metrics update in the background. You don't need to wait for it.";
 

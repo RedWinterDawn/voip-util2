@@ -280,7 +280,7 @@ if ($action=="search")
 	$mpls = pg_fetch_row(pg_query($utilconn, "SELECT id FROM mpls WHERE domain='".$domain."'"));
 	if ($mpls !='')
 	{
-		echo "<p class='red'><b>WARNING!!!</b> ".$domain." is a MPLS customer. </p>";
+		echo "<p class='red'><b>WARNING!!!</b> ".$domain." is an MPLS customer. </p>";
 	}	
 	echo "<div id='confirm' class='confirm'>
 		<script type='text/javascript'>
@@ -306,8 +306,8 @@ if (isset($dest[0])) //Make sure we got a destination...
 			<input type='hidden' name='domain' value='".$domain."'>
 			<input type='hidden' name='dest' value='".$dest[0]."'>
 			<input type='hidden' name='location' value='".$location."'>
-			<p>Are you sure you want to move <u class='red'>".$domain."</u> to the server at <u class='red'>".$dest[0]."</u>?
-			<br>With this move, this domain's files will be migrated to <u class='red'>".$location."</u>
+			<p>Are you sure you want to move <u class='yellow'>".$domain."</u> to the server at <u class='yellow'>".$dest[0]."</u>?
+			<br>With this move, this domain's files will be migrated to <u class='yellow'>".$location."</u>
 			<p>If not, simply leave this page</p>
 			<div class='checkbox'>
 			<p><input id='flush' type='checkbox' name='flush' value='memcache' checked><label for='flush'>Flush Memcache?</label></p>
