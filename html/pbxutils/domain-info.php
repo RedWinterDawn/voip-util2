@@ -124,13 +124,26 @@ while ($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
 
 echo "<br/>";
 
-$didQuery = "SELECT count(*) as count FROM master_did WHERE destination_pbx_id = '" . $resource_group_id . "' AND active = 't'";
-echo "<br/><pre>Ignore this next part for now - Happy Dave needs to finish it:</pre><br/>\n";
-$didResult = pg_query($didQuery) or die('DID query failed (for ' . $resource_group_id . ') ' . pg_last_error());
+$didQuery = "SELECT number,outbound_routable,peer.name as peer,caller_id_name FROM master_did LEFT JOIN peer ON (master_did.source_peer_id = peer.id) WHERE destination_pbx_id = '" . $resource_group_id . "' AND active = 't' ORDER BY number ASC;";
+$didResult = pg_query($dbconn,$didQuery) or die('DID query failed (for ' . $resource_group_id . ') ' . pg_last_error());
 
-if ($didRow = pg_fetch_array($didResult, null, PGSQL_ASSOC)) {
-	echo "Active DID count: " . $didRow['count'] . "<br/>";
+echo "<table border=2>\n";
+echo "<th>number</th><th>outbound_routable</th><th>caller_id_name</th><th>source peer</th>";
+while ($didRow = pg_fetch_array($didResult, null, PGSQL_ASSOC)) {
+	if ($didRow['outbound_routable'] == 't') {
+		$outbound = "<div class='green'>TRUE</div>";
+	} else {
+		$outbound = "<div class='yellow'>FALSE</div>";
+	}
+
+	echo "<tr>"
+		. "<td>" . $didRow['number'] . "</td>"
+		. "<td><center>" . $outbound . "</center></td>"
+		. "<td>" . $didRow['caller_id_name'] . "</td>"
+		. "<td>" . $didRow['peer'] . "</td>"
+		. "</tr>\n";
 }
+echo "</table>\n";
 
 // Free resultset
 pg_free_result($domainResult);
