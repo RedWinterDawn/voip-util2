@@ -43,8 +43,10 @@ if (isset($newPresenceServer)){
 
 	$domainUpdateResult = pg_query($rwdb,$domainUpdateQuery) or die('Presence update query failed: ' . pg_last_error());
 
-	$message = "<b>Updated " . $domain . " to use " . $newPresenceServer . " for presence</b><br/><br/>\n";
-    echo $message;
+	$message = "<b>Updated " . $domain . " to use " . $newPresenceServer . " for presence";
+	echo $message;
+	echo "</b><br/><br/>\n";
+
     pg_free_result($domainUpdateResult);
 
     //get domain id
@@ -53,6 +55,11 @@ if (isset($newPresenceServer)){
     pg_close($rwdb);
     
     //record to events DB
+	$rodb = pg_connect("host=rodb dbname=pbxs user=postgres ") or die('Could not connect to rodb' . pg_last_error());
+	$prePresence = "SELECT presence_server FROM resource_group WHERE domain='".$domain."';";
+	$prePresence = pg_fetch_row(pg_query($rodb, $prePresence));
+	pg_close($rodb);
+	$message = $message . " from " . $prePresence[0];
     $eventsdb = pg_connect("host=rwdb dbname=events user=postgres ") or die('Could not connect to events: ' . pg_last_error());
     $eventInsert = "INSERT INTO event (description) VALUES ('".$message."') RETURNING id;";
 	$eventID = pg_fetch_row(pg_query($eventsdb, $eventInsert)) or die('Counld not insert into event');
