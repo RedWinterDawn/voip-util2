@@ -14,14 +14,24 @@ echo "<table border=1>\n";
 echo "<th>host</th><th>active</th><th>bucket</th>\n";
 
 while ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
-    echo "\t<tr>\n";
-    foreach ($line as $col_value) {
+	echo "<tr>";
+	if ($line['active'] == 't') {
+		$active = '<div align="center" class="green">TRUE</div>';
+	} else {
+		$active = '<div align="center" class="yellow">' . $line['active'] . '</div>';
+	}
+	echo "<td><a href='pbx-server-info.php?server=" . $line['host'] . "'>" . $line['host'] . "</a></td>";
+	echo "<td>" .$active . "</td>";
+	echo "<td>" . $line['bucket'] . "</td>";
+	
+	/*foreach ($line as $col_value) {
         echo '		<td align="center"';
         if ($col_value=="t"){echo ' class="green"';}
 		if ($col_value=="f"){echo ' class="red"';}
         echo ">$col_value</td>\n";
-    }
-    echo "\t</tr>\n";
+	}
+	 */
+	echo "</tr>\n";
 }
 echo "</table>\n";
 
