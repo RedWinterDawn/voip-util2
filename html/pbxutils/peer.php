@@ -24,17 +24,14 @@ while ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
     foreach ($line as $col_value) {
 		if ($col_value == "f")
 		{
-			echo '<td class="red">';
+			echo '<td class="yellow">' . "<center>false</center>" . "</td>";
 		}else if ($col_value == "t")
 		{
-			echo '<td class="green">';
+			echo '<td class="green">' . "<center>true</center>" . "</td>";
 		}else
 		{
-			echo "<td>";
+			echo "<td>" . $col_value . "</td>";
 		}
-
-		echo "$col_value";
-		echo "</td>";
     }
     echo "</tr>\n";
 }
