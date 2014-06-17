@@ -12,7 +12,7 @@ function eventTable($id)
 	$eventQuery = "SELECT added, description from event, (SELECT event_id FROM event_domain WHERE domain_id='".$id."') as domain WHERE event.id = domain.event_id order by number desc limit 10;";
 	$eventArray = pg_fetch_all(pg_query($eventdb, $eventQuery)); //or die('Event query failed: ' . pg_last_error());
 	pg_close($eventdb);
-	echo "<tr><td></td><td></td><td colspan=7 rowspan=13 valign=top>
+	echo "<tr><td></td><td></td><td colspan=8 rowspan=13 valign=top>
 		<table>
 		<tr><th colspan=2 width='700'>Last 10 Events</th></tr>
 		<tr><th>Date</th><th>Description</th></tr>";
@@ -54,7 +54,7 @@ if (pg_fetch_all($mplsResults))
 $dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ")
     or die('Could not connect: ' . pg_last_error());
 
-$domainQuery = "SELECT domain,name,assigned_server,id,outbound_proxy,presence_server,state,local_area_code,id FROM resource_group WHERE domain='" . $domain . "';";
+$domainQuery = "SELECT domain,name,assigned_server,id,outbound_proxy,presence_server,state,local_area_code,id,v5 FROM resource_group WHERE domain='" . $domain . "';";
 $domainResult = pg_query($domainQuery) or die('Domain query failed: ' . pg_last_error());
 
 while ($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
@@ -79,7 +79,7 @@ while ($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
 		$santa = 'v4 presence';
 	}
     echo "<table border=1>\n";
-    echo "<tr><th>Domain</th><th>Name</th><th>Server</th><th>ID</th><th>Proxy</th><th>Presence</th><th>Domain Status</th><th>Area Code</th><th>MPLS</th></tr>\n";
+    echo "<tr><th>Domain</th><th>Name</th><th>Server</th><th>ID</th><th>Proxy</th><th>Presence</th><th>Domain Status</th><th>Area Code</th><th>MPLS</th><th>v5 migrated</th></tr>\n";
 	echo "<th><a href='domain-edit.php?domain=" . $domainRow['domain'] . "'>" . $domainRow['domain'] . "</a></th>"
 		. "<th>" . $domainRow['name'] . "</th>"
 		. "<th><a href='pbx-server-info.php?server=" . $domainRow['assigned_server'] . "'>" . $domainRow['assigned_server'] . "</a></th>"
@@ -88,14 +88,16 @@ while ($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
 		. "<th>" . $santa . " </th>"
 		. "<th>" . $domainRow['state'] . "</th>"
 		. "<th>" . $domainRow['local_area_code'] . "</th>"
-		. "<th>" . $mpls . "</th>\n";
+		. "<th>" . $mpls . "</th>"
+		. "<th>" . $domainRow['v5'] . "</th>"
+		. "\n";
 
     $typeQuery = "SELECT type_id, count(type_id) as count FROM user_agent WHERE resource_group_id='" . $domainRow['id'] . "' GROUP BY type_id ORDER BY count DESC;";
     $typeResult = pg_query($typeQuery) or die('Type query failed: ' . pg_last_error());
 	$event = true;
 	$count = 0;
 
-    echo "<tr><th>Type</th><th>Count</th><td colspan=7 rowspan=10><h3>Enabled Feature Flags</h3><pre>" . $domainFlags . "</pre></td></tr>\n";	
+    echo "<tr><th>Type</th><th>Count</th><td colspan=8 rowspan=10><h3>Enabled Feature Flags</h3><pre>" . $domainFlags . "</pre></td></tr>\n";	
     while ($typeRow = pg_fetch_array($typeResult, null, PGSQL_ASSOC)) {
         echo "\t<tr>";
         foreach ($typeRow as $col_value) { echo "\t\t<td>$col_value</td>\n"; }
@@ -122,7 +124,7 @@ while ($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
 
 echo "<br/>";
 
-$didQuery = "SELECT count(*) as count FROM master_did WHERE destination_pbx_id = '" . $resource_group_id . "' AND active = 't';";
+$didQuery = "SELECT count(*) as count FROM master_did WHERE destination_pbx_id = '" . $resource_group_id . "' AND active = 't'";
 echo "<br/><pre>Ignore this next part for now - Happy Dave needs to finish it:</pre><br/>\n";
 $didResult = pg_query($didQuery) or die('DID query failed (for ' . $resource_group_id . ') ' . pg_last_error());
 
