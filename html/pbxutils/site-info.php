@@ -108,7 +108,7 @@ echo "<tr><td align='center'>$active</td>
 <?	
 	$none = true;
    	foreach ($santas[$site['location']] as $pserver => $pcount) {
-		echo "<tr><td>$pserver</td><td align='center'>$pcount</td></tr>";
+		echo "<tr><td><a href='presence-server-info.php?server=$pserver'>$pserver</a></td><td align='center'>$pcount</td></tr>";
 		$none = false;
 	} 
 	if ($none) {
@@ -120,19 +120,51 @@ echo "<tr><td align='center'>$active</td>
 <div class='autopanel'>
 <h4>PBXs</h4>
 <table border='1'>
-	<tr><th>Host</th><th>Load</th><th># Customers</th><th># Devices</th><th># MPLS</th></tr>
+	<tr><th>Host</th><th>Load</th><th>Status</th><th># Customers</th><th># Devices</th><th># MPLS</th></tr>
 <?
 foreach ($siteInfo["Data"] as $record) {
-	$load = round($record['load'] / 140000, 1);
+	$load = round($record['load'] / 140000,0);
 	$color = 'green';
 	if ($load > 85) { $color = 'yellow'; }
 	if ($load > 95) { $color = 'red'; }
+	$status = $record['status'];
 	$custs = $counts[$record['ip']];
 	$devs = $devices[$record['ip']];
 	$pbxMPLS = $mplsPbxs[$record['ip']];
 	echo "<tr>
 		<td><a href='pbx-server-info.php?server=${record['ip']}'>${record['ip']}</a></td>
-		<td align='right' style='color: $color'>$load%</td>
+		<td align='right' class='$color'>$load%</td>
+		<td "; 
+	switch ($status) {
+		case 'active':
+			echo "class='green'";
+			break;
+		case 'standby':
+			echo "class='yellow'";
+			break;
+		case 'dirty':
+			echo "class='red'";
+			break;
+		case 'graveyard':
+			echo "class='gray'";
+			break;
+		case 'moving':
+			echo "class='pink'";
+			break;
+		case 'migrating':
+			echo "class='purple'";
+			break;
+		case 'rollback':
+			echo "class='lightbrown'";
+			break;
+		case 'special':
+			echo "class='sky'";
+			break;
+		default:
+			echo "class='white'";
+			break;
+	}
+	echo ">$status</td>
 		<td align='center'>$custs</td>
 		<td align='center'>$devs</td>
 		<td align='center'>$pbxMPLS</td></tr>";
