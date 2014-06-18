@@ -26,7 +26,18 @@ if (isset($_GET["SetMessage"]))
 }
 
 if ($action == "AutoCleanComplete") {
-	echo "OK";
+	if ($rwutil = pg_connect("host=rwdb dbname=util user=postgres "))
+	{
+		pg_query($rwutil, "UPDATE pbxstatus SET status='clean' WHERE ip='$server' ");
+		echo "$server now clean";
+		syslog(LOG_INFO, "application=pbx-availability server=$server action=SetClean newState=clean guiltyParty=$guiltyParty");
+
+		pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " scripted cleanup reported complete WHERE host='" . $server . "'");
+	}else
+	{
+		echo "Error opening DB (rwdb.util) " . pg_last_error();
+		die();
+	}
 }
 
 if ($action == "MessageUpdate") {
@@ -209,6 +220,7 @@ if ($action == "ListStatus")
 			if ($row['status'] == "rollback") { echo " class=\"lightbrown\" "; }
 			if ($row['status'] == "special") { echo " class=\"sky\" "; }
 			if ($row['status'] == "quarantine") { echo " class=\"orange\" "; }
+			if ($row['status'] == "clean") { echo " class=\"purple\" "; }
 			
 			if ($showControls)
 			{
