@@ -18,7 +18,7 @@ a.hideme:hover   { color: #7F7F7F;}
 a.hideme:active  { color: #7F7F7F;}
 
 h1 {
-  color: #A9C23F;
+  color: LimeGreen;
   text-shadow: 0 -2px 0px #111;
   text-align: center;
   line-height: 20px;
@@ -31,7 +31,7 @@ h2 {
   font-size: 22px;
   font-weight: 900;
   text-shadow: 0 -2px 0px #111;
-  color: #A9C23F;
+  color: LimeGreen;
   font-family: Helvetica, Arial, sans-serif;
 }
 
@@ -64,7 +64,7 @@ table {
 th {
   background: linear-gradient(#606060, #111111);
   border: 2px solid grey;
-  color: #A9C23F;
+  color: LimeGreen;
 }
 
 td, table {
@@ -102,7 +102,7 @@ td, table {
 
 select {
   border: 0;
-  color: #A9C23F;
+  color: LimeGreen;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -129,7 +129,7 @@ input[type=submit]
 	font-size:		10px !important;
 	background-color:	#333;
 	font-weight:		bold;
-	color:			#A9C23F;
+	color:			LimeGreen;
 }
 
 input[type=text]
@@ -250,6 +250,15 @@ input[type=text]
   font-family: Helvetica, Arial, sans-serif;
 }
 
+.orange {
+  color: OrangeRed;
+  background: url('blackyellow.png');
+  text-shadow: 0 -2px 3px #111,0 3px 4px #000000;
+  text-indent: 0.01px;
+  text-overflow: "";
+  font-family: Helvetica, Arial, sans-serif;
+}
+
 .sky {
   color: LightSkyBlue;
   text-shadow: 0 -2px 3px #111,0 3px 4px #000000;
@@ -311,7 +320,7 @@ label:before {
     }
 input[type=radio]:checked + label:before {
     content: '\2022';
-    color: #A9C23F;
+    color: LimeGreen;
     text-shadow: none;
     font-size: 20px;
     text-align: center;
@@ -327,7 +336,7 @@ input[type=checkbox]:checked + label:before {
     content: '\2713';
     text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
     font-size: 12px;
-    color: #A9C23F;
+    color: LimeGreen;
     text-align: center;
     line-height: 15px;
 }
@@ -335,7 +344,7 @@ input[type=checkbox]:checked + label:before {
 a:link    { color: #00A3E1; text-decoration: none }
 a:visited { color: #00A3E1; text-decoration: none }
 a:hover   { color: #00BFFF; text-decoration: none }
-a:active  { color: #A9C23F; text-decoration: none }
+a:active  { color: LimeGreen; text-decoration: none }
 
 .leftpanel {
 	float: left;

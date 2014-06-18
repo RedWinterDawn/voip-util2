@@ -157,6 +157,9 @@ foreach ($siteInfo["Data"] as $record) {
 		case 'rollback':
 			echo "class='lightbrown'";
 			break;
+		case 'quarantine':
+			echo "class='orange'";
+			break;
 		case 'special':
 			echo "class='sky'";
 			break;

@@ -4,14 +4,19 @@
 	<title>ProdTools Main</title>
 	<? include 'menu.html'; ?>
 	<link rel='stylesheet' href='stylesheet.css'>
+    <script type='text/javascript'>
+    function setFocus() {
+		document.getElementById('search').focus();
+	}
+	</script>
 </head>
-<body>
+<body onload='setFocus()'>
 <h2>Welcome to ProdTools</h2>
 <div class="checkbox">
 	<form action="" method="POST">
 		<input type="hidden" name="action" value="search"> 
 		<p>Enter a domain to search: </p>
-		<p><input type="text" name="search" placeholder="Jive Domain" /></p>
+		<p><input id="search" type="text" name="search" placeholder="Jive Domain" /></p>
 		<p><input id="exact" class="checkbox" type="checkbox" name="exact"><label for="exact">Exact Search</label></p>
 		<p><input type="submit" value="Search" />
 	</form>

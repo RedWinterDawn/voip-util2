@@ -208,6 +208,7 @@ if ($action == "ListStatus")
 			if ($row['status'] == "migrating") { echo " class=\"purple\" "; }
 			if ($row['status'] == "rollback") { echo " class=\"lightbrown\" "; }
 			if ($row['status'] == "special") { echo " class=\"sky\" "; }
+			if ($row['status'] == "quarantine") { echo " class=\"orange\" "; }
 			
 			if ($showControls)
 			{
