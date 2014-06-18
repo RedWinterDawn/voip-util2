@@ -210,8 +210,8 @@ if ($action == "ListStatus")
 				<td>" . $row['vmhost'] . "</td>
 				<td>" . $row['host'] . "</td>
 				<td><a href='pbx-server-info.php?server=" . $row['ip'] . "'>" . $row['ip'] . "</a></td>
-				<td";
-			if ($row['status'] == "active") { echo " class=\"green\" "; $showControls = true; }
+				<td><div";
+			if ($row['status'] == "active") { echo " class=\"green\" "; }
 			if ($row['status'] == "standby") { echo " class=\"yellow\" "; $showControls = true; }
 			if ($row['status'] == "graveyard") { echo " class=\"gray\" "; }
 			if ($row['status'] == "dirty") { echo " class=\"red\" "; $showControls = true; }
@@ -221,27 +221,24 @@ if ($action == "ListStatus")
 			if ($row['status'] == "special") { echo " class=\"sky\" "; }
 			if ($row['status'] == "quarantine") { echo " class=\"orange\" "; }
 			if ($row['status'] == "clean") { echo " class=\"purple\" "; }
+			echo ">". $row['status'] . "</div></td>";
 			
-			if ($showControls)
-			{
-				echo ">" . $row['status'] . "</td>
-					<td><a href=\"pbx-availability.php?action=SetActive&server=" . $row['ip'] . "\">set active</a></td>
-					<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "\">set standby</a></td>
-					";
-			}else
-			{
-				echo ">" . $row['status'] . "</td>
-					<td>-</td>
-					<td>-</td>
-					";
-			}
-			
-			if ($row['status'] == "active")
-			{
+			if ($row['status'] == "active"){
+				echo "<td>-</td>";
+				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "\">set standby</a></td>";
 				echo '<td><a href="pbx-sip-failure.php?server=' . $row['ip'] . '">abandon ship</a></td>';
-			}else
-			{
-				echo '<td>-</td>';
+			} else if ($row['status'] == "clean") {
+				echo "<td>-</td>";
+				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "\">set standby</a></td>";
+				echo "<td>-</td>";
+			} else if ($showControls) {
+				echo "<td><a href=\"pbx-availability.php?action=SetActive&server=" . $row['ip'] . "\">set active</a></td>";
+				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "\">set standby</a></td>";
+				echo "<td>-</td>";
+			} else {
+				echo "<td>-</td>";
+				echo "<td>-</td>";
+				echo "<td>-</td>";
 			}
 			
 			echo "<form action='' method='get'><td>
