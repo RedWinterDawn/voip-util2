@@ -40,16 +40,30 @@ function rekey ($multiArray, $key, $value) {
 // $newKey = 'load'
 //
 // Output = Array (0 => Array (id => 5, server => 10, load => 15), 1 => Array( .... ) ... )
-function addKey ($array, $valueSource, $commonKey, $newKey) {
-	$len = sizeof($array);
+function addKey ($array, $valueSource, $commonKey, $newKey, $default) {
+	$len = sizeof($array); 
+	$hash = array(); //Hash will be used to translate location of items in the array to the valuesource
+	$newArray = array(); //The array we'll return
 	for ($i = 0; $i < $len; $i++) {
-	if (array_key_exists($array[$i][$commonKey], $valueSource)) {
-		$array[$i][$newKey] = $valueSource[$array[$i][$commonKey]];
-	} else {
-			$array[$i][$newKey] = 0;
+		$hash[$array[$i][$commonKey]] = $i; //Add the id => index pair to the hash for later lookup
+		$array[$i][$newKey] = $default; //Add a default value just to be sure that all records have something
 	}
+	$i = 0; // Using this to create indices in the new array
+	foreach ($valueSource as $key => $value) {
+		if (isset($hash[$key])) {
+			$newArray[$i] = $array[$hash[$key]]; //Setting the values in the ordered new array to the corresponding original
+			$newArray[$i][$newKey] = $value; //... and overwriting the default value with the desired one
+			unset($hash[$key]); //Removing this index from the hash to keep track of which ones we've set.
+			$i++; //Increment index
+		}
 	}
-	return $array;
+
+	//NOTE: Intentionally not setting $i = 0 !!! We want to keep adding at the END of the new array
+	foreach ($hash as $h) {
+		$newArray[$i] = $array[$h]; //This will happen only if there were hashes that didn't get unset previously
+		$i++; //Keep adding to the end of newArray until all hashes are gone
+	}
+	return $newArray;
 }
 
 //LOADDISTRIBUTE FUNCTION -----------------------
@@ -96,9 +110,9 @@ function loadDistribute ($clients, $servers, $location, $max) {
 if (isset($_REQUEST['action'])) {
 	$action = $_REQUEST['action'];
 	$method = $_REQUEST['method'];
-	$override = $_REQUEST['override'];
-	if (isset($override)) {
+	if ($_REQUEST['destination']!='') {
 		$destination = $_REQUEST['destination'];
+		$override = true;
 	}
 	$source = $_REQUEST['source'];
 }
@@ -112,7 +126,6 @@ echo "<html>
 	<body>";
 include('menu.html');
 echo "<h2>Mass Exodus</h2>
-	<h1>TESTING UNDERWAY<br><br><br>NOT OPERATIONAL!</h1>
 	<p>Use this tool to move a large group from one site to another</p>
 	<p><a href='index.php'>Back to PBX Utils</a></p>
 	<form onsubmit='return confirm(\"WARNING: THIS SCRIPT IS FUNCTIONAL!!!\\n\\nPlease review your choices. Do you really want to continue?\\nCareless use of this script can cause DOWNTIME for REAL CLIENTS!\");' action='' method='POST'>
@@ -130,10 +143,9 @@ echo "/><label for='site' />By Site</label><br>
 		<input type='submit' value='Begin Exodus!' />
 		<br>
 		<br>
-		<div class='checkbox'>
-			<input id='override' type='checkbox' name='override'><label for='override' />Override Destination [optional]</label><br>
-			<input type='text' name='destination' placeholder='e.g. dfw' /> 
-	    </div>	
+		Optionally, enter a site (not an IP) to override the secondary locations:
+		<br>
+		<input type='text' name='destination' placeholder='e.g. dfw' /> 
 		</form>";
 
 //MAIN BODY
@@ -153,7 +165,7 @@ if ($action == "submit")
 		</form>";
 	$maxLoad = 14000000; //How many seconds of RTP in 7 days can a server handle? default 14,000,000 
 	//Find out how much load the clients cause on our servers: 
-	$clientLoadQuery = "SELECT id, (load_in + load_out + load_custom) as load from loadmetrics";
+	$clientLoadQuery = "SELECT id, (load_in + load_out + load_custom) AS load FROM loadmetrics ORDER BY load DESC";
 	//Find out how many secondary locations there are so we can loop over them
 	$secondaryQuery = "SELECT DISTINCT secondary_location FROM resource_group WHERE (assigned_server = '$source' OR location = '$source') AND state = 'ACTIVE'";
 	//Get a list of MPLS customers that we will avoid moving. These have to be moved manually
@@ -182,6 +194,7 @@ if ($action == "submit")
 	//======================
 	foreach ($secondaries as $secondary) {
 		$second = $secondary['secondary_location'];
+		echo "<h2>--- Currently moving customers from $source to $second --- </h2>";
     	$description = $guiltyParty." performed a large scale migration from ".$source." going to ".$second;
         $eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description) VALUES(DEFAULT, '" . $description . "') RETURNING id;"));
 		//SQL Select has to change based on whether or not an override is being used
@@ -200,7 +213,7 @@ if ($action == "submit")
 		//Rekey the load data so it's easier to use
 		$serverLoad = rekey($serverLoadResult, "ip", "load");
 		//Add load metrics into the clients array so that we can adjust server load as we go
-		$clients = addkey ($clients, $clientLoad, "id", "load");
+		$clients = addKey ($clients, $clientLoad, "id", "load", 0);
 		//Load Distribute will assign the clients to new servers
 		$distResults = loadDistribute($clients, $serverLoad, $second, $maxLoad);
 		$clients = $distResults[0];
@@ -237,7 +250,8 @@ if ($action == "submit")
 				$thisServer = $client['assigned_server'];
 				$thisLocation = $client['location'];
 				$thisSecLocation = $client['secondary_location'];
-				echo "<p class='green'>$thisName ($thisID) moving to $thisServer in $thisLocation</p>";	
+				$thisLoad = $client['load'];
+				echo "<p class='green'>$thisName (load: $thisLoad) moving to $thisServer in $thisLocation</p>";	
 				//Execute an SSH call to move the client's files
 				exec("ssh -T -o StrictHostKeyChecking=no -i /var/www/.ssh/internal-only root@enc1 /root/migrate-files.sh $thisName $thisLocation", $sshOutput, $sshStatus);
 				//As long as the ssh returned an ok status, continue
