@@ -32,7 +32,7 @@ if ($action == "AutoCleanComplete") {
 		echo "$server now clean";
 		syslog(LOG_INFO, "application=pbx-availability server=$server action=SetClean newState=clean guiltyParty=$guiltyParty");
 
-		pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " scripted cleanup reported complete WHERE host='" . $server . "'");
+		pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " scripted cleanup reported complete WHERE ip='" . $server . "'");
 	}else
 	{
 		echo "Error opening DB (rwdb.util) " . pg_last_error();
@@ -82,7 +82,7 @@ if ($action == "SetActive")
 		echo "$server now active";
 		syslog(LOG_INFO, "application=pbx-availability server=$server action=SetActive newState=active guiltyParty=$guiltyParty");
 
-		pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " set active by " . $guiltyParty . "' WHERE host='" . $server . "'");
+		pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " set active by " . $guiltyParty . "' WHERE ip='" . $server . "'");
 	}else
 	{
 		echo "Error opening DB (rwdb.util) " . pg_last_error();
@@ -101,7 +101,7 @@ if ($action == "SetStandby")
 		echo "$server now standby";
 		syslog(LOG_INFO, "application=pbx-availability server=$server action=SetStandby newState=standby guiltyParty=$guiltyParty");
 
-		pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " set standby by " . $guiltyParty . "' WHERE host='" . $server . "'");
+		pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " set standby by " . $guiltyParty . "' WHERE ip='" . $server . "'");
 	}else
 	{
 		echo "Error opening DB (rwdb.util) " . pg_last_error();
@@ -137,7 +137,7 @@ if ($action == "SetMigrate")
         echo "$server is migrating...";
         syslog(LOG_INFO, "application=pbx-availability server=$server action=SetMigrate newState=migrating guiltyParty=$guiltyParty");
 
-        pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " set migrating by " . $guiltyParty . "' WHERE host='" . $server . "'");
+        pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " set migrating by " . $guiltyParty . "' WHERE ip='" . $server . "'");
     }else
     {   
         echo "Error opening DB (rwdb.util)";
@@ -156,7 +156,7 @@ if ($action == "SetRollback")
         echo "$server is setup for rollback...";
         syslog(LOG_INFO, "application=pbx-availability server=$server action=SetRollback newState=rollback guiltyParty=$guiltyParty");
 
-        pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " set rollback by " . $guiltyParty . "' WHERE host='" . $server . "'");
+        pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " set rollback by " . $guiltyParty . "' WHERE ip='" . $server . "'");
     }else
     {   
         echo "Error opening DB (rwdb.util)";
@@ -214,7 +214,7 @@ if ($action == "ListStatus")
 			if ($row['status'] == "active") { echo " class=\"green\" "; }
 			if ($row['status'] == "standby") { echo " class=\"yellow\" "; $showControls = true; }
 			if ($row['status'] == "graveyard") { echo " class=\"gray\" "; }
-			if ($row['status'] == "dirty") { echo " class=\"red\" "; $showControls = true; }
+			if ($row['status'] == "dirty") { echo " class=\"red\" "; }
 			if ($row['status'] == "moving") { echo " class=\"pink\" "; $showControls = true; }
 			if ($row['status'] == "migrating") { echo " class=\"purple\" "; }
 			if ($row['status'] == "rollback") { echo " class=\"lightbrown\" "; }
@@ -230,6 +230,10 @@ if ($action == "ListStatus")
 			} else if ($row['status'] == "clean") {
 				echo "<td>-</td>";
 				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "\">set standby</a></td>";
+				echo "<td>-</td>";
+			} else if ($row['status'] == "dirty") {
+				echo "<td>-</td>";
+				echo "<td><a href=\"clean.php?server=" . $row['host'] . "\">clean me</a></td>";
 				echo "<td>-</td>";
 			} else if ($showControls) {
 				echo "<td><a href=\"pbx-availability.php?action=SetActive&server=" . $row['ip'] . "\">set active</a></td>";
