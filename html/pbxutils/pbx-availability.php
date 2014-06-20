@@ -32,7 +32,7 @@ if ($action == "AutoCleanComplete") {
 		echo "$server now clean";
 		syslog(LOG_INFO, "application=pbx-availability server=$server action=SetClean newState=clean guiltyParty=$guiltyParty");
 
-		pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " scripted cleanup reported complete WHERE ip='" . $server . "'");
+		pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " scripted cleanup reported complete' WHERE ip='" . $server . "'");
 	}else
 	{
 		echo "Error opening DB (rwdb.util) " . pg_last_error();
