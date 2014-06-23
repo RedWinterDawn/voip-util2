@@ -3,6 +3,8 @@
 include('menu.html');
 $guiltyParty = $_SERVER['REMOTE_ADDR'];
 $requestTime = strftime('%Y-%m-%d %H:%M:%S');
+$gobutton = "I'm feeling lucky!";
+$killbutton = "Kill it!";
 
 if (isset($_GET["server"]))
 {
@@ -25,10 +27,144 @@ if (isset($_GET["SetMessage"]))
 	$action = "AutoCleanComplete";
 }
 
+if (isset($_POST['action']))
+{
+	$action = "ListStatus";
+    $postAction = $_POST['action'];
+    $pbx = $_POST['pbx'];
+	$ipPieces = explode('.',$pbx);
+	if ($ipPieces[2] == '60') {
+		$pbxType = "megapbx";
+	} else {
+		$pbxType = "pbx";
+	}
+	if ($ipPieces[1] == 101) {
+		$cType = "c1";
+	} else {
+		$cType = substr($ipPieces[1], -2);
+	}
+	$hostname = $pbxType.$ipPieces[3].'.'.$cType.'.jiveip.net';	
+    $status = $_POST['status'];
+    $location = $_POST['location'];
+    $fgroup = $_POST['fgroup'];
+//if (!filter_var($pbx, FILTER_VALIDATE_IP)) // <-- This is the easy way, but we have php 5.1 so ... 
+if (($pbx != "") && (!preg_match('/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/', $pbx)))
+{
+        echo "<p class='red'> Invalid Input for Server! <br/> Use numbers and periods only (valid IP address required).</p>";
+        echo "<p>You gave the following: ".$pbx." and ".$status."</p>";
+        $pbx = null;
+        $status = null;
+        $postAction = null;
+        $fgroup = null;
+}
+if (preg_match('/[^a-z]/i', $status))
+{
+        echo "<p class='red'> Invalid Input for Status! <br/> Use letters only.</p>";
+        echo "<p>You gave the following: ".$pbx." and ".$status."</p>";
+        $pbx = null;
+        $status = null;
+        $postAction = null;
+        $fgroup = null;
+}
+if (preg_match('/[^a-z_\-0-9]/i', $location))
+{
+        echo "<p class='red'> Invalid Input for Location! <br/> Use letters, numbers, underscores, and hyphens only.</p>";
+        echo "<p>You gave the following: ".$pbx." and ".$location."</p>";
+        $pbx = null;
+        $status = null;
+        $postAction = null;
+        $fgroup = null;
+}
+if (preg_match('/[^a-z_\-0-9]/i', $fgroup))
+{
+        echo "<p class='red'> Invalid Input for Fail Group! <br/> Use letters, numbers, underscores, and hyphens only.</p>";
+        echo "<p>You gave the following: ".$pbx." and ".$fgroup."</p>";
+        $pbx = null;
+        $status = null;
+        $postAction = null;
+        $fgroup = null;
+}
+if ($postAction == $gobutton)
+{
+    if ($pbx != "")
+    {
+        //Check fgroup first. If it's set, assume fgroup. If the user is adding a new server
+        //the "action" variable will get overwritten later anyway. 
+        if ($fgroup != "")
+        {
+            $postAction = "fgroup";
+        }
+        if ($status != "")
+        {
+            $postAction = "update";
+        }
+        if ($location != "")
+        {
+            $postAction = "location";
+        }
+        //If both status and location were set, "action" would have been set at least twice by now
+        //So we'll check to see if they're both set and update "action" if they are.
+        if (($status != "") && ($location != ""))
+        {
+            $postAction = "add";
+        }
+        //If we have reached this point without setting action to anything, then assume "terminate"
+        if ($postAction == $gobutton)
+        {
+            $postAction = "remove";
+        }
+    } else
+    {
+        echo '<p class="red">Um... ALL of the options require an IP address. Please enter one.</p>';
+    }
+}
+if ($postAction == $killbutton)
+{
+    $postAction = "terminate";
+}
+}
+if (isset($postAction))
+{
+    syslog(LOG_INFO, $guiltyParty." performed action: ".$postAction.", with (".$pbx.", ".$status.", ".$location.") using the pbx-availability.php script");
+	$dbconn = pg_connect("host=db dbname=util user=postgres") or die ("Could not connect to the util database: ".$pg_last_error());	
+	switch ($postAction)
+	{
+	    case "add":
+	        if (isset($fgroup))
+	        {
+	            pg_query($dbconn, "INSERT INTO pbxstatus (host,ip,status,location,failgroup) VALUES ('".$hostname."','".$pbx."','".$status."','".$location."','".$fgroup."');") or die('Could not add server! ' . pg_last_error());
+	        } else {
+	        pg_query($dbconn, "INSERT INTO pbxstatus (host,ip,status,location) VALUES ('".$pbx."','".$pbx."','".$status."','".$location."');") or die('Could not add server! ' . pg_last_error());
+	        }
+	        echo "<p class='green'>Server ".$pbx." has been added to the database with the status ".$status."</p>";
+	        break;
+	    case "update":
+	        pg_query($dbconn, "UPDATE pbxstatus SET status='".$status."' WHERE ip='".$pbx."';") or die('Could not update status! ' . pg_last_error());
+	        echo "<p class='sky'>Server ".$pbx." has been updated with the status ".$status."</p>";
+	        break;
+	    case "remove":
+	        echo "<p class='red'>Please confirm that you wish to permanently delete the server ".$pbx." from the database</p>";
+	        echo "<form action='' method='POST'><input type='hidden' name='pbx' value='".$pbx."'><input type='submit' name='action' value='".$killbutton."'></form><form action='' method='POST'><input type='hidden' name='action' value=''><input type='submit' value='Cancel that...'></form>";
+	        break;
+	    case "location":
+	        pg_query($dbconn, "UPDATE pbxstatus SET location='".$location."' WHERE ip='".$pbx."';") or die('Could not update location! ' . pg_last_error());
+	        echo "<p class='sky'>Server ".$pbx." has been updated with the location ".$location."</p>";
+	        break;
+	    case "fgroup":
+	        pg_query($dbconn, "UPDATE pbxstatus SET failgroup='".$fgroup."' WHERE ip='".$pbx."';") or die('Could not update failgroup! ' . pg_last_error());
+	        echo "<p class='sky'>Server ".$pbx." has been added to failgroup ".$fgroup."</p>";
+	        break;
+	    case "terminate":
+	        pg_query($dbconn, "DELETE FROM pbxstatus WHERE ip='".$pbx."';") or die('Failed to delete row! '.pg_last_error());
+	        echo "<p class='red'>Server ".$pbx." has been deleted from the database</p>";
+	        break;
+	}
+sleep(1);
+}
 if ($action == "AutoCleanComplete") {
 	if ($rwutil = pg_connect("host=rwdb dbname=util user=postgres "))
 	{
-		pg_query($rwutil, "UPDATE pbxstatus SET status='clean' WHERE ip='$server' ");
+		pg_query($rwutil, "UPDATE pbxstatus SET status='standby' WHERE ip='$server' ");
 		echo "$server now clean";
 		syslog(LOG_INFO, "application=pbx-availability server=$server action=SetClean newState=clean guiltyParty=$guiltyParty");
 
@@ -192,10 +328,13 @@ if ($action == "ListStatus")
 {
 	if ($routil = pg_connect("host=rodb dbname=util user=postgres "))
 	{
-		// management link
-		echo "<a href='index.php'>Return to PBX Utils</a><br/>";
-		echo "<a href='manage-pbxs.php'>Manage PBXs</a><br/>\n";
-		echo "<hr/>\n";
+		echo "Enter IP alone to delete. IP + new field to update. All fields to add new.";
+		echo "<table><tr><th>PBX IP</th><th>Status</th><th>Location</th><th>Fail Group</th></tr>";
+		echo "<form action='' method='POST'><tr><td><input type='text' name='pbx' placeholder='e.g. 10.119.7.1'></td>";
+		echo "<td><input type='text' name='status' placeholder='e.g. active'></td>";
+		echo "<td><input type='text' name='location' placeholder='e.g. lax'></td>";
+		echo "<td><input type='text' name='fgroup' placeholder='e.g. 119'></td></tr>";
+		echo '<tr><td colspan="4" align="center"><input type="submit" name="action" value="'.$gobutton.'"></td></tr></form></table><br>';
 
 		// query status table for all hosts
 		$result = pg_query($routil, "SELECT failgroup,vmhost,host,ip,status,message FROM pbxstatus ORDER BY failgroup,\"order\",status desc,ip limit 1000;");

@@ -101,7 +101,7 @@ if ($rwutil = pg_connect("host=rwdb dbname=util user=postgres"))
 				}else
 					{
 						//no domains available
-						echo " No Domains to record";
+						// echo " No Domains to record";
 					}
 
 				// Close connection 

@@ -160,6 +160,9 @@ foreach ($siteInfo["Data"] as $record) {
 		case 'quarantine':
 			echo "class='orange'";
 			break;
+		case 'clean':
+			echo "class='purple'";
+			break;
 		case 'special':
 			echo "class='sky'";
 			break;
