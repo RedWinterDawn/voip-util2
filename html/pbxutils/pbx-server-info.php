@@ -23,7 +23,7 @@ if (isset($_GET["state"]))
 $count = 0;
 $limit = 5000;
 if ($utilConn = pg_connect("host=rodb dbname=util user=postgres")) {
-	$pbxDCresult = pg_fetch_array(pg_query($utilConn, "SELECT location FROM pbxstatus WHERE host = '$assigned_server'"));
+	$pbxDCresult = pg_fetch_array(pg_query($utilConn, "SELECT location FROM pbxstatus WHERE ip = '$assigned_server'"));
 	$pbxDC = $pbxDCresult['location'];
 	pg_close($utilConn);
 } 

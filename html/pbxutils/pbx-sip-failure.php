@@ -45,13 +45,13 @@ if ($rwutil = pg_connect("host=rwdb dbname=util user=postgres"))
 			{
 				// standby available
 				// mark standby active
-				pg_query($rwutil, "UPDATE pbxstatus SET status='active' WHERE host='" . $standbyRow['host'] . "'");
+				pg_query($rwutil, "UPDATE pbxstatus SET status='active' WHERE ip='" . $standbyRow['ip'] . "'");
 
 				// respond do not restart
 				echo "DoNotRestart";
 				
 				// flag as moving in case pgsql connect fails
-				pg_query($rwutil, "UPDATE pbxstatus SET status='moving' WHERE host='" . $row['host'] . "'");
+				pg_query($rwutil, "UPDATE pbxstatus SET status='moving' WHERE ip='" . $row['ip'] . "'");
 
 				// move domains to standby
 				
@@ -60,11 +60,11 @@ if ($rwutil = pg_connect("host=rwdb dbname=util user=postgres"))
 					or die('Could not connect: ' . pg_last_error());
 
 				//get domains to be changed for event logging
-				$domainResultQ = "SELECT id FROM resource_group WHERE assigned_server='" . $row['host'] . "';";
+				$domainResultQ = "SELECT id FROM resource_group WHERE assigned_server='" . $row['ip'] . "';";
 				$domainResult = pg_query($rwpbxs, $domainResultQ);
 
 				// Make the change in the pbxs DB
-				$query = "UPDATE resource_group SET assigned_server='" . $standbyRow['host'] . "' WHERE assigned_server='" . $row['host'] . "';" ;
+				$query = "UPDATE resource_group SET assigned_server='" . $standbyRow['ip'] . "' WHERE assigned_server='" . $row['ip'] . "';" ;
 				$result = pg_query($rwpbxs,$query) or die('Query failed: ' . pg_last_error());
 
 				// Free resultset
@@ -74,9 +74,9 @@ if ($rwutil = pg_connect("host=rwdb dbname=util user=postgres"))
 				pg_close($rwpbxs);
 
 				// mark this host dirty
-				pg_query($rwutil, "UPDATE pbxstatus SET status='dirty' WHERE host='" . $row['host'] . "'");
-				pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " abandoned to " . $standbyRow['host'] . " per " . $guiltyParty . "' WHERE host='" . $row['host'] . "'");
-				pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " accepted abandon from " . $row['host'] . " per " . $guiltyParty . "' WHERE host='" . $standbyRow['host'] . "'");
+				pg_query($rwutil, "UPDATE pbxstatus SET status='dirty' WHERE ip='" . $row['ip'] . "'");
+				pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " abandoned to " . $standbyRow['host'] . " per " . $guiltyParty . "' WHERE ip='" . $row['ip'] . "'");
+				pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " accepted abandon from " . $row['host'] . " per " . $guiltyParty . "' WHERE ip='" . $standbyRow['ip'] . "'");
 				syslog(LOG_INFO, "application=pbx-sip-failure server=$server action=abandonShip state=dirty guiltyParty=$guiltyParty failgroup=$failgroup customMessage='pbx $server has abandoned ship'");
 
 				$mail_subject=$row['host'] . " abandoned to " . $standbyRow['host'] . " per " . $guiltyParty;
