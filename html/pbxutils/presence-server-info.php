@@ -16,7 +16,14 @@ $limit = 5000;
 $dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ")
     or die('Could not connect: ' . pg_last_error());
 
-$query = "SELECT id,domain,name,state,assigned_server,presence_server,bleeding,location FROM resource_group WHERE presence_server='" . $presence_server . "' ORDER BY state,domain LIMIT " . $limit;
+if ($presence_server = 'Unassigned')
+{
+	$presenceQuerySegment = "presence_server is null";
+} else {
+	$presenceQuerySegment = "presence_server='" . $presence_server . "'";
+}
+
+$query = "SELECT id,domain,name,state,assigned_server,presence_server,bleeding,location FROM resource_group WHERE " . $presenceQuerySegment . " ORDER BY state,domain LIMIT " . $limit;
 $result = pg_query($query) or die('Query failed: ' . pg_last_error());
 
 echo "<br/><h2>Presence server " . $presence_server . "</h2><br/>\n";

@@ -27,7 +27,14 @@ $result = pg_query($query) or die('Query failed: ' . pg_last_error());
 echo "<table border=2>\n";
 echo "<th>server</th><th>count</th>\n";
 while ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
-    echo "\t<tr><td><a href='presence-server-info.php?server=" . $line['presence_server'] . "'>" . $line['presence_server'] . "</a></td><td>" . $line['count'] . "</td></tr>\n";
+	if ($line['presence_server'] != '')
+	{
+		$presenceServer = $line['presence_server'];
+	} else {
+		$presenceServer = 'Unassigned';
+	}
+
+	echo "\t<tr><td><a href='presence-server-info.php?server=" . $presenceServer . "'>" . $presenceServer . "</a></td><td>" . $line['count'] . "</td></tr>\n";
 
 	if ($line['presence_server'] != '') {
 		$santaServer[$santaServerCount] = $line['presence_server'];
