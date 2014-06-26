@@ -16,7 +16,7 @@ $limit = 5000;
 $dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ")
     or die('Could not connect: ' . pg_last_error());
 
-if ($presence_server = 'Unassigned')
+if ($presence_server == 'Unassigned')
 {
 	$presenceQuerySegment = "presence_server is null";
 } else {
