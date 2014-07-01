@@ -1,6 +1,5 @@
 <link rel='stylesheet' href='stylesheet.css'>
 <?php
-include('menu.html');
 $guiltyParty = $_SERVER['REMOTE_ADDR'];
 $requestTime = strftime('%Y-%m-%d %H:%M:%S');
 $gobutton = "I'm feeling lucky!";
@@ -25,6 +24,11 @@ if (isset($_GET["action"]))
 if (isset($_GET["SetMessage"]))
 {
 	$action = "AutoCleanComplete";
+}
+
+//Don't display the message for auto-clean because its output is sent to a pbx
+if ($action != "AutoCleanComplete") {
+	include('menu.html');
 }
 
 if (isset($_POST['action']))
@@ -371,9 +375,9 @@ if ($action == "ListStatus")
 				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "\">set standby</a></td>";
 				echo "<td>-</td>";
 			} else if ($row['status'] == "dirty") {
-				echo "<td>-</td>";
+				echo "<td><a href=\"pbx-availability.php?action=SetActive&server=" . $row['ip'] . "\">set active</a></td>";
+				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "\">set standby</a></td>";
 				echo "<td><a href=\"clean.php?server=" . $row['host'] . "\">clean me</a></td>";
-				echo "<td>-</td>";
 			} else if ($showControls) {
 				echo "<td><a href=\"pbx-availability.php?action=SetActive&server=" . $row['ip'] . "\">set active</a></td>";
 				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "\">set standby</a></td>";

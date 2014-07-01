@@ -31,8 +31,7 @@ if ($_SERVER['SERVER_ADDR'] == '10.101.8.1')
 {
 	echo " (DEV)";
 }
-echo '</h2>
-	<a href="index.php">Back to pbxutils</a>';
+echo '</h2>';
 
 $action = $_REQUEST["action"];
 $guiltyParty = $_SERVER['REMOTE_ADDR'];
@@ -45,7 +44,13 @@ switch ($action) {
 		break;
 	case "search":
 		//Assign the "search" variable
-		$search = $_REQUEST["search"];
+		$search = $_REQUEST['domain'];
+
+		if ($search =='')
+		{
+			$search = $_REQUEST['dSearch'];
+		}
+		//$search = $_REQUEST["search"];
 		//Make sure they're not trying to inject anything
 		if (preg_match('/[^a-z\-0-9]/i', $search))
 		{
@@ -74,8 +79,7 @@ switch ($action) {
 		break;
 	default:
 		$action = "search";
-		$search = date('m-d-Y');
-		echo $search;
+		$search = date('Y-m-d');
 }
 
 //========
@@ -87,8 +91,9 @@ switch ($action) {
 echo '<div class="checkbox"><form action="" method="POST">
     <input type="hidden" name="action" value="search">
 	<p>Enter a domain or date to search: </p>
-	<p><input type="text" name="search" placeholder="m-d-yy" /></p>
-	<p>Enter date as m-d-yy or search will default to a domain search </p>
+	<p>Domain: <input type="text" name="domain" /></p>
+	<p>Date: <input type="date" name="dSearch" /></p>
+	<p>Enter a domain or search will default to a date search </p>
 	<p><input id="exact" class="checkbox" type="checkbox" name="exact"><label for="exact">Exact Search</label></p>
     <p><input type="submit" value="Search" />
     </form><form action="" method="POST">
@@ -133,7 +138,7 @@ if ($action=="search")
 				<td>".$dom['name']."</td>
 				<td>".$dom['location']."</td>
 			    <td>".$dom['assigned_server']."</td>
-				<form action='' method='POST'>
+				<form action='' method='post'>
 				<td>
 				<input type='hidden' name='action' value='eventList'>
 				<input type='hidden' name='domain' value='".$dom['domain']."'>
@@ -146,48 +151,42 @@ if ($action=="search")
 		//Actually connect to postgres for the queries we'll be making
     	$eventsDB = pg_connect("host=rodb dbname=events user=postgres ") or die('Could not connect to "events" database: ' . pg_last_error());
 		$eventQ = "SELECT added AT TIME ZONE 'UTC', id, description FROM event WHERE added BETWEEN (timestamp '".$search."' AT TIME ZONE 'America/Boise') AND ((timestamp '".$search."' + interval '1 day') AT TIME ZONE 'America/Boise');";
-		$eventArray = pg_fetch_all(pg_query($eventsDB, $eventQ)); //or die("<h2>No events for: " .$search ."</h2>");
-		$timeArray = pg_fetch_all(pg_query($eventsDB, "SELECT date '".$search."' + integer '1' as next, date '".$search."' - integer '1' as pre"));
+		$eventArray = pg_fetch_all(pg_query($eventsDB, $eventQ));
 		pg_close($eventsDB);
-	//	echo '<h2>'.sizeof($eventArray)." Events that occured on: ".strftime('%m-%d-%Y', strtotime($search)) . "</h2>";
-		echo '<h2>'.sizeof($eventArray)." Events that occured on: ".$search . "</h2>";
-	
-
-		echo "<form action='' method='POST'>
-			  <input type='hidden' name='action' value='search'>
-			  <input type='hidden' name='search' value='".$timeArray[0]['pre']."'>
-  			  <input type='submit' value='previous'></form>";			  
-
-		echo "<form action='' method='POST'>
-			  <input type='hidden' name='action' value='search'>
-			  <input type='hidden' name='search' value='".$timeArray[0]['next']."'>
-			  <input type='submit' value='  next  '></form>";
-
-		echo "<table border='1'><tr><th>Date</th><th>Description</th><th>Affected</th></tr>";
+		$count = 0;
 		foreach($eventArray as $event)
 		{
-			echo "<td> " . strftime('%m-%d-%Y %T', strtotime($event[timezone])) ." </td>
+			$count ++;
+			$table = $table . "<td> " . strftime('%m-%d-%Y %T', strtotime($event[timezone])) ." </td>
 				  <td> " . $event[description] . " </td>
 			  	  <td> 
-			  	  </form><form action='' method='post'>
+			  	  </form><form action='' method='get'>
 			      <input type='hidden' name='action' value='domainList'>
 				  <input type='hidden' name='eventID' value='".$event[id]."'>
-				  <input type='hidden' name='eventDescrip' value='".$event[description]."'>
 				  <input type='submit' value='Domains' /></form>
 			  </td></tr>";	
 		}
-		echo "</table></div>";
+		echo '<h2>'.$count." Events that occured on: ".strftime('%m-%d-%Y', strtotime($search)) . "</h2>";
+		if ($count > 0)
+		{
+			echo "<table border='1'><tr><th>Date</th><th>Description</th><th>Affected</th></tr>";
+			echo $table;
+			echo "</table></div>";
+		}
 	}
 }
 //===============
 //Display Domains=====================================================================================================
 //===============
-if ($action=="domainList" && isset($eventID) && isset($eventDescrip))
+if ($action=="domainList" && isset($eventID))
 {
 	//Connect to eventsDB and get all the domain_ids
 	$eventsDB = pg_connect("host=rodb dbname=events user=postgres ") or die('Could not connect to "events" database: ' . pg_last_error());
 	$eventQ = "SELECT domain_id FROM event_domain WHERE event_id = '".$eventID."';";
 	$eventArray = pg_fetch_all(pg_query($eventsDB, $eventQ))or die("No domains for:: " . $eventID);
+	$eventDescrip = "SELECT description FROM event WHERE id='".$eventID."';";
+	$eventDescrip = pg_fetch_row(pg_query($eventsDB, $eventDescrip));
+	$eventDescrip = $eventDescrip[0];
 	pg_close($eventsDB);
 
 	//Connect to the pbxsDB and get all the domains 

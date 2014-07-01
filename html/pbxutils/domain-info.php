@@ -14,7 +14,7 @@ function eventTable($id)
 	pg_close($eventdb);
 	echo "<tr><td></td><td></td><td colspan=8 rowspan=13 valign=top>
 		<table>
-		<tr><th colspan=2 width='700'>Last 10 Events</th></tr>
+		<tr><th colspan=2 width='900'>Last 10 Events</th></tr>
 		<tr><th>Date</th><th>Description</th></tr>";
 	foreach ($eventArray as $event)
 	{

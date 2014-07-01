@@ -281,10 +281,7 @@ if ($action == "submit")
 
 echo "<h3>Migration Finished!</h3>";
 
-//Start a load update in the background
-exec('bash -c "exec nohup /root/loadMetrics.py > /dev/null 2>&1 &"');
-echo "Started load metrics update in the background. You don't need to wait for it.";
-
+echo "If you are going to run another exodus within the next 10 minutes, please run the loadMetrics.py script on Util to make sure that PBX load is updated";
 }
 echo"
 	</body>

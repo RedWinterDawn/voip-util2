@@ -66,7 +66,7 @@ foreach ($santaR as $santa) {
 	$santas[$subnetSites[substr($santa['presence_server'],3,3)]][$santa['presence_server']] = $santa['count'];
 }
 pg_close($pbxsConn);
-$sitesQuery = "SELECT DISTINCT location FROM pbxstatus";
+$sitesQuery = "SELECT DISTINCT location FROM pbxstatus WHERE status = 'active'";
 $sites = pg_fetch_all(pg_query($utilConn, $sitesQuery)) or die ("Failed to fetch sites ".pg_last_error());
 
 echo "<table><tr>";
