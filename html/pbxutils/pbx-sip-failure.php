@@ -39,14 +39,10 @@ if ($rwutil = pg_connect("host=rwdb dbname=util user=postgres"))
 		{
 
 			// this status is active, find standby
-			$standbyResult = pg_query($routil, "SELECT host,ip,status,failgroup FROM pbxstatus WHERE status='standby' AND failgroup='" . $failgroup . "';");
+			$standbyResult = pg_query($rwutil, "UPDATE pbxstatus SET status = 'active' WHERE ip = (SELECT ip FROM pbxstatus WHERE status = 'standby' AND failgroup = '" . $failgroup . "' LIMIT 1) RETURNING host, ip;") or die ('ohno! '.pg_last_error());
 
 			if ($standbyRow = pg_fetch_array($standbyResult, null, PGSQL_ASSOC))
 			{
-				// standby available
-				// mark standby active
-				pg_query($rwutil, "UPDATE pbxstatus SET status='active' WHERE ip='" . $standbyRow['ip'] . "'");
-
 				// respond do not restart
 				echo "DoNotRestart";
 				
@@ -75,11 +71,11 @@ if ($rwutil = pg_connect("host=rwdb dbname=util user=postgres"))
 
 				// mark this host dirty
 				pg_query($rwutil, "UPDATE pbxstatus SET status='dirty' WHERE ip='" . $row['ip'] . "'");
-				pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " abandoned to " . $standbyRow['host'] . " per " . $guiltyParty . "' WHERE ip='" . $row['ip'] . "'");
+				pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " abandoned to " . $standbyRow['ip'] . " per " . $guiltyParty . "' WHERE ip='" . $row['ip'] . "'");
 				pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " accepted abandon from " . $row['host'] . " per " . $guiltyParty . "' WHERE ip='" . $standbyRow['ip'] . "'");
 				syslog(LOG_INFO, "application=pbx-sip-failure server=$server action=abandonShip state=dirty guiltyParty=$guiltyParty failgroup=$failgroup customMessage='pbx $server has abandoned ship'");
 
-				$mail_subject=$row['host'] . " abandoned to " . $standbyRow['host'] . " per " . $guiltyParty;
+				$mail_subject=$row['host'] . " abandoned to " . $standbyRow['ip'] . " per " . $guiltyParty;
 				$mail_body=$requestTime . " " . $mail_subject;
 				mail($mail_to, $mail_subject,$mail_body);
 

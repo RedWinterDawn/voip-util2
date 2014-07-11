@@ -69,10 +69,24 @@ pg_close($pbxsConn);
 $sitesQuery = "SELECT DISTINCT location FROM pbxstatus WHERE status = 'active'";
 $sites = pg_fetch_all(pg_query($utilConn, $sitesQuery)) or die ("Failed to fetch sites ".pg_last_error());
 
+
+$siteTotal = 0;
+$devTotal = 0;
 echo "<table><tr>";
 foreach ($sites as $site) {
 	echo "<td style='padding: 5; font-weight: bold;'><a href='#${site['location']}'>${site['location']}</a></td>";
+	$siteTotal += intval($siteCounts[$site['location']]);
+	$devTotal += intval($siteDevs[$site['location']]);
 }
+echo "</tr><tr>";
+foreach ($sites as $site) {
+	echo "<td>".intval($siteCounts[$site['location']]*100/$siteTotal)."%</td>";
+}
+echo "<td>of ".$siteTotal." clients</td></tr><tr>";
+foreach ($sites as $site) {
+	echo "<td>".intval($siteDevs[$site['location']]*100/$devTotal)."%</td>";
+}
+echo "<td>of ".$devTotal." devices</td>";
 echo "</tr></table>";
 echo "<hr align='left' width='900px'>";
 foreach ($sites as $site) {

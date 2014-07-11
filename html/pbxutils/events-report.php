@@ -49,6 +49,10 @@ switch ($action) {
 		if ($search =='')
 		{
 			$search = $_REQUEST['dSearch'];
+			if ($search =='')
+			{
+				$search = date('Y-m-d');
+			}
 		}
 		//$search = $_REQUEST["search"];
 		//Make sure they're not trying to inject anything
