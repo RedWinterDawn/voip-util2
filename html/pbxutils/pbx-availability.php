@@ -332,6 +332,21 @@ if ($action == "ListStatus")
 {
 	if ($routil = pg_connect("host=rodb dbname=util user=postgres "))
 	{
+		echo "<style type='text/css'>
+			.group {
+				display=none;
+			}
+			</style>
+			<script type='text/javascript'>
+				function showPage(_site) {
+					elems = document.getElementsByClassName('group');
+					for (var i = 0; i < elems.length; i++) {
+						elems[i].style.display=\"none\";
+					}
+					document.getElementById(_site).style.display=\"block\";
+				}		
+			</script>";
+		echo "<body onload='showPage(\"chicago-legacy\")'>";
 		echo "Enter IP alone to delete. IP + new field to update. All fields to add new.";
 		echo "<table><tr><th>PBX IP</th><th>Status</th><th>Location</th><th>Fail Group</th></tr>";
 		echo "<form action='' method='POST'><tr><td><input type='text' name='pbx' placeholder='e.g. 10.119.7.1'></td>";
@@ -339,14 +354,29 @@ if ($action == "ListStatus")
 		echo "<td><input type='text' name='location' placeholder='e.g. lax'></td>";
 		echo "<td><input type='text' name='fgroup' placeholder='e.g. 119'></td></tr>";
 		echo '<tr><td colspan="4" align="center"><input type="submit" name="action" value="'.$gobutton.'"></td></tr></form></table><br>';
-
+		// Find unique sites
+		$uniqueResult = pg_fetch_all_columns(pg_query("SELECT DISTINCT location FROM pbxstatus ORDER BY location"), 0);
 		// query status table for all hosts
-		$result = pg_query($routil, "SELECT failgroup,vmhost,host,ip,status,message FROM pbxstatus ORDER BY failgroup,\"order\",status desc,ip limit 1000;");
-	
+		$result = pg_query($routil, "SELECT failgroup,location,vmhost,host,ip,status,message FROM pbxstatus ORDER BY failgroup,\"order\",status desc,ip limit 1000;");
+		echo "<hr align='left' width='330'>|";	
+		foreach ($uniqueResult as $unique) {
+			echo " <a href='javascript:showPage(\"$unique\")'>$unique</a> |";
+		}
+		echo "<br><hr align='left' width='330'>";
+		/*$currentSite = "notset";
+		echo "<div class='group' id='$currentSite'>";
 		echo "<table border='1'>\n";
 		echo "<th>failgroup</th><th>vmhost</th><th>host</th><th>ip</th><th>status</th><th>activate</th><th>standby</th><th>abandon ship</th><th>message</th>\n";
+		 */
 		while ($row = pg_fetch_array($result, null, PGSQL_ASSOC))
 		{
+			if ($row['location'] != $currentSite) {
+				echo "</table></div>";
+				$currentSite = $row['location'];
+				echo "<div class='group' id='$currentSite'>";
+				echo "<table border='1'>\n";
+				echo "<th>failgroup</th><th>vmhost</th><th>host</th><th>ip</th><th>status</th><th>activate</th><th>standby</th><th>abandon ship</th><th>message</th>\n";
+			}
 			$showControls = false;
 			echo "<tr>
 				<td class='group".$row['failgroup']."'>" . $row['failgroup'] . "</td>
@@ -397,6 +427,7 @@ if ($action == "ListStatus")
 		}
 		echo "</table><br/>\n";
 	
+		echo "</body>";
 	}else
 	{
 		echo "Error opening DB (rodb.util)";
