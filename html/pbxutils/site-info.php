@@ -3,6 +3,20 @@
 <title>Site Info Page</title>
 <link rel='stylesheet' href='expand.css'>
 <link rel='stylesheet' href='stylesheet.css'>
+<style>
+.group {
+    display: none;
+}
+</style>
+<script type='text/javascript'>
+function showSite(_site) {
+	elems = document.getElementsByClassName('group');
+	for (var i = 0; i < elems.length; i++) {
+		elems[i].style.display="none";
+	}
+	document.getElementById(_site).style.display="block";
+}
+</script>
 
 <?
 $subnetSites = array('101'=>'chicago-legacy','117'=>'pvu','118'=>'dfw','119'=>'lax','120'=>'nyc','121'=>'ord','122'=>'atl','123'=>'geg','124'=>'lon');
@@ -23,7 +37,7 @@ function countKey ($inArray, $key) {
 }
 ?>
 </head>
-<body>
+<body onload='showSite("chicago-legacy")'>
 <? include('menu.html'); ?>
 <h2>Site Info Page</h2>
 Click a site name below. 
@@ -66,7 +80,7 @@ foreach ($santaR as $santa) {
 	$santas[$subnetSites[substr($santa['presence_server'],3,3)]][$santa['presence_server']] = $santa['count'];
 }
 pg_close($pbxsConn);
-$sitesQuery = "SELECT DISTINCT location FROM pbxstatus WHERE status = 'active'";
+$sitesQuery = "SELECT DISTINCT location FROM pbxstatus WHERE status = 'active' order by location";
 $sites = pg_fetch_all(pg_query($utilConn, $sitesQuery)) or die ("Failed to fetch sites ".pg_last_error());
 
 
@@ -74,7 +88,7 @@ $siteTotal = 0;
 $devTotal = 0;
 echo "<table><tr>";
 foreach ($sites as $site) {
-	echo "<td style='padding: 5; font-weight: bold;'><a href='#${site['location']}'>${site['location']}</a></td>";
+	echo "<td style='padding: 5; font-weight: bold;'><a href='javascript:showSite(\"${site['location']}\")'>${site['location']}</a></td>";
 	$siteTotal += intval($siteCounts[$site['location']]);
 	$devTotal += intval($siteDevs[$site['location']]);
 }
@@ -88,7 +102,6 @@ foreach ($sites as $site) {
 }
 echo "<td>of ".$devTotal." devices</td>";
 echo "</tr></table>";
-echo "<hr align='left' width='900px'>";
 foreach ($sites as $site) {
 	$perSite = "SELECT ip, load, status FROM pbxstatus WHERE location = '${site['location']}' ORDER BY ip";
 	$activeCounts = "SELECT count(*) FROM pbxstatus WHERE location = '${site['location']}' AND status = 'active'";
@@ -99,7 +112,9 @@ foreach ($sites as $site) {
 	$standbyR = pg_fetch_all(pg_query($utilConn, $standbyCounts));
 	$standby = $standbyR[0]['count'];
 ?>
-<h2><? echo "<a id='${site['location']}'> --==| ${site['location']} |==-- </a>"; ?></h2>
+<div class='group' id='<?= $site['location'] ?>'>
+<h2><a id='<?= $site['location'] ?>'> --==| <?= $site['location'] ?> |==-- </a></h2>
+
 <div class='leftpanel'>
 <h4>Overview</h4>
 <table border='1'>
@@ -192,7 +207,7 @@ foreach ($siteInfo["Data"] as $record) {
 ?>
 </table>
 </div>
-<hr align='left' width='900px'>
+</div>
 <?
 }
 pg_close($utilConn);
