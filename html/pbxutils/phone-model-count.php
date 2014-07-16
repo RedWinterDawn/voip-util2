@@ -23,6 +23,7 @@ $dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ")
 $typeQuery = "SELECT type_id, count(type_id) as count FROM user_agent
 	LEFT JOIN resource_group ON user_agent.resource_group_id = resource_group.id
 	WHERE resource_group.state = 'ACTIVE'
+	AND last_checkin > '2014-01-01'
 	GROUP BY type_id ORDER BY count DESC;";
 $typeResult = pg_query($typeQuery) or die('Type query failed: ' . pg_last_error());
 
