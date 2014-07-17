@@ -23,7 +23,7 @@ $dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ")
 $typeQuery = "SELECT type_id, count(type_id) as count FROM user_agent
 	LEFT JOIN resource_group ON user_agent.resource_group_id = resource_group.id
 	WHERE resource_group.state = 'ACTIVE'
-	AND last_checkin > '2014-01-01'
+	AND last_checkin is NOT NULL 
 	GROUP BY type_id ORDER BY count DESC;";
 $typeResult = pg_query($typeQuery) or die('Type query failed: ' . pg_last_error());
 
@@ -40,12 +40,22 @@ while ($typeRow = pg_fetch_array($typeResult, null, PGSQL_ASSOC)) {
 }
 echo "</table>\n";
 
-echo "<pre>Total: $totalCount</pre>";
+echo "<pre>Total: $totalCount</pre><br/>";
 
-// Free resultset
 pg_free_result($typeResult);
 
-// Closing connection
+$nullCountQuery = "SELECT count(*) as count FROM user_agent
+	LEFT JOIN resource_group ON user_agent.resource_group_id = resource_group.id
+	WHERE resource_group.state = 'ACTIVE'
+	AND last_checkin is NULL;";
+$nullCountResult = pg_query($nullCountQuery) or die('Null count query failed: ' . pg_last_error());
+
+if ($nullCountRow = pg_fetch_array($nullCountResult, null, PGSQL_ASSOC)){
+	echo "<pre>Null count: " . $nullCountRow['count'] . "</pre><br/>";
+}
+
+pg_free_result($nullCountResult);
+
 pg_close($dbconn);
 ?>
 
