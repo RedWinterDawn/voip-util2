@@ -126,8 +126,24 @@ if ($action=="search")
 			<td>".$dom['location']."</td>
 			<td>".$dom['assigned_server']."</td>";
 
-		if ($v5 == 'TRUE') { echo "<td><a href='v5-migration.php?action=v4migrate&domain=" . $listDomain . "'>Migrate to v4</a></td>"; } else { echo "<td></td>"; }
-		if ($v5 == 'FALSE') { echo "<td><a href='v5-migration.php?action=v5migrate&domain=" . $listDomain . "'>Migrate to v5</a></td>"; } else { echo "<td></td>"; }
+		if ($v5 == 'TRUE') {
+			echo "<td>
+				<a href='v5-migration.php?action=v4migrate&domain=" . $listDomain . "'>Migrate to v4</a>
+				<list><li>dfw</li><li>pvu</li></list>
+				</td>";
+		} else {
+			echo "<td></td>";
+		}
+		if ($v5 == 'FALSE' && $dom['location'] == 'chicago-legacy') {
+			echo "<td>
+				<a href='v5-migration.php?action=v5migrate&domain=" . $listDomain . "'>Migrate to v5</a>
+				<list><li>dfw</li><li>pvu</li></list>
+				</td>";
+		} else if ($v5 == 'FALSE') {
+			echo "<td>Please migrate to chicago before migrating to v5</td>";
+		} else {
+			echo "<td></td>";
+		}
 
 		echo "</tr>"; 
 	}
@@ -147,7 +163,7 @@ if ($action=="v5migrate")
 	//Update the database
 	echo "<p>Updating DB</p>";
 	$dbconn = pg_connect("host=rwdb dbname=pbxs user=postgres ") or die('Could not connect: '.pg_last_error());
-	$updateQuery = "UPDATE resource_group SET v5 = true WHERE domain = '".$domain."' RETURNING id;";
+	$updateQuery = "UPDATE resource_group SET v5=true,assigned_server='199.36.251.38' WHERE domain = '".$domain."' RETURNING id;";
 	$updateRow = pg_fetch_row(pg_query($dbconn, $updateQuery)) or die("<p class='red'>Failed to update database: ".pg_last_error()."</p></div>");
 	$id = $updateRow['id'];
 	pg_close($dbconn);
@@ -198,7 +214,7 @@ if ($action=="v4migrate")
 	//Update the database
 	echo "<p>Updating DB</p>";
 	$dbconn = pg_connect("host=rwdb dbname=pbxs user=postgres ") or die('Could not connect: '.pg_last_error());
-	$updateQuery = "UPDATE resource_group SET v5 = false WHERE domain = '".$domain."' RETURNING id;";
+	$updateQuery = "UPDATE resource_group SET v5=false,assigned_server='10.101.7.1' WHERE domain = '".$domain."' RETURNING id;";
 	$updateRow = pg_fetch_row(pg_query($dbconn, $updateQuery)) or die("<p class='red'>Failed to update database: ".pg_last_error()."</p></div>");
 	$id = $updateRow['id'];
 	pg_close($dbconn);
