@@ -126,6 +126,7 @@ echo "<html>
 	<body>";
 include('menu.html');
 echo "<h2>Mass Exodus</h2>
+	<p class='red'>THIS TOOL MAY NOT BE WORKING RIGHT NOW. Use at your own risk</p>
 	<p>Use this tool to move a large group from one site to another</p>
 	<p><a href='index.php'>Back to PBX Utils</a></p>
 	<form onsubmit='return confirm(\"WARNING: THIS SCRIPT IS FUNCTIONAL!!!\\n\\nPlease review your choices. Do you really want to continue?\\nCareless use of this script can cause DOWNTIME for REAL CLIENTS!\");' action='' method='POST'>

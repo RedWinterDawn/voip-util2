@@ -156,6 +156,8 @@ if ($action=="search")
 if ($action=="v5migrate")
 {
 	$platform = "v5";
+	set_time_limit(0);
+	ignore_user_abort();
 	// And now we migrate
 	echo "<div id='final' class='final'><p> Migrating ".$domain." to ".$platform." with flush set to ".$flush."...</p>";
 	syslog(LOG_INFO, $guiltyParty." migrated ".$domain." to ".$platform.". Flush memcache was set to: ".$flush);
@@ -196,7 +198,7 @@ if ($action=="v5migrate")
 
 	// Execute voicemail migration
 	echo "<p>Migrating Voicemail</p>";
-	exec('python26 /opt/jive/voicemailMigration/migration/migration/masterMigration.py '.$domain.' 2>/dev/null', $voicemailOutput, $exitcode);
+	exec('python26 /opt/jive/voicemailMigration/migration/migration/masterMigration.py '.$domain.' >>/tmp/v5migrate-$domain', $voicemailOutput, $exitcode);
 
 	echo "<div><p>Migration of $domain to v5 complete</p></div><hr/>";
 } // End of Migrate to v5
@@ -207,6 +209,8 @@ if ($action=="v5migrate")
 if ($action=="v4migrate")
 {
 	$platform = "v4";
+	set_time_limit(0);
+	ignore_user_abort();
 	// And now we migrate
 	echo "<div id='final' class='final'><p> Migrating ".$domain." to ".$platform." with flush set to ".$flush."...</p>";
 	syslog(LOG_INFO, $guiltyParty." migrated ".$domain." to ".$platform.". Flush memcache was set to: ".$flush);
@@ -247,7 +251,7 @@ if ($action=="v4migrate")
 
 	// Execute voicemail migration
 	echo "<p>Migrating Voicemail</p>";
-	exec('python26 /opt/jive/voicemailMigration/migration/migration/masterUnmigration.py '.$domain, $voicemailOutput, $exitcode);
+	exec('python26 /opt/jive/voicemailMigration/migration/migration/masterUnmigration.py '.$domain. " >>/tmp/v5unmigrate-$domain", $voicemailOutput, $exitcode);
 
 	echo "<div><p>Migration of $domain to v4 complete</p></div><hr/>";
 } // End of Migrate to v4
