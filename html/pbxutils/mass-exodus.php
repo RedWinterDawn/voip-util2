@@ -1,4 +1,6 @@
 <?php
+
+include('loadUpdate.php');
 header('Cache-Control: no-cache');
 $guiltyParty = $_SERVER['REMOTE_ADDR'];
 //We actually have enough clients that this script runs out of memory 
@@ -126,10 +128,8 @@ echo "<html>
 	<body>";
 include('menu.html');
 echo "<h2>Mass Exodus</h2>
-	<p class='red'>THIS TOOL MAY NOT BE WORKING RIGHT NOW. Use at your own risk</p>
 	<p>Use this tool to move a large group from one site to another</p>
-	<p><a href='index.php'>Back to PBX Utils</a></p>
-	<form onsubmit='return confirm(\"WARNING: THIS SCRIPT IS FUNCTIONAL!!!\\n\\nPlease review your choices. Do you really want to continue?\\nCareless use of this script can cause DOWNTIME for REAL CLIENTS!\");' action='' method='POST'>
+	<form onsubmit='return confirm(\"Please review your choices. Do you really want to continue?\");' action='' method='POST'>
 		<div class='radio'>
 		<input id='pbx' type='radio' name='method' value='pbx' ";
 if ($method != "site") { echo "checked"; }
@@ -174,8 +174,8 @@ if ($action == "submit")
 
 	//Connect to the databases
 	$pbxsConn = pg_connect("host=db dbname=pbxs user=postgres ") or die('Could not connect to "pbxs" database: ' . pg_last_error());
-	$utilConn = pg_connect("host=rodb dbname=util user=postgres ") or die('Could not connect to "pbxs" database: ' . pg_last_error());
-	$cdrConn = pg_connect("host=cdr dbname=asterisk user=postgres ") or die('Could not connect to "pbxs" database: ' . pg_last_error());
+	$utilConn = pg_connect("host=db dbname=util user=postgres ") or die('Could not connect to "util" database: ' . pg_last_error());
+	$cdrConn = pg_connect("host=cdr dbname=asterisk user=postgres ") or die('Could not connect to "cdr" database: ' . pg_last_error());
 	$eventDb = pg_connect("host=db dbname=events user=postgres") or die('Could not connect: '. pg_last_error());
 	//Get the load results and rekey them to be easier to use
 	$clientLoad = pg_fetch_all(pg_query($cdrConn, $clientLoadQuery)) or die ('Failed to get client specific load: '. pg_last_error());
@@ -269,6 +269,11 @@ if ($action == "submit")
 			    pg_query($pbxsConn, $thisMove) or die ('Updating the database failed! '.pg_last_error());	
 				//And the event update
             	pg_query($eventDb, "INSERT INTO event_domain VALUES('" . $eventID['0'] . "', '" .$thisID. "')");
+				flushOutput();
+				//Update load to make sure that future moves will have accurate data
+				if (!domainLoadUpdate($cdrConn, $utilConn, $thisServer, $thisID)) {
+					echo "Load update failed for this client.<br>";
+				}
 
 			}
 		}
@@ -282,7 +287,6 @@ if ($action == "submit")
 
 echo "<h3>Migration Finished!</h3>";
 
-echo "If you are going to run another exodus within the next 10 minutes, please run the loadMetrics.py script on Util to make sure that PBX load is updated";
 }
 echo"
 	</body>
