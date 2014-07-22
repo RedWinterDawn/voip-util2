@@ -18,6 +18,7 @@
 // THIS SCRIPT REQUIRES THE FOLLOWING FILES: /var/www/migrate-pbx.sh and /var/www/migrate-files.sh
 
 //CSS Styling:
+include('loadUpdate.php');
 echo '<html><head><title>Single Customer Migration</title>
 <style type="text/css"> 
 #pretty {vertical-align: bottom;}
@@ -35,8 +36,7 @@ if ($_SERVER['SERVER_ADDR'] == '10.101.8.1')
 {
 	echo " (DEV)";
 }
-echo '</h2>
-	<a href="index.php">Back to pbxutils</a>';
+echo '</h2>';
 
 //The action variable tells us if this page was called by itself and why
 // [EMPTY] = First visit
@@ -379,6 +379,18 @@ if (isset($dest[0])) //Make sure we got a destination...
 				$updateQuery = "UPDATE resource_group SET assigned_server = '".$dest[0]."', location = '".$location."', secondary_location = '".$oldLocation."' WHERE domain = '".$domain."';";
 			}	
 			pg_query($dbconn, $updateQuery) or die("<p class='red'>Failed to update database: ".pg_last_error()."</p></div>");
+
+			$cdrConn = pg_connect("dbname=asterisk user=postgres host=cdr");
+			if (!$cdrConn) { echo "CDR Connection failed"; }
+			$utilConn = pg_connect("dbname=util user=postgres host=db");
+			if (!$utilConn) { echo "UTIL Connection failed"; }
+			$clientID = pg_fetch_result(pg_query($dbconn, "SELECT id FROM resource_group WHERE domain = '$domain';"), 0);
+			if (!domainLoadUpdate($cdrConn, $utilConn, $dest[0], $clientID)) {
+				echo "<p class='red'>Load for this client failed to update</p>This is minor... but maybe tell devops.<br>";
+			}	
+
+			pg_close($cdrConn);
+			pg_close($utilConn);
 			pg_close($dbconn);
 
 			//Flush memchaced
@@ -410,7 +422,7 @@ if (isset($dest[0])) //Make sure we got a destination...
 		$dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ") or die('Could not connect: ' . pg_last_error());
 
 		//Check the database to see if the user actually got moved to the new location or not
-		$finalQuery = "SELECT domain, assigned_server, location, secondary_location FROM resource_group WHERE domain='".$domain."';"; 
+		$finalQuery = "SELECT domain, assigned_server, location, secondary_location FROM resource_group WHERE domain='".$domain."';";
 		$final = pg_query($finalQuery) or die ('Search failed: ' . pg_last_error());
 		$finalResults = pg_fetch_all($final);
 
