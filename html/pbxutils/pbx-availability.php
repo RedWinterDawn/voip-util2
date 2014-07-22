@@ -26,6 +26,12 @@ if (isset($_GET["SetMessage"]))
 	$action = "AutoCleanComplete";
 }
 
+if (isset($_GET["display"]))
+{
+	$display = $_GET['display'];
+} else {
+	$display = "chicago-legacy";
+}
 //Don't display the message for auto-clean because its output is sent to a pbx
 if ($action != "AutoCleanComplete") {
 	include('menu.html');
@@ -346,7 +352,7 @@ if ($action == "ListStatus")
 					document.getElementById(_site).style.display=\"block\";
 				}		
 			</script>";
-		echo "<body onload='showPage(\"chicago-legacy\")'>";
+		echo "<body onload='showPage(\"$display\")'>";
 		echo "Enter IP alone to delete. IP + new field to update. All fields to add new.";
 		echo "<table><tr><th>PBX IP</th><th>Status</th><th>Location</th><th>Fail Group</th></tr>";
 		echo "<form action='' method='POST'><tr><td><input type='text' name='pbx' placeholder='e.g. 10.119.7.1'></td>";

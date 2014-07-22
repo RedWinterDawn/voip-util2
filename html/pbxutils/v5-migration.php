@@ -3,11 +3,11 @@
  *
  * This is primarily for customer migration to v5.  Migration from v5 to v4 will also be included.
  *
- * The basic process is set the v5 flag for a customer domain in v4 resource_group tables, then call the voicemail migration script.
+ * The basic process is set the v5 flag for a customer domain in v4 resource_group tables,
+ * then call the voicemail migration script.
  *
  */
 
-// THIS SCRIPT REQUIRES THE FOLLOWING FILES: /var/www/migrate-pbx.sh and /var/www/migrate-files.sh
 
 
 //CSS Styling:

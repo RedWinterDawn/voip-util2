@@ -36,7 +36,7 @@ $dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ")
 $query = "SELECT id,domain,name,state,assigned_server,presence_server,location,v5 FROM resource_group WHERE assigned_server='" . $assigned_server . "' " . $query_state . " ORDER BY state,domain LIMIT " . $limit;
 $result = pg_query($query) or die('Query failed: ' . pg_last_error());
 
-echo "<br/><h2>$assigned_server in <a href='site-info.php#$pbxDC'>$pbxDC</a></h2><br/>\n";
+echo "<br/><h2>$assigned_server in <a href='site-info.php?display=$pbxDC'>$pbxDC</a></h2><br/>\n";
 
 echo "<table border=1>\n";
 echo "<tr><th>domain</th><th>name</th><th>state</th><th>assigned_server</th><th>presence_server</th><th>location</th><th>v5 migrated</th></tr>\n";

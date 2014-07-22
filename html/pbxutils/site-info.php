@@ -35,9 +35,16 @@ function countKey ($inArray, $key) {
 	}
 	return $newArray;
 }
+
+if (isset($_REQUEST['display'])) {
+	$display = $_REQUEST['display'];
+} else {
+	$display = "chicago-legacy";
+}
+
 ?>
 </head>
-<body onload='showSite("chicago-legacy")'>
+<body onload='showSite("<?= $display ?>")'>
 <? include('menu.html'); ?>
 <h2>Site Info Page</h2>
 Click a site name below. 
