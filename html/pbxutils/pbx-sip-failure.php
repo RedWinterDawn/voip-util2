@@ -1,5 +1,6 @@
 <?php
 
+include('loadUpdate.php');
 $guiltyParty = $_SERVER['REMOTE_ADDR'];
 $requestTime = strftime('%Y-%m-%d %H:%M:%S');
 $mail_to='noc@getjive.com';
@@ -79,6 +80,13 @@ if ($rwutil = pg_connect("host=rwdb dbname=util user=postgres"))
 				$mail_body=$requestTime . " " . $mail_subject;
 				mail($mail_to, $mail_subject,$mail_body);
 
+				$rwCDR = pg_connect("host=cdr user=postgres dbname=asterisk");
+				if (!serverLoadUpdate($rwCDR, $rwutil, $row['ip'], $standbyRow['ip'])) {
+					$mail_subject = "${row['ip']}, ${standbyRow['ip']} failed abandon";
+					$mail_body = "$guiltyParty, $requestTime";
+					mail("ajensen@getjive.com",$mail_subject, $mail_body);
+				}					
+				pg_close($rwCDR);
 				//update events db
 				//Conecting to event db
 				
