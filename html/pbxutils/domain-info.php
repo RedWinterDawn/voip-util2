@@ -54,7 +54,7 @@ if (pg_fetch_all($mplsResults))
 $dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ")
     or die('Could not connect: ' . pg_last_error());
 
-$domainQuery = "SELECT domain,name,assigned_server,id,outbound_proxy,presence_server,state,local_area_code,id,v5 FROM resource_group WHERE domain='" . $domain . "';";
+$domainQuery = "SELECT domain,name,assigned_server,id,outbound_proxy,presence_server,state,local_area_code,id,v5,v5candidate FROM resource_group WHERE domain='" . $domain . "';";
 $domainResult = pg_query($domainQuery) or die('Domain query failed: ' . pg_last_error());
 
 while ($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
@@ -78,8 +78,12 @@ while ($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
 	} else {
 		$santa = 'v4 presence';
 	}
+	if ($domainRow['v5'] == 't') { $v5 = "TRUE"; }
+	if ($domainRow['v5'] == 'f') { $v5 = "false"; }
+	if ($domainRow['v5candidate'] == true) { $v5candidate = "TRUE"; }
+	if ($domainRow['v5candidate'] == false) { $v5 = "false"; }
     echo "<table border=1>\n";
-    echo "<tr><th>Domain</th><th>Name</th><th>Server</th><th>ID</th><th>Proxy</th><th>Presence</th><th>Domain Status</th><th>Area Code</th><th>MPLS</th><th>v5 migrated</th></tr>\n";
+    echo "<tr><th>Domain</th><th>Name</th><th>Server</th><th>ID</th><th>Proxy</th><th>Presence</th><th>Domain Status</th><th>Area Code</th><th>MPLS</th><th>v5 migrated</th><th>v5 candidate</th></tr>\n";
 	echo "<th><a href='domain-edit.php?domain=" . $domainRow['domain'] . "'>" . $domainRow['domain'] . "</a></th>"
 		. "<th>" . $domainRow['name'] . "</th>"
 		. "<th><a href='pbx-server-info.php?server=" . $domainRow['assigned_server'] . "'>" . $domainRow['assigned_server'] . "</a></th>"
@@ -89,7 +93,8 @@ while ($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
 		. "<th>" . $domainRow['state'] . "</th>"
 		. "<th>" . $domainRow['local_area_code'] . "</th>"
 		. "<th>" . $mpls . "</th>"
-		. "<th>" . $domainRow['v5'] . "</th>"
+		. "<th>$v5</th>"
+		. "<th>$v5candidate</th>"
 		. "\n";
 
     $typeQuery = "SELECT type_id, count(type_id) as count FROM user_agent WHERE resource_group_id='" . $domainRow['id'] . "' GROUP BY type_id ORDER BY count DESC;";

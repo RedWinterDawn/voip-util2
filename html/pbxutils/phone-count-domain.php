@@ -6,12 +6,12 @@ $requestTime = strftime('%Y-%m-%d %H:%M:%S');
 
 $alldomains = true;
 
-if (isset($_GET["action"]))
+if (isset($_GET["phoneType"]))
 {
-    $action = $_GET["action"];
+    $phoneType = $_GET["phoneType"];
 } else
 {
-    $action = "List";
+    $phoneType = "List";
 }
 
 // Connecting, selecting database
@@ -19,21 +19,23 @@ $dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ")
     or die('Could not connect: ' . pg_last_error());
 
 // SQL Query
-// $typeQuery = "SELECT type_id, count(type_id) as count FROM user_agent GROUP BY type_id ORDER BY count DESC;";
-$typeQuery = "SELECT type_id, count(type_id) as count FROM user_agent
+$typeQuery = "SELECT count(type_id) as total,resource_group.domain
+	FROM user_agent
 	LEFT JOIN resource_group ON user_agent.resource_group_id = resource_group.id
 	WHERE resource_group.state = 'ACTIVE'
-	GROUP BY type_id ORDER BY count DESC;";
+	 AND type_id = '" . $phoneType . "'
+	GROUP BY resource_group.domain
+	ORDER BY total DESC;";
 $typeResult = pg_query($typeQuery) or die('Type query failed: ' . pg_last_error());
 
 // Printing results in HTML
 $totalCount = 0;
 echo "<table border=1>\n";
-echo "<tr><th>Type</th><th>Count</th></tr>\n";	
+echo "<tr><th>Count</th><th>Domain</th></tr>\n";
 while ($typeRow = pg_fetch_array($typeResult, null, PGSQL_ASSOC)) {
     echo "\t<tr>\n";
     // foreach ($typeRow as $col_value) {echo "\t\t<td>$col_value</td>\n";}
-	echo "\t\t<td><a href=\"phone-count-domain.php?phoneType=" . $typeRow['type_id'] . "\">" . $typeRow['type_id'] . "</a></td><td>" . $typeRow['count'] . "</td>\n";
+	echo "\t\t<td>" . $typeRow['total'] . "</td><td><a href='domain-info.php?domain=" . $typeRow['domain'] . "'>" . $typeRow['domain'] . "</a></td>\n";
 	$totalCount = $totalCount + $typeRow['count'];
     echo "\t</tr>\n";
 }
@@ -57,6 +59,4 @@ pg_free_result($nullCountResult);
 
 pg_close($dbconn);
 ?>
-
-
 
