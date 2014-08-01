@@ -107,16 +107,17 @@ if ($action=="help")
 if ($action=="search")
 {
 	$dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ") or die('Could not connect to "pbxs" database: ' . pg_last_error());
-	$curAssignmentQ = "SELECT name, domain, assigned_server, location, id, v5 FROM resource_group WHERE domain LIKE '".$search."' ORDER BY domain LIMIT 50;";
+	$curAssignmentQ = "SELECT name, domain, assigned_server, location, id, v5, v5candidate FROM resource_group WHERE domain LIKE '".$search."' ORDER BY domain LIMIT 50;";
 	$curAssignment = pg_fetch_all(pg_query($curAssignmentQ)) or die ("Current Placement Search Failed or No Results: ".pg_last_error());
 	pg_close($dbconn);
 
 	//Output HTML (note and the beginning of the table including column headers
-	echo "<table border='1'><tr><th>v5</th><th>Name</th><th>Domain</th><th>Location</th><th>Server</th><th>Migrate to v4</th><th>Migrate to v5</th></tr>";
+	echo "<table border='1'><tr><th>v5</th><th>Name</th><th>Domain</th><th>Location</th><th>Server</th><th>Migrate to v4</th><th>Migrate to v5</th><th>v5 Candidate</th></tr>";
 
 	foreach($curAssignment as $dom) //Loop through the domains we found in our first query
 	{
 		if ($dom['v5'] != 't') { $v5 = 'FALSE'; } else { $v5 = 'TRUE'; }
+		if ($dom['v5candidate'] != 't') { $v5candidate = 'FALSE'; } else { $v5candidate = 'TRUE'; }
 		$listDomain = $dom['domain'];
 		echo "<tr>
 			<td>".$v5."</td>
@@ -143,7 +144,8 @@ if ($action=="search")
 		} else {
 			echo "<td></td>";
 		}
-
+        
+	    echo "<td>".$v5candidate."</td>";
 		echo "</tr>"; 
 	}
 	echo "</table></div>";

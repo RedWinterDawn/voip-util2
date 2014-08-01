@@ -28,6 +28,31 @@ if (isset($_GET["hideList"]))
     $showList = true;
 }
 
+//#########################//
+//   Change v5candidate    //
+//#########################//
+if (isset($_GET["setV5candidate"])){
+	$toggleSetting = $_GET["setV5candidate"];
+	$rwdb = pg_connect("host=rwdb dbname=pbxs user=postgres ") or die('Could not connect: ' . pg_last_error());
+	if ($toggleSetting == "toggle") {
+		$v5candidateSelectQuery = "SELECT v5candidate FROM resource_group WHERE domain='$domain';";
+		$v5candidateSelectResult = pg_query($rwdb,$v5candidateSelectQuery) or die('v5candidate select query failed (' . $v5candidateSelectQuery . '): ' . pg_last_error());
+		$v5candidateSelectRow = pg_fetch_array($v5candidateSelectResult, null, PGSQL_ASSOC);
+		if ($v5candidateSelectRow["v5candidate"] == 't') { $v5candidateNewValue = "false"; } 
+		if ($v5candidateSelectRow["v5candidate"] == 'f') { $v5candidateNewValue = "true"; } 
+		pg_free_result($v5candidateSelectResult);
+	} else {
+		#
+		if ($toggleSetting == 'false') { $v5candidateNewValue = "false"; } 
+		if ($toggleSetting == 'true') { $v5candidateNewValue = "true"; } 
+	}
+	echo "<pre>$domain v5candidate new value = [$v5candidateNewValue]</pre><br/>";
+	$v5candidateUpdateQuery = "UPDATE resource_group SET v5candidate=$v5candidateNewValue WHERE domain='$domain';";
+	$v5candidateUpdateResult = pg_query($rwdb,$v5candidateUpdateQuery) or die('v5candidate update query failed: ' . pg_last_error());
+	pg_free_result($v5candidateUpdateResult);
+    pg_close($rwdb);
+}
+
 //#####################//
 //   Change Presence   //
 //#####################//
@@ -76,7 +101,7 @@ if ($showList == true){
 	sleep(1);
 	$dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ") or die('Could not connect: ' . pg_last_error());
 
-	$domainQuery = "SELECT domain,name,assigned_server,id,outbound_proxy,presence_server,state,id FROM resource_group WHERE domain='" . $domain . "';";
+	$domainQuery = "SELECT domain,name,assigned_server,id,outbound_proxy,presence_server,state,id,v5,v5candidate FROM resource_group WHERE domain='" . $domain . "';";
 	$domainResult = pg_query($domainQuery) or die('Domain query failed: ' . pg_last_error());
 
 	//Get Santa servers
@@ -92,13 +117,18 @@ if ($showList == true){
             $santa = 'v4 presence';
         }
 
+		if ($domainRow['v5candidate'] == 't') { $v5candidate = "TRUE"; }
+		if ($domainRow['v5candidate'] == 'f') { $v5candidate = "false"; }
+
 	    echo "<table border=1>\n";
-	    echo "<tr><th>Domain</th><th>Name</th><th>Server</th><th>ID</th><th>Proxy</th><th>Presence</th><th>Customer State</th></tr>\n";
+	    echo "<tr><th>Domain</th><th>Name</th><th>Server</th><th>ID</th><th>Proxy</th><th>Presence</th><th>Customer State</th><th>v5</th><th>v5 candidate</th></tr>\n";
 		echo "<tr>"
 			. "<td>" . $domainRow['domain'] . "</td><td>" . $domainRow['name'] . "</td><td><a href='pbx-server-info.php?server=" . $domainRow['assigned_server']. "'>" 
 			. $domainRow['assigned_server'] . "</a></td><td>" . $domainRow['id'] . "</td><td>" . $domainRow['outbound_proxy'] . "</td><td>" . $santa . "</td>" 
 			. "<td>" . $domainRow['state'] . "</td>"
-			. "</tr>\n";
+			. "<td>" . $domainRow['v5'] . "</td>"
+			. "<td>" . $v5candidate . " <a href='domain-edit.php?domain=" . $domain . "&setV5candidate=toggle'>[toggle]</a></td>"
+			. "</tr>";
 	    echo "</table>\n";
 		echo "<br/>\n";
 		echo "<table border=1>\n";
