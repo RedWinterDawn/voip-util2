@@ -132,7 +132,7 @@ if ($action=="search")
 	//Actually connect to postgres for the queries we'll be making
 
 	$dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ") or die('Could not connect to "pbxs" database: ' . pg_last_error());
-	$curAssignmentQ = "SELECT name, domain, assigned_server, location, id FROM resource_group WHERE domain LIKE '".$search."' ORDER BY domain LIMIT 50;";
+	$curAssignmentQ = "SELECT name, domain, assigned_server, location, id FROM resource_group WHERE domain LIKE '".$search."' AND (v5 is null or v5=false) ORDER BY domain LIMIT 50;";
 	$curAssignment = pg_fetch_all(pg_query($curAssignmentQ)) or die ("Current Placement Search Failed or No Results: ".pg_last_error());
 	pg_close($dbconn);
 
@@ -356,6 +356,7 @@ if (isset($dest[0])) //Make sure we got a destination...
 		echo "</p></div>";
 	} else
 	{
+		
 		if($exitcode==5)
 		{
 			echo "<p class='green'>Note: Your files were already in the specified location</p>";
@@ -386,7 +387,7 @@ if (isset($dest[0])) //Make sure we got a destination...
 			if (!$utilConn) { echo "UTIL Connection failed"; }
 			$clientID = pg_fetch_result(pg_query($dbconn, "SELECT id FROM resource_group WHERE domain = '$domain';"), 0);
 			if (!domainLoadUpdate($cdrConn, $utilConn, $dest[0], $clientID)) {
-				echo "<p class='red'>Load for this client failed to update</p>This is minor... but maybe tell devops.<br>";
+				echo "<p class='yellow'>Load for this client failed to update</p>This is doesn't affect the client at all... but maybe tell ajensen@getjive.com.<br>";
 			}	
 
 			pg_close($cdrConn);

@@ -168,7 +168,7 @@ if ($action=="v5migrate")
 	$dbconn = pg_connect("host=rwdb dbname=pbxs user=postgres ") or die('Could not connect: '.pg_last_error());
 	$updateQuery = "UPDATE resource_group SET v5=true,v5candidate=true,assigned_server='199.36.251.38' WHERE domain = '".$domain."' RETURNING id;";
 	$updateRow = pg_fetch_row(pg_query($dbconn, $updateQuery)) or die("<p class='red'>Failed to update database: ".pg_last_error()."</p></div>");
-	//$id = $updateRow['id'];
+	$id = $updateRow['0'];
 	pg_close($dbconn);
 
 	//Flush memchached
@@ -193,9 +193,8 @@ if ($action=="v5migrate")
 	$eventDb = pg_connect("host=rwdb dbname=events user=postgres") or die('Could not connect: '. pg_last_error());
 	$description = $guiltyParty." migrated ".$domain." to ".$platform;
 	$eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description) VALUES(DEFAULT, '" . $description . "') RETURNING id;"));
-	$id = $eventID['id'];
 			
-	pg_query($eventDb, "INSERT INTO event_domain VALUES('" . $eventID['id'] . "', '" .$id. "')");
+	pg_query($eventDb, "INSERT INTO event_domain VALUES('" . $eventID['0'] . "', '" .$id. "')");
 	pg_close($eventDb); //Close the event DB connection
 
 	// Execute voicemail migration
@@ -222,7 +221,7 @@ if ($action=="v4migrate")
 	$dbconn = pg_connect("host=rwdb dbname=pbxs user=postgres ") or die('Could not connect: '.pg_last_error());
 	$updateQuery = "UPDATE resource_group SET v5=false,assigned_server='10.101.7.1' WHERE domain = '".$domain."' RETURNING id;";
 	$updateRow = pg_fetch_row(pg_query($dbconn, $updateQuery)) or die("<p class='red'>Failed to update database: ".pg_last_error()."</p></div>");
-	$id = $updateRow['id'];
+	$id = $updateRow['0'];
 	pg_close($dbconn);
 
 	//Flush memchaced
@@ -247,9 +246,8 @@ if ($action=="v4migrate")
 	$eventDb = pg_connect("host=rwdb dbname=events user=postgres") or die('Could not connect: '. pg_last_error());
 	$description = $guiltyParty." migrated ".$domain." to ".$platform;
 	$eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description) VALUES (DEFAULT, '" . $description . "') RETURNING id;"));
-	$id = $eventID['id'];
 			
-	pg_query($eventDb, "INSERT INTO event_domain VALUES('" . $eventID['id'] . "', '" .$id. "')");
+	pg_query($eventDb, "INSERT INTO event_domain VALUES('" . $eventID['0'] . "', '" .$id. "')");
 	pg_close($eventDb); //Close the event DB connection
 
 	// Execute voicemail migration

@@ -16,7 +16,11 @@ function domainLoadUpdate($cdrConn, $utilConn, $new, $client) {
 //	echo "DEBUG: $thisPrev, $thisLoad, $new, $client ";
 	//pg_fetch_result returns false on errors. 
 	if (!$thisPrev || !$thisLoad) {
-		return false;
+		//if the $thisLoad is an integer, then the query returned 0, otherwise, the query returned false.  
+		if (gettype($thisLoad == 'integer')) {
+			return true;
+		}
+	return false;
 	}
 
 	//Make sure our queries are ready for pg_query

@@ -12,7 +12,7 @@ function eventTable($id)
 	$eventQuery = "SELECT added, description from event, (SELECT event_id FROM event_domain WHERE domain_id='".$id."') as domain WHERE event.id = domain.event_id order by number desc limit 10;";
 	$eventArray = pg_fetch_all(pg_query($eventdb, $eventQuery)); //or die('Event query failed: ' . pg_last_error());
 	pg_close($eventdb);
-	echo "<tr><td></td><td></td><td colspan=8 rowspan=13 valign=top>
+	echo "<tr><td></td><td></td><td colspan=9 rowspan=13 valign=top>
 		<table>
 		<tr><th colspan=2 width='900'>Last 10 Events</th></tr>
 		<tr><th>Date</th><th>Description</th></tr>";
@@ -102,7 +102,7 @@ while ($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
 	$event = true;
 	$count = 0;
 
-    echo "<tr><th>Type</th><th>Count</th><td colspan=8 rowspan=10><h3>Enabled Feature Flags</h3><pre>" . $domainFlags . "</pre></td></tr>\n";	
+    echo "<tr><th>Type</th><th>Count</th><td colspan=9 rowspan=10><h3>Enabled Feature Flags</h3><pre>" . $domainFlags . "</pre></td></tr>\n";	
     while ($typeRow = pg_fetch_array($typeResult, null, PGSQL_ASSOC)) {
         echo "\t<tr>";
         foreach ($typeRow as $col_value) { echo "\t\t<td>$col_value</td>\n"; }
