@@ -162,7 +162,10 @@ if ($action == "submit")
 {
 	echo "<br><br><form action='emhalt.php' method='POST' target='_blank'>
 		<input type='hidden' name='stop' value='true' />
-		<input type='submit' value='KILL IT WITH FIRE' /> 
+		<input type='submit' value='Stop Migration' /> 
+		</form><form action='emhalt.php' method='POST' tartet='_blank'>
+		<input type='hidden' name='clear' value='true' />
+		<input type='submit' value='Unblock Migration' />
 		</form>";
 	$maxLoad = 14000000; //How many seconds of RTP in 7 days can a server handle? default 14,000,000 
 	//Find out how much load the clients cause on our servers: 
@@ -232,9 +235,9 @@ if ($action == "submit")
 
 			//The if a file named "STOPMIGRATION is placed in the same directory as this script, it will stop. The emhalt.php script does this automatically for convenience. 
 			if (file_exists("STOPMIGRATION")) {
-				echo "<p class='red'>This script received an EMERGENCY HALT and has stopped</p>";
+				echo "<p class='red'>This script has been stopped</p>";
 				echo "<br>If this was not intentional, check the contents of /var/www/html/pbxutils/STOPMIGRATION<br>";
-				die ("--EXECUTION COULD NOT CONTINUE... DYING--");
+				die ("--Exiting--");
 			}
 			//Check to see if the DATACENTER has been changed for the client. 
 			//
