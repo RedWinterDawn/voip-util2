@@ -154,7 +154,7 @@ if ($action=="search")
 	{	
 		//Actually connect to postgres for the queries we'll be making
     	$eventsDB = pg_connect("host=rodb dbname=events user=postgres ") or die('Could not connect to "events" database: ' . pg_last_error());
-		$eventQ = "SELECT added AT TIME ZONE 'UTC', id, description FROM event WHERE added BETWEEN (timestamp '".$search."' AT TIME ZONE 'America/Boise') AND ((timestamp '".$search."' + interval '1 day') AT TIME ZONE 'America/Boise');";
+		$eventQ = "SELECT added AT TIME ZONE 'UTC', id, description FROM event WHERE added BETWEEN (timestamp '".$search."' AT TIME ZONE 'America/Boise') AND ((timestamp '".$search."' + interval '1 day') AT TIME ZONE 'America/Boise') ORDER BY added;";
 		$eventArray = pg_fetch_all(pg_query($eventsDB, $eventQ));
 		pg_close($eventsDB);
 		$count = 0;
@@ -195,7 +195,7 @@ if ($action=="domainList" && isset($eventID))
 
 	//Connect to the pbxsDB and get all the domains 
 	$pbxsDB = pg_connect("host=rodb dbname=pbxs user=postgres ") or die('Could not connect to "pbxs" database: ' . pg_last_error());
-	$pbxq = "SELECT domain, name FROM resource_group WHERE ";
+	$pbxq = "SELECT domain, name, assigned_server FROM resource_group WHERE ";
 	$first = true;
 	foreach($eventArray as $event)
 	{
@@ -208,14 +208,15 @@ if ($action=="domainList" && isset($eventID))
 		}
 		$pbxq .= "id = '" .$event[domain_id]. "' ";	
 	}
+	$pbxq .= 'ORDER BY assigned_server';
 	$pbxArray = pg_fetch_all(pg_query($pbxsDB, $pbxq)) or die("Domain search failed or no results: " . pg_last_error());
 	pg_close($pbxsDB);
 	echo "<h2>".sizeof($pbxArray)." Domains affected by: " .$eventDescrip. "</h2>";
-	echo "<table border='1'<tr><th>Domain</th><th>Name</th></tr>";
+	echo "<table border='1'<tr><th>Domain</th><th>Name</th><th>Current Location</th></tr>";
 	foreach($pbxArray as $pbx)
 	{
 	echo "<tr><td><a href=\"domain-info.php?domain=" . $pbx[domain] . "\">".$pbx[domain]."</a></td>
-			  <td> " .$pbx[name]. "</td>
+			  <td> " .$pbx[name]. "</td><td>".$pbx[assigned_server]."</td>
 			  </tr>";
 	}
 	echo "</table>";

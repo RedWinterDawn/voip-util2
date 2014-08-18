@@ -80,8 +80,8 @@ while ($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
 	}
 	if ($domainRow['v5'] == 't') { $v5 = "TRUE"; }
 	if ($domainRow['v5'] == 'f') { $v5 = "false"; }
-	if ($domainRow['v5candidate'] == true) { $v5candidate = "TRUE"; }
-	if ($domainRow['v5candidate'] == false) { $v5 = "false"; }
+	if ($domainRow['v5candidate'] == 't') { $v5candidate = "TRUE"; }
+	if ($domainRow['v5candidate'] == 'f') { $v5candidate = "false"; }
     echo "<table border=1>\n";
     echo "<tr><th>Domain</th><th>Name</th><th>Server</th><th>ID</th><th>Proxy</th><th>Presence</th><th>Domain Status</th><th>Area Code</th><th>MPLS</th><th>v5 migrated</th><th>v5 candidate</th></tr>\n";
 	echo "<th><a href='domain-edit.php?domain=" . $domainRow['domain'] . "'>" . $domainRow['domain'] . "</a></th>"
