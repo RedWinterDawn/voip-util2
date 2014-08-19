@@ -67,7 +67,7 @@ th {
   color: LimeGreen;
 }
 
-td, table {
+table {
   background: #222;
   border: 2px solid grey;
 }
