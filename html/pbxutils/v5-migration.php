@@ -171,6 +171,10 @@ if ($action=="v5migrate")
 	$id = $updateRow['0'];
 	pg_close($dbconn);
 
+	// Flip the reports feature flag
+	exec('curl -X PUT http://10.104.1.190:8083/features/' . $id . '/reports.beta?setting=ENABLED');
+	echo "<p>Flipped reporting flag</p>\n";
+
 	//Flush memchached
 	if($flush=="Y")
 	{
@@ -189,7 +193,7 @@ if ($action=="v5migrate")
 	}
 
 	//Record event in the event database
-	echo "<p>Updating Event DB</p>";
+	echo "<p>Updating Event DB</p>\n";
 	$eventDb = pg_connect("host=rwdb dbname=events user=postgres") or die('Could not connect: '. pg_last_error());
 	$description = $guiltyParty." migrated ".$domain." to ".$platform;
 	$eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description) VALUES(DEFAULT, '" . $description . "') RETURNING id;"));
@@ -198,7 +202,7 @@ if ($action=="v5migrate")
 	pg_close($eventDb); //Close the event DB connection
 
 	// Execute voicemail migration
-	echo "<p>Migrating Voicemail</p>";
+	echo "<p>Migrating Voicemail</p>\n";
 	exec('python26 /opt/jive/voicemailMigration/migration/migration/masterMigration.py '.$domain.' >>/tmp/v5migrate-$domain', $voicemailOutput, $exitcode);
 
 	echo "<div><p>Migration of $domain to v5 complete</p></div><hr/>";
