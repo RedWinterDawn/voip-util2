@@ -363,10 +363,10 @@ if ($action == "ListStatus")
 		// Find unique sites
 		$uniqueResult = pg_fetch_all_columns(pg_query("SELECT DISTINCT location FROM pbxstatus ORDER BY location"), 0);
 		// query status table for all hosts
-		$result = pg_query($routil, "SELECT failgroup,location,vmhost,host,ip,status,message FROM pbxstatus ORDER BY failgroup,\"order\",status desc,ip limit 1000;");
+		$result = pg_query($routil, "SELECT failgroup,location,vmhost,host,ip,status,load,message FROM pbxstatus ORDER BY failgroup,\"order\",status desc,ip limit 1000;");
 		echo "<hr align='left' width='330'>|";	
 		foreach ($uniqueResult as $unique) {
-			echo " <a href='javascript:showPage(\"$unique\")'>$unique</a> |";
+			echo " <a href='pbx-availability.php?display=$unique'>$unique</a> |";
 		}
 		echo "<br><hr align='left' width='330'>";
 		/*$currentSite = "notset";
@@ -381,13 +381,17 @@ if ($action == "ListStatus")
 				$currentSite = $row['location'];
 				echo "<div class='group' id='$currentSite'>";
 				echo "<table border='1'>\n";
-				echo "<th>failgroup</th><th>vmhost</th><th>host</th><th>ip</th><th>status</th><th>activate</th><th>standby</th><th>abandon ship</th><th>message</th>\n";
+				echo "<th>failgroup</th><th>load</th><th>ip</th><th>status</th><th>activate</th><th>standby</th><th>abandon ship</th><th>message</th>\n";
 			}
 			$showControls = false;
+			$load = round($row['load'] / 140000,0);
+			$color = 'green';
+			if ($load > 85) { $color = 'yellow'; }
+			if ($load > 95) { $color = 'red'; }
+
 			echo "<tr>
 				<td class='group".$row['failgroup']."'>" . $row['failgroup'] . "</td>
-				<td>" . $row['vmhost'] . "</td>
-				<td>" . $row['host'] . "</td>
+				<td class='$color'>" . $load . "%</td>
 				<td><a href='pbx-server-info.php?server=" . $row['ip'] . "'>" . $row['ip'] . "</a></td>
 				<td><div";
 			if ($row['status'] == "active") { echo " class=\"green\" "; }
