@@ -331,28 +331,20 @@ if ($action == "SetSpecial")
 
 if ($action == "ReturnToSender")
 {
-	echo '<br/><br/><a href="pbx-availability.php">Return to list</a><br/>';
+	echo '<br/><br/><a href="pbx-availability.php?display='.$display.'">Return to list</a><br/>';
 }
 
 if ($action == "ListStatus")
 {
 	if ($routil = pg_connect("host=rodb dbname=util user=postgres "))
 	{
-		echo "<style type='text/css'>
-			.group {
-				display=none;
-			}
-			</style>
-			<script type='text/javascript'>
-				function showPage(_site) {
-					elems = document.getElementsByClassName('group');
-					for (var i = 0; i < elems.length; i++) {
-						elems[i].style.display=\"none\";
-					}
-					document.getElementById(_site).style.display=\"block\";
-				}		
-			</script>";
-		echo "<body onload='showPage(\"$display\")'>";
+		$dirties = pg_query($routil, "SELECT DISTINCT location FROM pbxstatus WHERE status = 'dirty'");
+		echo "<style>";
+		while ($d = pg_fetch_assoc($dirties)) {
+			echo "#${d['location']}-link { color: red; }";
+		}
+		echo "</style>";
+		echo "<body>";
 		echo "Enter IP alone to delete. IP + new field to update. All fields to add new.";
 		echo "<table><tr><th>PBX IP</th><th>Status</th><th>Location</th><th>Fail Group</th></tr>";
 		echo "<form action='' method='POST'><tr><td><input type='text' name='pbx' placeholder='e.g. 10.119.7.1'></td>";
@@ -360,29 +352,17 @@ if ($action == "ListStatus")
 		echo "<td><input type='text' name='location' placeholder='e.g. lax'></td>";
 		echo "<td><input type='text' name='fgroup' placeholder='e.g. 119'></td></tr>";
 		echo '<tr><td colspan="4" align="center"><input type="submit" name="action" value="'.$gobutton.'"></td></tr></form></table><br>';
-		// Find unique sites
-		$uniqueResult = pg_fetch_all_columns(pg_query("SELECT DISTINCT location FROM pbxstatus ORDER BY location"), 0);
 		// query status table for all hosts
-		$result = pg_query($routil, "SELECT failgroup,location,vmhost,host,ip,status,load,message FROM pbxstatus ORDER BY failgroup,\"order\",status desc,ip limit 1000;");
-		echo "<hr align='left' width='330'>|";	
-		foreach ($uniqueResult as $unique) {
-			echo " <a href='pbx-availability.php?display=$unique'>$unique</a> |";
-		}
-		echo "<br><hr align='left' width='330'>";
-		/*$currentSite = "notset";
-		echo "<div class='group' id='$currentSite'>";
-		echo "<table border='1'>\n";
-		echo "<th>failgroup</th><th>vmhost</th><th>host</th><th>ip</th><th>status</th><th>activate</th><th>standby</th><th>abandon ship</th><th>message</th>\n";
-		 */
+		$result = pg_query($routil, "SELECT failgroup,location,vmhost,host,ip,status,load,message FROM pbxstatus WHERE location = '$display' ORDER BY failgroup,\"order\",status desc,ip limit 1000;");
+
+		// Menu with red labels where the dirty pbxs are
+		include('pbx-menu.html');
+		
+		echo "<h2>$display</h2>";
+		echo "<table border=1>";
+		echo "<tr><th>failgroup</th><th>load</th><th>ip</th><th>status</th><th>activate</th><th>standby</th><th>abandon ship</th><th>message</th></tr>\n";
 		while ($row = pg_fetch_array($result, null, PGSQL_ASSOC))
 		{
-			if ($row['location'] != $currentSite) {
-				echo "</table></div>";
-				$currentSite = $row['location'];
-				echo "<div class='group' id='$currentSite'>";
-				echo "<table border='1'>\n";
-				echo "<th>failgroup</th><th>load</th><th>ip</th><th>status</th><th>activate</th><th>standby</th><th>abandon ship</th><th>message</th>\n";
-			}
 			$showControls = false;
 			$load = round($row['load'] / 140000,0);
 			$color = 'green';
@@ -408,19 +388,19 @@ if ($action == "ListStatus")
 			
 			if ($row['status'] == "active"){
 				echo "<td>-</td>";
-				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "\">set standby</a></td>";
+				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "&display=$display\">set standby</a></td>";
 				echo '<td><a href="pbx-sip-failure.php?server=' . $row['ip'] . '">abandon ship</a></td>';
 			} else if ($row['status'] == "clean") {
 				echo "<td>-</td>";
-				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "\">set standby</a></td>";
+				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "&display=$display\">set standby</a></td>";
 				echo "<td>-</td>";
 			} else if ($row['status'] == "dirty") {
-				echo "<td><a href=\"pbx-availability.php?action=SetActive&server=" . $row['ip'] . "\">set active</a></td>";
-				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "\">set standby</a></td>";
-				echo "<td><a href=\"clean.php?server=" . $row['host'] . "\">clean me</a></td>";
+				echo "<td><a href=\"pbx-availability.php?action=SetActive&server=" . $row['ip'] . "&display=$display\">set active</a></td>";
+				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "&display=$display\">set standby</a></td>";
+				echo "<td><a href=\"clean.php?server=" . $row['host'] . "&display=$display\">clean me</a></td>";
 			} else if ($showControls) {
-				echo "<td><a href=\"pbx-availability.php?action=SetActive&server=" . $row['ip'] . "\">set active</a></td>";
-				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "\">set standby</a></td>";
+				echo "<td><a href=\"pbx-availability.php?action=SetActive&server=" . $row['ip'] . "&display=$display\">set active</a></td>";
+				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "&display=$display\">set standby</a></td>";
 				echo "<td>-</td>";
 			} else {
 				echo "<td>-</td>";
@@ -428,11 +408,7 @@ if ($action == "ListStatus")
 				echo "<td>-</td>";
 			}
 			
-			echo "<form action='' method='get'><td>
-				<input type='hidden' name='server' value='" . $row['ip'] ."' />
-				<input type='hidden' name='action' value='MessageUpdate' />
-				<input type='text' name='message' placeholder='" . $row['message'] . "' size='96' />
-				</td></form>";
+			echo "<td>" . $row['message'] . "</td>";
 			echo "</tr>\n";
 		}
 		echo "</table><br/>\n";

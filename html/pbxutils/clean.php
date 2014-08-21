@@ -7,7 +7,10 @@ Clean Script
 <link rel='stylesheet' href='stylesheet.css'>
 </head>
 <body>
-<a href='pbx-availability.php'>Back to PBX Availability</a>
+<?
+$display = $_GET['display'];
+echo "<a href='pbx-availability.php?display=$display'>Back to PBX Availability</a>";
+?>
 <br>Please wait for more information.<br>
 <?
 ini_set('display_startup_errors',1);
