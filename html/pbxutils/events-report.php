@@ -127,11 +127,11 @@ if ($action=="search")
 			$i++;
 			if ($striped) //Should the line be blue or white?
 	        {
-	           echo "<tr bgcolor='#DDEEFF'>";
+	           echo "<tr bgcolor='#222'>";
 			   $striped=false;
 			} else
 			{
-	           echo "<tr bgcolor='#FFFFFF'>";
+	           echo "<tr bgcolor='#444'>";
 	           $striped=true;
 			}
 			//-------------------
