@@ -34,7 +34,7 @@ if (isset($_GET["birthday"])) {
 if ($showSelector == true) {
 	// Show domain and date selection controls
 	echo '<form>' . "\n";
-	echo 'Domain: <input type="search" name="domain" value="' . $domain . '"><br/>' . "\n";
+	echo 'Domain: <input type="text" name="domain" value="' . $domain . '"><br/>' . "\n";
 	echo 'Date: <input type="date" name="birthday" value="' . $reportDate . '"><br/>' . "\n";
 	echo '<input type="hidden" name="action" value="doSearch"/>' . "\n";
 	echo '<input type="submit"><br/>' . "\n";
