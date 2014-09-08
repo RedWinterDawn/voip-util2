@@ -14,11 +14,12 @@
 <h2>Welcome to ProdTools</h2>
 <div class="checkbox">
 	<form action="" method="POST">
-		<input type="hidden" name="action" value="search"> 
-		<p>Enter a domain to search: </p>
-		<p><input id="search" type="text" name="search" placeholder="Jive Domain" /></p>
+		<!--<input type="hidden" name="action" value="search"> -->
+		<p>Enter a domain/name to search: </p>
+		<p><input id="search" type="text" name="search" placeholder="Jive Domain/Name" /></p>
 		<p><input id="exact" class="checkbox" type="checkbox" name="exact"><label for="exact">Exact Search</label></p>
-		<p><input type="submit" value="Search" />
+		<p><input type="submit" name="action" value="Search Domain" />
+		   <input type="submit" name="action" value="Search Name" />
 	</form>
 </div>
 
@@ -28,7 +29,15 @@ $guiltyParty = $_SERVER['REMOTE_ADDR'];
 
 function search($searchTerm) {
 	$dbconn = pg_connect("host=rodb user=postgres dbname=pbxs") or die ('Could not connect to database '.pg_last_error());
-	$query = "SELECT name, domain, assigned_server, location, presence_server FROM resource_group WHERE domain like '$searchTerm'";
+	$query = "SELECT name, domain, assigned_server, location, presence_server FROM resource_group WHERE LOWER(domain) like LOWER('$searchTerm')";
+	$result = pg_fetch_all(pg_query($dbconn, $query)) or die ('No search results! '.pg_last_error());
+	pg_close($dbconn);
+	return $result;
+}
+
+function searchName($searchTerm) {
+	$dbconn = pg_connect("host=rodb user=postgres dbname=pbxs") or die ('Could not connect to database '.pg_last_error());
+	$query = "SELECT name, domain, assigned_server, location, presence_server FROM resource_group WHERE LOWER(name) like LOWER('$searchTerm')";
 	$result = pg_fetch_all(pg_query($dbconn, $query)) or die ('No search results! '.pg_last_error());
 	pg_close($dbconn);
 	return $result;
@@ -36,20 +45,18 @@ function search($searchTerm) {
 
 function drawTables($domains) {
 	echo "<br><br><table border='1'>
-		<tr><th>Name</th><th>Domain</th><th>Server</th><th>Location</th><th>Santa</th><th>Move this Domain</th><th>Events for this Domain</th><th>Call Reports for this Domain</th></tr>";
+		<tr><th>Name</th><th>Domain</th><th>Server</th><th>Location</th><th>Move this Domain</th><th>Events for this Domain</th><th>Call Reports for this Domain</th></tr>";
 	foreach ($domains as $domain) {
 		$name = $domain['name'];
 		$dom = $domain['domain'];
 		$server = $domain['assigned_server'];
 		$location = $domain['location'];
-		$santa= $domain['presence_server'];
 		$today = date("Y-m-d");
 		echo "<tr>
 		<td>$name</td>
 		<td><a href='domain-info.php?domain=$dom'>$dom</a></td>
 		<td><a href='pbx-server-info.php?server=$server'>$server</a></td>
 		<td>$location</td>
-		<td><a href='presence-server-info.php?server=$santa'>$santa</a></td>
 		<td><form action='simple-migration.php' method='POST'>
 			<input type='hidden' name='action' value='search' />
 			<input type='hidden' name='exact' value='true' />
@@ -71,7 +78,7 @@ function drawTables($domains) {
 	return;
 }
 switch ($action) {
-    case "search":
+    case "Search Domain":
         //Assign the "search" variable
         $search = $_REQUEST["search"];
         //Make sure they're not trying to inject anything
@@ -93,6 +100,18 @@ switch ($action) {
 		$domainInfo = search($search);
 		drawTables($domainInfo);
         break;
+	case "Search Name":
+		$search = $_REQUEST["search"];
+		if(isset($_REQUEST["exact"]))
+		{
+			//search is exact
+		}else
+		{
+			$search = "%".$search."%";
+		}
+		$domainInfo=searchName($search);
+		drawTables($domainInfo);
+		break;
 }
 ?>
 </body>

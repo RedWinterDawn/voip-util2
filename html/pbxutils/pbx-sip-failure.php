@@ -78,7 +78,8 @@ if ($rwutil = pg_connect("host=rwdb dbname=util user=postgres"))
 
 				$mail_subject=$row['host'] . " abandoned to " . $standbyRow['ip'] . " per " . $guiltyParty;
 				$mail_body=$requestTime . " " . $mail_subject;
-				mail($mail_to, $mail_subject,$mail_body);
+				$mail_headers='From: pbx-sip-failure@jive.com' . "\r\n";
+				mail($mail_to, $mail_subject,$mail_body,$mail_headers);
 
 				$rwCDR = pg_connect("host=cdr user=postgres dbname=asterisk");
 				if (!serverLoadUpdate($rwCDR, $rwutil, $row['ip'], $standbyRow['ip'])) {

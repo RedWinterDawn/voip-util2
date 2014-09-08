@@ -166,10 +166,15 @@ if ($action=="v5migrate")
 	//Update the database
 	echo "<p>Updating DB</p>";
 	$dbconn = pg_connect("host=rwdb dbname=pbxs user=postgres ") or die('Could not connect: '.pg_last_error());
-	$updateQuery = "UPDATE resource_group SET v5=true,v5candidate=true,assigned_server='199.36.251.38' WHERE domain = '".$domain."' RETURNING id;";
+	$updateQuery = "UPDATE resource_group SET v5=true,v5candidate=true,assigned_server='199.36.251.38' WHERE domain = '".$domain."' AND location = 'chicago-legacy' RETURNING id;";
 	$updateRow = pg_fetch_row(pg_query($dbconn, $updateQuery)) or die("<p class='red'>Failed to update database: ".pg_last_error()."</p></div>");
 	$id = $updateRow['0'];
 	pg_close($dbconn);
+
+	if ($id == '')
+	{
+		die("Domain not in CHI: " . $domain);
+	}
 
 	// Flip the reports feature flag
 	exec('curl -X PUT http://10.104.1.190:8083/features/' . $id . '/reports.beta?setting=ENABLED');

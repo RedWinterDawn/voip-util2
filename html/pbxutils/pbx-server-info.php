@@ -64,6 +64,7 @@ echo "<tr><th>domain</th><th>name</th><th>state</th><th>assigned_server</th><th>
 while ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
     $count = $count + 1;
 	if ($line['presence_server'] != '') { $santa = "v5 (<a href='presence-server-info.php?server=" . $line['presence_server'] . "'>" . $line['presence_server'] . "</a>)"; } else { $santa = "v4"; }
+	if ($line['location'] == $pbxDC) { $locationColor = 'green'; } else { $locationColor = 'red'; }
 	if ($line['v5candidate'] == 't') { $v5candidate = "TRUE"; }
 	if ($line['v5candidate'] == 'f') { $v5candidate = "false"; }
 	$loadTotal = $loadValues[$line['id']];
@@ -79,9 +80,9 @@ while ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
 		. "<td>" . $line['name'] . "</td>"
 		. "<td>" . $line['state'] . "</td>"
 		. "<td>" . $line['assigned_server'] . "</td>"
-		. "<td class='$color'>" . $loadPercent . "%</td>"
+		. "<td class='$color' align='right'>" . $loadPercent . "%</td>"
 		. "<td><center>" . $santa . "</center></td>"
-		. "<td>" . $line['location'] . "</td>"
+		. "<td class='$locationColor' align='center'>" . $line['location'] . "</td>"
 		. "<td><center>" . $v5candidate . "</center></td>";
     echo "</tr>\n";
 }
