@@ -1,2 +1,12 @@
 internal
 internal/*
+*.bak
+ext-5.0.1/
+info.php
+pbxutils/args.sh
+pbxutils/darrow.png
+pbxutils/hosttohostname.php
+pbxutils/nohup.out
+pbxutils/rarrow.png
+pbxutils/test.php
+test/
