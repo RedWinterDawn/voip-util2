@@ -59,7 +59,6 @@ $domainResult = pg_query($domainQuery) or die('Domain query failed: ' . pg_last_
 
 while ($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
 	$resource_group_id = $domainRow['id'];
-
     // Get feature flags for domain
     $url = "http://feature-flags:8083/features/" . $domainRow['id'] . "/enabled";
     $curl = curl_init($url);
@@ -72,12 +71,11 @@ while ($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
 	$domainFlags = str_replace("[","",$domainFlags);
 	$domainFlags = str_replace("]","",$domainFlags);
 	$domainFlags = str_replace("\"","",$domainFlags);
-
 	if ($domainRow['presence_server'] != ''){
 		$santa = "v5 (<a href='presence-server-info.php?server=" . $domainRow['presence_server'] . "'>" . $domainRow['presence_server'] . "</a>)";
 	} else {
 		$santa = 'v4 presence';
-	}
+  }
 	if ($domainRow['v5'] == 't') { $v5 = "TRUE"; }
 	if ($domainRow['v5'] == 'f') { $v5 = "false"; }
 	if ($domainRow['v5candidate'] == 't') { $v5candidate = "TRUE"; }
