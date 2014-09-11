@@ -34,7 +34,8 @@ $requestTime = strftime('%Y-%m-%d %H:%M:%S');
 
 $dbconn = pg_connect("host=db dbname=util user=postgres ") or die('Could not connect to "util" database: ' . pg_last_error());
 
-$guiltyParty = $_SERVER['REMOTE_ADDR'];
+include('guiltyParty.php');
+
 if (isset($_REQUEST['action']))
 {
 	$action = $_REQUEST['action'];

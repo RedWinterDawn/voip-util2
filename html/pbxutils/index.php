@@ -25,7 +25,7 @@
 
 <?
 $action = $_REQUEST['action'];
-$guiltyParty = $_SERVER['REMOTE_ADDR'];
+include('guiltyParty.php');
 
 function search($searchTerm) {
 	$dbconn = pg_connect("host=rodb user=postgres dbname=pbxs") or die ('Could not connect to database '.pg_last_error());

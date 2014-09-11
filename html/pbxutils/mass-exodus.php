@@ -1,8 +1,8 @@
 <?php
 
 include('loadUpdate.php');
+include('guiltyParty.php');
 header('Cache-Control: no-cache');
-$guiltyParty = $_SERVER['REMOTE_ADDR'];
 //We actually have enough clients that this script runs out of memory 
 //when working with the default 16 MB (can handle ~7,200 clients with 16 MB)
 ini_set('memory_limit', '64M');

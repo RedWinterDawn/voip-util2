@@ -33,8 +33,8 @@ if ($_SERVER['SERVER_ADDR'] == '10.101.8.1')
 }
 echo '</h2>';
 
+include('guiltyParty.php');
 $action = $_REQUEST["action"];
-$guiltyParty = $_SERVER['REMOTE_ADDR'];
 $domain = false;
 
 //Switch cases allow us to grab the right variables depending on which stage we're in.
