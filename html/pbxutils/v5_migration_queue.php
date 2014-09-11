@@ -20,12 +20,24 @@ echo '<div id="head" class="head">
 
 //Get Variables
 //action possibilites 
-//  search
-//  help
+//  search to be added
+//  help to be added
 //  add
-$action = $_REQUEST["action"];
-$domain = $_REQUEST["domain"];
-$guiltyParty = $_SERVER['REMOTE_ADDR'];
+if (isset ($_REQUEST["action"]))
+{
+  $action = $_REQUEST["action"];
+}else
+{
+  $action = 'add';
+}
+if (isset ($_REQUEST["domain"]))
+{
+  $domain = $_REQUEST["domain"];
+}else
+{
+  die (("No domain was passed in"));
+}
+include('guiltyParty.php');
 
 //============//
 //Add to Queue//
@@ -41,21 +53,19 @@ if ($action=='add')
 	$result = pg_query($rodb, $query) or die ('Can not find domain: '.$domain. ' ' .pg_last_error());
 	$result = pg_fetch_row($result);
 	$location = $result[0];
-    $server = $result[1];
-    $v5 = $result[2];
-	print $location;
-    print $server;
-    print $v5;
+  $server = $result[1];
+  $v5 = $result[2];
 	pg_close($rodb);
-    $utildb = pg_connect("host=rwdb user=postgres dbname=util") or die ('Failed to connect to utildb: '.pg_last_error());
+  $utildb = pg_connect("host=rwdb user=postgres dbname=util") or die ('Failed to connect to utildb: '.pg_last_error());
 	$query = "SELECT migrate_vm_to_v5 FROM v5_migration WHERE domain ='".$domain."';";
 	$inQueue = pg_query($utildb, $query);
 	if ($inQueue)
 	{
 		$inQueue = pg_fetch_row($inQueue);
-	    if ($inQueue[0] == 'Pending' || $inQueue[0] == 'In Progress')
+	  if ($inQueue[0] == 'Pending' || $inQueue[0] == 'In Progress')
 		{
-			die ("Migration of ".$domain. 
+      die ("Migration of ".$domain. " is ".$inQueue);
+    } 
 	}	
 	if ($v5=='t')
 	{
@@ -71,8 +81,11 @@ if ($action=='add')
 		$preflight = 'f';
 	}
 
-	$insert = "INSERT INTO v5_migration (domain, migrate_to_chi, preflight) VALUES ('".$domain."', '".$migrateToChi."', ".$preflight.");";
+	$insert = "INSERT INTO v5_migration (domain, migrate_to_chi, preflight) VALUES ('".$domain."', '".$migrateToChi."', '".$preflight."');";
 	print $insert;
-
+  print "<br>";
+  pg_query($utildb, $insert) or die ("failed to add ".$domain." to the queue: ".pg_last_error());
+  print "Added ".$domain." to be migrated to v5";
+  $pg_close($utildb);
 }
 ?>
