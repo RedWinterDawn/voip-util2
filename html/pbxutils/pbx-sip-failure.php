@@ -15,7 +15,7 @@ if (isset($_GET["server"]))
 
 if ($server == $guiltyParty)
 {
-	$guiltyParty = "AutoAbandon";
+	$guiltyParty = "AutoAbandon@" . $guiltyParty;
 }
 
 if ($routil = pg_connect("host=rodb dbname=util user=postgres"))
