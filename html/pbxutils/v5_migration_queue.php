@@ -47,7 +47,32 @@ if ($action=='add')
     print $server;
     print $v5;
 	pg_close($rodb);
+    $utildb = pg_connect("host=rwdb user=postgres dbname=util") or die ('Failed to connect to utildb: '.pg_last_error());
+	$query = "SELECT migrate_vm_to_v5 FROM v5_migration WHERE domain ='".$domain."';";
+	$inQueue = pg_query($utildb, $query);
+	if ($inQueue)
+	{
+		$inQueue = pg_fetch_row($inQueue);
+	    if ($inQueue[0] == 'Pending' || $inQueue[0] == 'In Progress')
+		{
+			die ("Migration of ".$domain. 
+	}	
+	if ($v5=='t')
+	{
+		die ($domain." Is already on v5");
+	}
+	if ($location='chicago-legacy' && preg_match("/10.101.7./", $server))
+	{
+		$migrateToChi = 'Completed';
+		$preflight = 't';
+	}else
+	{
+		$migratedToChi = 'Pending';
+		$preflight = 'f';
+	}
 
-    if (
+	$insert = "INSERT INTO v5_migration (domain, migrate_to_chi, preflight) VALUES ('".$domain."', '".$migrateToChi."', ".$preflight.");";
+	print $insert;
+
 }
 ?>
