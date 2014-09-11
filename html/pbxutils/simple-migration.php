@@ -16,6 +16,7 @@
  */
 
 // THIS SCRIPT REQUIRES THE FOLLOWING FILES: /var/www/migrate-pbx.sh and /var/www/migrate-files.sh
+include('guiltyParty.php');
 
 //CSS Styling:
 include('loadUpdate.php');
@@ -45,7 +46,6 @@ echo '</h2>';
 // move = The user has selected a domain to move
 // confirm = The user confirmed that the domain should be moved
 $action = $_REQUEST["action"];
-$guiltyParty = $_SERVER['REMOTE_ADDR'];
 
 //Switch cases allow us to grab the right variables depending on which stage we're in. 
 switch ($action) {
@@ -344,7 +344,7 @@ if (isset($dest[0])) //Make sure we got a destination...
 	// The 1st Migration
 	//------------------
 	//Call the "migrate-files.sh" script to move the files to the new location
-	exec('ssh -T -o StrictHostKeyChecking=no root@enc1 "/root/migrate-files.sh" '.$domain.' '.$location.' 2>/dev/null', $moveOutput, $exitcode);
+	exec('sudo ssh -T -o StrictHostKeyChecking=no root@enc1 "/root/migrate-files.sh" '.$domain.' '.$location.' 2>/dev/null', $moveOutput, $exitcode);
 	if ($exitcode > 9) //If for some reason we received a non-zero exit code, display the script output and exit code
 	{
 		echo "<p class='red'>".$domain." was NOT moved to ".$dest[0]." in ".$location."</p>";
@@ -364,8 +364,10 @@ if (isset($dest[0])) //Make sure we got a destination...
 		
 		//Make sure the files are in the datacenter
 		$filepath = "/cluster/sites/".$location."/pbxs/".$id."/";
-		$dirExists = is_dir($filepath);
-		if($dirExists==0)
+	//	$dirExists = http_get("http://10.101.8.1/".$filepath, $info);
+  //  print_r($info);
+  //  print "made it to here";
+		if($info['response_code']==200)
 		{
 			echo "<p class='red'> Files failed to copy to: ".$filepath."</p></div>";
 		}else
@@ -397,7 +399,7 @@ if (isset($dest[0])) //Make sure we got a destination...
 			//Flush memchaced
 			if($flush=="Y")
 			{
-				exec('/root/flush_memcached ', $flushOutput, $exitcode);
+				exec('sudo /root/flush_memcached ', $flushOutput, $exitcode);
 				if($flushOutput[0] != "OK" OR $flushOutput[1] != "OK")
 				{
 					echo"<p class='red'> Flushing Memcached failed.";

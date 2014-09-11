@@ -8,7 +8,7 @@
  *
  */
 
-
+include('guiltyParty.php');
 
 //CSS Styling:
 echo '<html><head><title>v5 Customer Migration</title>
@@ -41,7 +41,6 @@ echo '</h2>
 $action = $_REQUEST["action"];
 $domain = $_REQUEST["domain"];
 $id = $_REQUEST["id"];
-$guiltyParty = $_SERVER['REMOTE_ADDR'];
 $flush="Y";
 
 //Switch cases allow us to grab the right variables depending on which stage we're in. 
@@ -184,7 +183,7 @@ if ($action=="v5migrate")
 	if($flush=="Y")
 	{
 		echo "<p>Flushing memcache</p>";
-		exec('/root/flush_memcached ', $flushOutput, $exitcode);
+		exec('sudo /root/flush_memcached ', $flushOutput, $exitcode);
 		if($flushOutput[0] != "OK" OR $flushOutput[1] != "OK")
 		{
 			echo"<p class='red'> Flushing Memcached failed.";
@@ -208,7 +207,7 @@ if ($action=="v5migrate")
 
 	// Execute voicemail migration
 	echo "<p>Migrating Voicemail</p>\n";
-	exec('python26 /opt/jive/voicemailMigration/migration/migration/masterMigration.py '.$domain.' >>/tmp/v5migrate-$domain', $voicemailOutput, $exitcode);
+	exec('ssh -T -o StrictHostChecking=no root@10.101.8.1 "python26 /opt/jive/voicemailMigration/migration/migration/masterMigration.py" '.$domain.' >>/tmp/v5migrate-$domain', $voicemailOutput, $exitcode);
 
 	echo "<div><p>Migration of $domain to v5 complete</p></div><hr/>";
 } // End of Migrate to v5
@@ -237,7 +236,7 @@ if ($action=="v4migrate")
 	if($flush=="Y")
 	{
 		echo "<p>Flushing memcache</p>";
-		exec('/root/flush_memcached ', $flushOutput, $exitcode);
+		exec('sudo /root/flush_memcached ', $flushOutput, $exitcode);
 		if($flushOutput[0] != "OK" OR $flushOutput[1] != "OK")
 		{
 			echo"<p class='red'> Flushing Memcached failed.";

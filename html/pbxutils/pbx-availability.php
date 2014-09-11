@@ -1,6 +1,6 @@
 <link rel='stylesheet' href='stylesheet.css'>
 <?php
-$guiltyParty = $_SERVER['REMOTE_ADDR'];
+include('guiltyParty.php');
 $requestTime = strftime('%Y-%m-%d %H:%M:%S');
 $gobutton = "I'm feeling lucky!";
 $killbutton = "Kill it!";
