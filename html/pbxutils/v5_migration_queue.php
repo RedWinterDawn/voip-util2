@@ -82,10 +82,15 @@ if ($action=='add')
 	}
 
 	$insert = "INSERT INTO v5_migration (domain, migrate_to_chi, preflight) VALUES ('".$domain."', '".$migrateToChi."', '".$preflight."');";
-	print $insert;
-  print "<br>";
   pg_query($utildb, $insert) or die ("failed to add ".$domain." to the queue: ".pg_last_error());
   print "Added ".$domain." to be migrated to v5";
   $pg_close($utildb);
+
+   //Record event in the event database
+  $eventDb = pg_connect("host=rwdb dbname=events user=postgres") or die('Could not connect: '. pg_last_error());
+  $description = $guiltyParty." Queued ".$domain." to be migrated to v5";
+  $eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description) VALUES(DEFAULT, '" . $description . "') RETURNING id;"));
+  pg_query($eventDb, "INSERT INTO event_domain VALUES('" . $eventID['0'] . "', '" .$id. "')");
+  pg_close($eventDb); //Close the event DB connection
 }
 ?>
