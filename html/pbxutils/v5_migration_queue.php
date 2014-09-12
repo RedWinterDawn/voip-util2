@@ -77,7 +77,7 @@ if ($action=='add')
 		$preflight = 't';
 	}else
 	{
-		$migratedToChi = 'Pending';
+		$migrateToChi = 'Pending';
 		$preflight = 'f';
 	}
 
@@ -87,10 +87,11 @@ if ($action=='add')
   $pg_close($utildb);
 
    //Record event in the event database
-  $eventDb = pg_connect("host=rwdb dbname=events user=postgres") or die('Could not connect: '. pg_last_error());
+/*  $eventDb = pg_connect("host=rwdb dbname=events user=postgres") or die('Could not connect: '. pg_last_error());
   $description = $guiltyParty." Queued ".$domain." to be migrated to v5";
   $eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description) VALUES(DEFAULT, '" . $description . "') RETURNING id;"));
   pg_query($eventDb, "INSERT INTO event_domain VALUES('" . $eventID['0'] . "', '" .$id. "')");
   pg_close($eventDb); //Close the event DB connection
+ */
 }
 ?>
