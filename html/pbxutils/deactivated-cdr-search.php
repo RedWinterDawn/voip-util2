@@ -48,7 +48,7 @@ if ($action == "doSearch") {
 			echo '<td></td></tr>';
 		}else
 		{
-			echo "<td><a href='deactivated-cdr-search.php?action=archive&id=".$pbxRow["id"]."'>Archive</td></tr>";
+			echo "<td><a href='deactivated-cdr-search.php?action=archive&id=".$pbxRow["id"]."'>Archive</a></td></tr>";
 			$count ++;
 		}
 		//die('test to here');
