@@ -257,7 +257,7 @@ if ($action == "submit")
 				$thisLoad = $client['load'];
 				echo "<p class='green'>$thisName (load: $thisLoad) moving to $thisServer in $thisLocation</p>";	
 				//Execute an SSH call to move the client's files
-				exec("ssh -T -o StrictHostKeyChecking=no -i /var/www/.ssh/internal-only root@enc1 /root/migrate-files.sh $thisName $thisLocation", $sshOutput, $sshStatus);
+				exec("sudo ssh -T -o StrictHostKeyChecking=no -i /var/www/.ssh/internal-only root@enc1 /root/migrate-files.sh $thisName $thisLocation", $sshOutput, $sshStatus);
 				//As long as the ssh returned an ok status, continue
 				if ($sshStatus != 0) {
 					echo "<br>ERROR<br>";
