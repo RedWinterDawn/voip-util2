@@ -17,7 +17,7 @@ if ($print=='false')
 	echo '<html><head><title>Event Reports</title>
 	<style type="text/css">
 	#pretty {vertical-align: bottom;}
-	#</style><link rel="stylesheet" href="stylesheet.css"></head>';
+	#</style></head>';
 }
 
 //"Header"
@@ -31,7 +31,7 @@ $domain = false;
 //Switch cases allow us to grab the right variables depending on which stage we're in.
 switch ($action) {
 	case "help":
-		//no other vars have been posted.
+    $action = "help"; 
 		break;
 	case "search":
 		//Assign the "search" variable
@@ -86,8 +86,8 @@ switch ($action) {
 echo '<div class="checkbox"><form action="" method="POST">
     <input type="hidden" name="action" value="search">
 	<p>Enter a domain or date to search: </p>
-	<p>Domain: <input type="text" name="domain" /></p>
-	<p>Date: <input type="date" name="dSearch" /></p>
+	<p>Domain: <input type="text" name="domain" placeholder="e.g. jivedemo"/></p>
+	<p>Date: <input type="date" name="dSearch" placeholder="YYYY-mm-dd"/></p>
 	<p>Enter a domain or search will default to a date search </p>
 	<p><input id="exact" class="checkbox" type="checkbox" name="exact"><label for="exact">Exact Search</label></p>
     <p><input type="submit" value="Search" />
@@ -116,19 +116,10 @@ if ($action=="search")
 	    foreach($curAssignment as $dom) //Loop through the domains we found in our first query
 		{
 			$i++;
-			if ($striped) //Should the line be blue or white?
-	        {
-	           echo "<tr bgcolor='#222'>";
-			   $striped=false;
-			} else
-			{
-	           echo "<tr bgcolor='#444'>";
-	           $striped=true;
-			}
 			//-------------------
 			// Building the table
 			//-------------------
-			echo "<td>
+			echo "<tr><td>
 				<a href=\"domain-info.php?domain=" . $dom['domain'] . "\">".$dom['domain']."</a></td>
 				<td>".$dom['name']."</td>
 				<td>".$dom['location']."</td>
@@ -169,6 +160,10 @@ if ($action=="search")
 			echo "</table></div>";
 		}
 	}
+}
+
+if ($action=="help") {
+  echo "This page displays events that may affect clients. Note that migrations and abandons do not necessarily indicate that user experience has been affected.";
 }
 //===============
 //Display Domains=====================================================================================================
