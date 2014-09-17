@@ -397,7 +397,7 @@ if ($action == "ListStatus")
 			} else if ($row['status'] == "dirty") {
 				echo "<td><a href=\"pbx-availability.php?action=SetActive&server=" . $row['ip'] . "&display=$display\">set active</a></td>";
 				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "&display=$display\">set standby</a></td>";
-				echo "<td><a href=\"clean.php?server=" . $row['host'] . "&display=$display\">clean me</a></td>";
+				echo "<td><a href=\"http://10.101.8.1/pbxutils/clean.php?server=" . $row['host'] . "&display=$display\">clean me</a></td>";
 			} else if ($showControls) {
 				echo "<td><a href=\"pbx-availability.php?action=SetActive&server=" . $row['ip'] . "&display=$display\">set active</a></td>";
 				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "&display=$display\">set standby</a></td>";
