@@ -206,7 +206,7 @@ if ($action=="v5migrate")
 
 	// Execute voicemail migration
 	echo "<p>Migrating Voicemail</p>\n";
-	exec('ssh -T -o StrictHostChecking=no root@10.101.8.1 "python26 /opt/jive/voicemailMigration/migration/migration/masterMigration.py" '.$domain.' >>/tmp/v5migrate-$domain', $voicemailOutput, $exitcode);
+	exec('sudo ssh -T -o StrictHostChecking=no root@10.101.8.1 "python26 /opt/jive/voicemailMigration/migration/migration/masterMigration.py" '.$domain.' >>/tmp/v5migrate-$domain', $voicemailOutput, $exitcode);
 
 	echo "<div><p>Migration of $domain to v5 complete</p></div><hr/>";
 } // End of Migrate to v5
@@ -259,7 +259,7 @@ if ($action=="v4migrate")
 
 	// Execute voicemail migration
 	echo "<p>Migrating Voicemail</p>";
-	exec('python26 /opt/jive/voicemailMigration/migration/migration/masterUnmigration.py '.$domain. " >>/tmp/v5unmigrate-$domain", $voicemailOutput, $exitcode);
+	exec('sudo ssh -T -o StricktHostChecking=no root@10.101.8.1 "python26 /opt/jive/voicemailMigration/migration/migration/masterUnmigration.py '.$domain. ' >>/tmp/v5unmigrate-$domain', $voicemailOutput, $exitcode);
 
 	echo "<div><p>Migration of $domain to v4 complete</p></div><hr/>";
 } // End of Migrate to v4

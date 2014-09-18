@@ -9,7 +9,7 @@ Clean Script
 <body>
 <?
 $display = $_GET['display'];
-echo "<a href='pbx-availability.php?display=$display'>Back to PBX Availability</a>";
+echo "<a href='http://prodtools.devops.jive.com/pbx-availability.php?display=$display'>Back to PBX Availability</a>";
 ?>
 <br>Please wait for more information.<br>
 <?
