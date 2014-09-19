@@ -234,7 +234,7 @@ if ($action=="eventList" && isset($domainName))
 
 	//Connect to events DB and get events
 	$eventsDB = pg_connect("host=rodb dbname=events user=postgres ") or die('Could not connect to "events" database: ' . pg_last_error());
-	$eventQ = "SELECT added AT TIME ZONE 'UTC', description from event, event_domain WHERE domain_id ='".$pbxArray[0]['id']."' AND event_id = id ORDER BY number DESC";
+	$eventQ = "SELECT added AT TIME ZONE 'UTC-6', description from event, event_domain WHERE domain_id ='".$pbxArray[0]['id']."' AND event_id = id ORDER BY number DESC";
 	$eventArray = pg_fetch_all(pg_query($eventsDB, $eventQ)) or die ("Event search failed or no results: " . pg_last_error());
 	pg_close($eventsDB);
 	echo "<h2>".sizeof($eventArray)." Events that affected: " .$domainName . "</h2>";
