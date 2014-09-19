@@ -24,13 +24,6 @@ if ($print=='false')
 echo '<body onload="init()"><div id="head" class="head">';
 include('menu.html');
 echo '<h2>Event Reports';
-if ($_SERVER['SERVER_ADDR'] == '10.101.8.1')
-{
-	echo " (PRODUCTION)";
-} else
-{
-	echo " (DEV)";
-}
 echo '</h2>';
 
 include('guiltyParty.php');
