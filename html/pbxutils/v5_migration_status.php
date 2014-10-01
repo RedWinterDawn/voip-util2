@@ -17,10 +17,10 @@ function pTable($results)
           }else if ($col_value == "t")
           {
               echo '<td class="green">' . "<center>true</center>" . "</td>";
-		  }else if ($count > 5)
+		  }else if ($count > 5 and $col_value != '')
 		  {
 		      echo "<td>" . strftime('%m-%d-%Y %T', strtotime($col_value)) ."</td>";
-          }else
+          }else 
           {
               echo "<td>" . $col_value . "</td>";
           }
