@@ -21,13 +21,6 @@ include('menu.html');
 
 echo '<div id="head" class="head">
 	<h2>v5 Customer Migration';
-if ($_SERVER['SERVER_ADDR'] == '10.101.8.1')
-{
-	echo " (PRODUCTION)";
-} else
-{
-	echo " (DEV)";
-}
 echo '</h2>
 	<a href="index.php">Back to pbxutils</a>';
 

@@ -30,13 +30,6 @@ echo '<body onload="init()">';
 include('menu.html');
 echo '<div id="head" class="head">
 	<h2>Move a Single Customer';
-if ($_SERVER['SERVER_ADDR'] == '10.101.8.1')
-{
-	echo " (PRODUCTION)";
-} else
-{
-	echo " (DEV)";
-}
 echo '</h2>';
 
 //The action variable tells us if this page was called by itself and why
