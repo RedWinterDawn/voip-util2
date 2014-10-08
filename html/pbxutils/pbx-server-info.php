@@ -46,7 +46,7 @@ while ($load = pg_fetch_assoc($loads)) {
 pg_close($cdrconn);
 
 //Get device count for each domain on this server.
-$query = "SELECT resource_group_id as id, count(id) as count FROM user_agent WHERE resource_group_id IN (SELECT id FROM resource_group WHERE assigned_server = '199.36.251.38') GROUP BY resource_group_id ORDER BY count DESC;";
+$query = "SELECT resource_group_id as id, count(id) as count FROM user_agent WHERE resource_group_id IN (SELECT id FROM resource_group WHERE assigned_server = '$assigned_server') GROUP BY resource_group_id ORDER BY count DESC;";
 $dCount = pg_query($dbconn, $query) or die ('dCount failed: ' . pg_last_error());
 $dValues = Array();
 $cTotal = 0;
