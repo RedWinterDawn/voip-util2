@@ -25,7 +25,7 @@ function flushOutput() {
 
 if ($_SERVER['SERVER_ADDR'] != '10.101.8.1')
 {
-    echo "for v5 migrations go to ...add link here";
+    echo "for v5 migrations go: <a href='http://10.101.8.1/pbxutils/v5-migration.php>here.</a>";
     die();
 }
 
