@@ -203,9 +203,9 @@ if ($action == "submit")
         $eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description) VALUES(DEFAULT, '" . $description . "') RETURNING id;"));
 		//SQL Select has to change based on whether or not an override is being used
 		if (isset($override)) {
-			$clientsQuery = "SELECT domain, id, assigned_server, location, secondary_location FROM resource_group WHERE (assigned_server = '$source' OR location = '$source') AND state = 'ACTIVE';";
+			$clientsQuery = "SELECT domain, id, assigned_server, location, secondary_location FROM resource_group WHERE (assigned_server = '$source' OR location = '$source') AND state = 'ACTIVE' AND assigned_server like '10.%';";
 		} else {
-			$clientsQuery = "SELECT domain, id, assigned_server, location, secondary_location FROM resource_group WHERE (assigned_server = '$source' OR location = '$source') AND secondary_location = '$second' AND state = 'ACTIVE';";
+			$clientsQuery = "SELECT domain, id, assigned_server, location, secondary_location FROM resource_group WHERE (assigned_server = '$source' OR location = '$source') AND secondary_location = '$second' AND state = 'ACTIVE' AND assigned_server like '10.%';";
 		}
 		//Find out which PBXs are most and least loaded--we want to fill the least loaded first
 		$serverLoadQuery = "SELECT ip, load FROM pbxstatus WHERE location = '$second' AND status = 'active' ORDER BY load ASC;";	
