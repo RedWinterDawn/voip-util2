@@ -45,7 +45,7 @@ function searchName($searchTerm) {
 
 function drawTables($domains) {
 	echo "<br><br><table border='1'>
-		<tr><th>Name</th><th>Domain</th><th>Server</th><th>Location</th><th>Move this Domain</th><th>Events for this Domain</th><th>Call Reports for this Domain</th></tr>";
+		<tr><th>Name</th><th>Domain</th><th>Server</th><th>Location</th><th>Move this Domain</th><th>Events</th><th>Call Reports</th><th>Portal</th></tr>";
 	foreach ($domains as $domain) {
 		$name = $domain['name'];
 		$dom = $domain['domain'];
@@ -71,6 +71,9 @@ function drawTables($domains) {
 		<td><a href='customer-call-report.php?domain=$dom&birthday=$today&action=doSearch'>
 			<input type='submit' value='Go to Call Reports' />
 			</a></td>
+    <td><a href='https://$dom.onjive.com/admin/'>
+      <input type='submit' value='Go to Portal' />
+      </a></td>
 		</tr>";
 		 	
 	} 
