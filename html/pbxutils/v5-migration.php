@@ -26,6 +26,7 @@ function flushOutput() {
 if ($_SERVER['SERVER_ADDR'] != '10.101.8.1')
 {
     echo "for v5 migrations go to ...add link here";
+    die();
 }
 
 //"Header"
