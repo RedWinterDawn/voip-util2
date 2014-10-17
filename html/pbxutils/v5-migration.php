@@ -15,6 +15,19 @@ echo '<html><head><title>v5 Customer Migration</title>
 #pretty {vertical-align: bottom;}
 </style><link rel="stylesheet" href="stylesheet.css"></head>';
 
+function flushOutput() {
+    echo(str_repeat(' ', 256));
+    if (@ob_get_contents()) {
+        @ob_end_flush();
+    }
+    flush();
+}
+
+if ($_SERVER['SERVER_ADDR'] != '10.101.8.1')
+{
+    echo "for v5 migrations go to ...add link here";
+}
+
 //"Header"
 echo '<body onload="init()">';
 include('menu.html');
@@ -199,8 +212,10 @@ if ($action=="v5migrate")
 
 	// Execute voicemail migration
 	echo "<p>Migrating Voicemail</p>\n";
-	exec('sudo ssh -T -o StrictHostChecking=no root@10.101.8.1 "python26 /opt/jive/voicemailMigration/migration/migration/masterMigration.py" '.$domain.' >>/tmp/v5migrate-$domain', $voicemailOutput, $exitcode);
-
+	#exec('sudo ssh -T -o StrictHostChecking=no root@10.101.8.1 "python26 /opt/jive/voicemailMigration/migration/migration/masterMigration.py" '.$domain.' >>/tmp/v5migrate-$domain', $voicemailOutput, $exitcode);
+	exec('python26 /opt/jive/voicemailMigration/migration/migration/masterMigration.py '.$domain.' >>/tmp/v5migrate-$domain', $voicemailOutput, $exitcode);
+    print_r($voicemailOutput);
+	echo "<br>" .$exitcode;
 	echo "<div><p>Migration of $domain to v5 complete</p></div><hr/>";
 } // End of Migrate to v5
 
@@ -252,7 +267,14 @@ if ($action=="v4migrate")
 
 	// Execute voicemail migration
 	echo "<p>Migrating Voicemail</p>";
-	exec('sudo ssh -T -o StricktHostChecking=no root@10.101.8.1 "python26 /opt/jive/voicemailMigration/migration/migration/masterUnmigration.py '.$domain. ' >>/tmp/v5unmigrate-$domain', $voicemailOutput, $exitcode);
+    flushOutput();
+	//exec('sudo ssh -T -o StricktHostChecking=no root@10.101.8.1 "python26 /opt/jive/voicemailMigration/migration/migration/masterUnmigration.py '.$domain. ' >>/tmp/v5unmigrate-$domain', $voicemailOutput, $exitcode);
+	exec('python26 /opt/jive/voicemailMigration/migration/migration/masterMigration.py '.$domain , $voicemailOutput, $exitcode);
+	foreach($voicemailOutput as $line)
+	{
+		echo "<br>".$line;
+	}
+	echo "<br>";
 
 	echo "<div><p>Migration of $domain to v4 complete</p></div><hr/>";
 } // End of Migrate to v4
