@@ -139,9 +139,9 @@ if ($action=="search")
 		} else {
 			echo "<td></td>";
 		}
-		if ($v5 == 'FALSE' && $dom['location'] == 'chicago-legacy') {
+		if ($v5 == 'FALSE') {
 			echo "<td>
-				<a href='v5-migration.php?action=v5migrate&domain=" . $listDomain . "'>Migrate to v5</a>
+				<a href='v5_migration_queue.php?domain=" . $listDomain . "'>Migrate to v5</a>
 				<list><li>dfw</li><li>pvu</li></list>
 				</td>";
 		} else if ($v5 == 'FALSE') {
