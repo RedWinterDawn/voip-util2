@@ -148,6 +148,13 @@ echo "/><label for='site' />By Site</label><br>
 		<br>
 		<input type='text' name='destination' placeholder='e.g. dfw' /> 
 		</form>";
+	echo "<br><br><form action='emhalt.php' method='POST' target='_blank'>
+		<input type='hidden' name='stop' value='true' />
+		<input type='submit' value='Stop Migration' /> 
+		</form><form action='emhalt.php' method='POST' tartet='_blank'>
+		<input type='hidden' name='clear' value='true' />
+		<input type='submit' value='Unblock Migration' />
+		</form>";
 
 //MAIN BODY
 // What to do when the user clicks "submit"
@@ -160,13 +167,6 @@ if (isset($destination) && preg_match('/[^a-z\-]/i', $destination)) {
 }
 if ($action == "submit")
 {
-	echo "<br><br><form action='emhalt.php' method='POST' target='_blank'>
-		<input type='hidden' name='stop' value='true' />
-		<input type='submit' value='Stop Migration' /> 
-		</form><form action='emhalt.php' method='POST' tartet='_blank'>
-		<input type='hidden' name='clear' value='true' />
-		<input type='submit' value='Unblock Migration' />
-		</form>";
 	$maxLoad = 14000000; //How many seconds of RTP in 7 days can a server handle? default 14,000,000 
 	//Find out how much load the clients cause on our servers: 
 	$clientLoadQuery = "SELECT id, (load_in + load_out + load_custom) AS load FROM loadmetrics ORDER BY load DESC";
@@ -183,6 +183,10 @@ if ($action == "submit")
 	//Get the load results and rekey them to be easier to use
 	$clientLoad = pg_fetch_all(pg_query($cdrConn, $clientLoadQuery)) or die ('Failed to get client specific load: '. pg_last_error());
 	$clientLoad = rekey($clientLoad, "id", "load");
+
+	//Set the PBX to status "moving". If source is a site, not a pbx, nothing will happen
+	$setMoving = "UPDATE pbxstatus SET status = 'moving' WHERE ip = '$source';";
+	pg_query($utilConn, $setMoving);
 	
 	$mpls = pg_fetch_all(pg_query($utilConn, $mplsQuery)) or die ('Failed to get MPLS data'.pg_last_error());
 	$mpls = rekey($mpls, "id", "domain");
@@ -283,6 +287,11 @@ if ($action == "submit")
 		echo "<br>============================= flushing memcache between sites =================================</br>";
 		exec('/root/flush_memcached ', $flushOutput, $exitcode);
 	}
+
+	//Set the PBX to status "moving". If source is a site, not a pbx, nothing will happen
+	$setDirty = "UPDATE pbxstatus SET status = 'dirty' WHERE ip = '$source';";
+	pg_query($utilConn, $setDirty);
+
    	pg_close($eventDb); //Close the event DB connections
 	pg_close($cdrConn);
 	pg_close($utilConn);

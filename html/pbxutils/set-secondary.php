@@ -33,7 +33,7 @@ function getAreaCodes ($siteArray)
 	return $codes;
 }
 
-$areaCodes = getAreaCodes ($dfw);
+$areaCodes = getAreaCodes ($nyc);
 //print_r($areaCodes);
 
 $pbxsdb = pg_connect("host=rwdb dbname=pbxs user=postgres ") or die('could not connect to pbxs' . pg_last_error());
@@ -64,7 +64,7 @@ print_r($domains);
 
 foreach($domains as $key)
 {
-	$inserts[] = "UPDATE resource_group SET secondary_location='atl' WHERE domain='".$key."'";
+	$inserts[] = "UPDATE resource_group SET secondary_location='nyc' WHERE domain='".$key."'";
 }
 echo "<br><br><br>";
 print_r($inserts);

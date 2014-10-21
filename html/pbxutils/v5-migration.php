@@ -270,7 +270,7 @@ if ($action=="v4migrate")
 	echo "<p>Migrating Voicemail</p>";
     flushOutput();
 	//exec('sudo ssh -T -o StricktHostChecking=no root@10.101.8.1 "python26 /opt/jive/voicemailMigration/migration/migration/masterUnmigration.py '.$domain. ' >>/tmp/v5unmigrate-$domain', $voicemailOutput, $exitcode);
-	exec('python26 /opt/jive/voicemailMigration/migration/migration/masterMigration.py '.$domain , $voicemailOutput, $exitcode);
+	exec('sudo python26 /opt/jive/voicemailMigration/migration/migration/masterUnmigration.py '.$domain , $voicemailOutput, $exitcode);
 	foreach($voicemailOutput as $line)
 	{
 		echo "<br>".$line;
