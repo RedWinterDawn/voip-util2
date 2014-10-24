@@ -9,7 +9,7 @@ function eventTable($id)
 {
 	// Get last 10 events for domain
 	$eventdb = pg_connect("host=rodb dbname=events user=postgres") or die('Could not connect: ' . pg_last_error());
-	$eventQuery = "SELECT added, description from event, (SELECT event_id FROM event_domain WHERE domain_id='".$id."') as domain WHERE event.id = domain.event_id order by number desc limit 10;";
+	$eventQuery = "SELECT added AT TIME ZONE 'UTC' as added, description from event, (SELECT event_id FROM event_domain WHERE domain_id='".$id."') as domain WHERE event.id = domain.event_id order by number desc limit 10;";
 	$eventArray = pg_fetch_all(pg_query($eventdb, $eventQuery)); //or die('Event query failed: ' . pg_last_error());
 	pg_close($eventdb);
 	echo "<tr><td></td><td></td><td colspan=9 rowspan=13 valign=top>
