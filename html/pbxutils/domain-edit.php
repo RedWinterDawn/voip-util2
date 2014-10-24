@@ -53,6 +53,31 @@ if (isset($_GET["setV5candidate"])){
     pg_close($rwdb);
 }
 
+//#########################//
+//   Change sensitive    //
+//#########################//
+if (isset($_GET["setSensitive"])){
+	$toggleSetting = $_GET["setSensitive"];
+	$rwdb = pg_connect("host=rwdb dbname=pbxs user=postgres ") or die('Could not connect: ' . pg_last_error());
+	if ($toggleSetting == "toggle") {
+		$sensitiveSelectQuery = "SELECT sensitive FROM resource_group WHERE domain='$domain';";
+		$sensitiveSelectResult = pg_query($rwdb,$sensitiveSelectQuery) or die('sensitive select query failed (' . $sensitiveSelectQuery . '): ' . pg_last_error());
+		$sensitiveSelectRow = pg_fetch_array($sensitiveSelectResult, null, PGSQL_ASSOC);
+		if ($sensitiveSelectRow["sensitive"] == 't') { $sensitiveNewValue = "false"; } 
+		if ($sensitiveSelectRow["sensitive"] == 'f') { $sensitiveNewValue = "true"; } 
+		pg_free_result($sensitiveSelectResult);
+	} else {
+		#
+		if ($toggleSetting == 'false') { $sensitiveNewValue = "false"; } 
+		if ($toggleSetting == 'true') { $sensitiveNewValue = "true"; } 
+	}
+	echo "<pre>$domain sensitive new value = [$sensitiveNewValue]</pre><br/>";
+	$sensitiveUpdateQuery = "UPDATE resource_group SET sensitive=$sensitiveNewValue WHERE domain='$domain';";
+	$sensitiveUpdateResult = pg_query($rwdb,$sensitiveUpdateQuery) or die('sensitive update query failed: ' . pg_last_error());
+	pg_free_result($sensitiveUpdateResult);
+    pg_close($rwdb);
+}
+
 //#####################//
 //   Change Presence   //
 //#####################//
@@ -101,7 +126,7 @@ if ($showList == true){
 	sleep(1);
 	$dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ") or die('Could not connect: ' . pg_last_error());
 
-	$domainQuery = "SELECT domain,name,assigned_server,id,outbound_proxy,presence_server,state,id,v5,v5candidate FROM resource_group WHERE domain='" . $domain . "';";
+	$domainQuery = "SELECT domain,name,assigned_server,id,outbound_proxy,presence_server,state,id,v5,v5candidate,sensitive FROM resource_group WHERE domain='" . $domain . "';";
 	$domainResult = pg_query($domainQuery) or die('Domain query failed: ' . pg_last_error());
 
 	//Get Santa servers
@@ -119,15 +144,18 @@ if ($showList == true){
 
 		if ($domainRow['v5candidate'] == 't') { $v5candidate = "TRUE"; }
 		if ($domainRow['v5candidate'] == 'f') { $v5candidate = "false"; }
+		if ($domainRow['sensitive'] == 't') { $sensitive = "TRUE"; }
+		if ($domainRow['sensitive'] == 'f') { $sensitive = "false"; }
 
 	    echo "<table border=1>\n";
-	    echo "<tr><th>Domain</th><th>Name</th><th>Server</th><th>ID</th><th>Proxy</th><th>Presence</th><th>Customer State</th><th>v5</th><th>v5 candidate</th></tr>\n";
+	    echo "<tr><th>Domain</th><th>Name</th><th>Server</th><th>ID</th><th>Proxy</th><th>Presence</th><th>Customer State</th><th>v5</th><th>v5 candidate</th><th>Sensitive</th></tr>\n";
 		echo "<tr>"
 			. "<td>" . $domainRow['domain'] . "</td><td>" . $domainRow['name'] . "</td><td><a href='pbx-server-info.php?server=" . $domainRow['assigned_server']. "'>" 
 			. $domainRow['assigned_server'] . "</a></td><td>" . $domainRow['id'] . "</td><td>" . $domainRow['outbound_proxy'] . "</td><td>" . $santa . "</td>" 
 			. "<td>" . $domainRow['state'] . "</td>"
 			. "<td>" . $domainRow['v5'] . "</td>"
 			. "<td>" . $v5candidate . " <a href='domain-edit.php?domain=" . $domain . "&setV5candidate=toggle'>[toggle]</a></td>"
+			. "<td>" . $sensitive . " <a href='domain-edit.php?domain=" . $domain . "&setSensitive=toggle'>[toggle]</a></td>"
 			. "</tr>";
 	    echo "</table>\n";
 		echo "<br/>\n";
