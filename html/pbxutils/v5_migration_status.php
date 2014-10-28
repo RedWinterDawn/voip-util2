@@ -66,8 +66,11 @@ $query = "SELECT domain, migrate_to_chi, preflight, migrate_vm_to_v5, pbxs_db_ch
 $result = pg_query($query) or die('Query failed: ' . pg_last_error());
 
 // Printing results in HTML
-echo "<h2>Pending:</h2>\n";
-pTable($result);
+if (pg_num_rows($result))
+{
+  echo "<h2>Pending:</h2>\n";
+  pTable($result);
+}
 
 // Free resultset
 pg_free_result($result);
@@ -77,8 +80,11 @@ $query = "SELECT domain, migrate_to_chi, preflight, migrate_vm_to_v5, pbxs_db_ch
 $result = pg_query($query) or die('Query failed: ' . pg_last_error());
 
 // Printing results in HTML
-echo "<h2>Failed:</h2>\n";
-pTable($result);
+if (pg_num_rows($result) > 0)
+{
+  echo "<h2>Failed:</h2>\n";
+  pTable($result);
+}
 
 // Free resultset
 pg_free_result($result);
