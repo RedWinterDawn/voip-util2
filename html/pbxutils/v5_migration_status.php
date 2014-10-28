@@ -52,6 +52,11 @@ if (isset($_REQUEST["edate"]))
   $eDate = $sDate;
 }
 
+echo '<h2>v5 Migration Status</h2>
+	<div class="checkbox"><form action="" method="get"> 
+	<p>Date: <input type="date" name="sdate" /></p>
+	<p><input type="submit" value="Search" />';
+
 // Connecting, selecting database
 $dbconn = pg_connect("host=rodb dbname=util user=postgres ")
     or die('Could not connect: ' . pg_last_error());
@@ -83,8 +88,11 @@ $query = "SELECT domain, migrate_to_chi, preflight, migrate_vm_to_v5, pbxs_db_ch
 $result = pg_query($query) or die('Query failed: ' . pg_last_error());
 
 // Printing results in HTML
-echo "<h2>Completed on: ".$sDate."</h2>\n";
-pTable($result, 1);
+if (pg_num_rows($result) > 0)
+{
+  echo "<h2>Completed on: ".$sDate."</h2>\n";
+  pTable($result, 1);
+}
 
 // Free resultset
 pg_free_result($result);

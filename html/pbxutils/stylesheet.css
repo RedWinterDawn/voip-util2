@@ -154,6 +154,17 @@ input[type=date]
 	color: #EEEEEE;
 }
 
+input[type=search]
+{
+	border-top: 2px solid #000;
+	border-left: 2px solid #000;
+	border-right: 2px solid #999;
+	border-bottom: 2px solid #999;
+	background-color: #333;
+	font-weight: bold;
+	color: #EEEEEE;
+}
+
 .user_input {
   border: 0;
   appearance: none;
