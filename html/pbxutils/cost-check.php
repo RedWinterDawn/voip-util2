@@ -40,40 +40,52 @@ if ($to != "") {
 	echo "<p>To Number: $to
 		  <br>From Number: $from</p>
 		  <p>Sherlock:<br>";
-	$curl = curl_init("http://10.125.255.66:6666/score/a/$to");
+	$url = "http://10.125.255.66:6666/score/a/$to";
+	print_r($url);
+    echo "<br/>";
+	$curl = curl_init($url);
 	print_r(curl_exec($curl));
 	curl_close();
     echo "</p>";
 
 	echo "<p>V4 LCR:<br>";
 	if ($from) {
-		$curl = curl_init("http://10.103.0.197:9998/lcr/lookup/e164/$to?cli=$from");
+		$url = "http://10.103.0.197:9998/lcr/lookup/e164/$to?cli=$from";
 	}else
 	{
-		$curl = curl_init("http://10.103.0.197:9998/lcr/lookup/e164/$to");
+		$url = "http://10.103.0.197:9998/lcr/lookup/e164/$to";
 	}
+	print_r($url);
+	echo "<br/>";
+	$curl = curl_init($url);
 	print_r(curl_exec($curl));
 	curl_close();
     echo "</p>";
 	
 	echo "<p>PVU LCR:<br>";
 	if ($from) {
-		$curl = curl_init("http://10.117.255.41:9998/lcr/lookup/e164/$to?cli=$from");
+		$url = "http://10.117.255.41:9998/lcr/lookup/e164/$to?cli=$from";
 	}else
 	{
-		$curl = curl_init("http://10.117.255.41:9998/lcr/lookup/e164/$to");
+		$url = "http://10.117.255.41:9998/lcr/lookup/e164/$to";
 	}
+	print_r($url);
+	echo "<br/>";
+	$curl = curl_init($url);
 	print_r(curl_exec($curl));
 	curl_close();
     echo "</p>";
 	
 	echo "<p>DFW LCR:<br>";
 	if ($from) {
-		$curl = curl_init("http://10.118.255.41:9998/lcr/lookup/e164/$to?cli=$from");
+		$url = "http://10.118.255.41:9998/lcr/lookup/e164/$to?cli=$from";
 	}else
 	{
-		$curl = curl_init("http://10.118.255.41:9998/lcr/lookup/e164/$to");
+		$url = "http://10.118.255.41:9998/lcr/lookup/e164/$to";
 	}
+	print_r($url);
+	echo "<br/>";
+	$curl = curl_init($url);
 	print_r(curl_exec($curl));
 	curl_close();
     echo "</p>";
