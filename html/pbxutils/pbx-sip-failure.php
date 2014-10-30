@@ -71,10 +71,11 @@ if ($rwutil = pg_connect("host=rwdb dbname=util user=postgres"))
 				pg_close($rwpbxs);
 
 				// mark this host dirty
+				syslog(LOG_INFO, "application=pbx-sip-failure server=$server action=abandonShip state=dirty guiltyParty=$guiltyParty failgroup=$failgroup customMessage='pbx $server has abandoned ship'");
 				pg_query($rwutil, "UPDATE pbxstatus SET status='dirty' WHERE ip='" . $row['ip'] . "'");
+				pg_query($rwutil, "UPDATE pbxstatus SET abandoned='now()' WHERE ip='" . $row['ip'] . "'");
 				pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " abandoned to " . $standbyRow['ip'] . " per " . $guiltyParty . "' WHERE ip='" . $row['ip'] . "'");
 				pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " accepted abandon from " . $row['host'] . " per " . $guiltyParty . "' WHERE ip='" . $standbyRow['ip'] . "'");
-				syslog(LOG_INFO, "application=pbx-sip-failure server=$server action=abandonShip state=dirty guiltyParty=$guiltyParty failgroup=$failgroup customMessage='pbx $server has abandoned ship'");
 
 				$mail_subject=$row['host'] . " abandoned to " . $standbyRow['ip'] . " per " . $guiltyParty;
 				$mail_body=$requestTime . " " . $mail_subject;
