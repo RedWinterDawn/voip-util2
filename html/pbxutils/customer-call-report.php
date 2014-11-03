@@ -2,6 +2,15 @@
 <?php
 include('menu.html');
 include('guiltyParty.php');
+
+function flushOutput() {
+    echo(str_repeat(' ', 256));
+    if (@ob_get_contents()) {
+        @ob_end_flush();
+    }
+    flush();
+}
+
 $requestTime = strftime('%Y-%m-%d %H:%M:%S');
 $resource_group_id = "";
 
@@ -149,6 +158,7 @@ if ($action == "doSearch") {
     echo "Total calls: " . $callCount . "<br/>\n";
     echo "Total duration: " . $totalDuration . "<br/>\n";
     pg_free_result($reportResult);
+    flushOutput();
   } 
 
 }
