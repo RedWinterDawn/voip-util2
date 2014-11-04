@@ -141,6 +141,7 @@ echo "<html>
 	<body>";
 include('menu.html');
 echo "<h2>Mass Exodus</h2>
+	<p class='yellow'>Please only use this from 10.101.8.1 (instead of prodtools) to avoid problems with NGINX buffering and gateway timeout</p>
 	<p>Use this tool to move a large group from one site to another</p>
 	<form onsubmit='return confirm(\"Please review your choices. Do you really want to continue?\");' action='' method='POST'>
 		<div class='radio'>
