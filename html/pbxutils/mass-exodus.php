@@ -119,6 +119,19 @@ if (isset($_REQUEST['action'])) {
 	$source = $_REQUEST['source'];
 }
 
+if (isset($argv[1])) {
+	$action = $argv[1];
+
+	if (isset($argv[2])) { $method = $argv[2]; }
+
+	if (isset($argv[3])) 
+	{
+	   	$source = $argv[3];
+	} else { 
+		die ("You must provide 3 args: submit {site|pbx} {source-site|source-ip}"); 
+	}
+}
+
 //THE ACTUAL HTML PAGE
 echo "<html>
 	<head>
@@ -202,6 +215,10 @@ if ($action == "submit")
 	//======================
 	foreach ($secondaries as $secondary) {
 		$second = $secondary['secondary_location'];
+		if ($second == $source) {
+			echo "Skipping $second because it matches $source";
+			continue;
+		}
 		echo "<h2>--- Currently moving customers from $source to $second --- </h2>";
     	$description = $guiltyParty." performed a large scale migration from ".$source." going to ".$second;
         $eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description) VALUES(DEFAULT, '" . $description . "') RETURNING id;"));
