@@ -370,8 +370,8 @@ if ($action == "ListStatus")
 				if ($load > 85) { $color = 'yellow'; }
 				if ($load > 95) { $color = 'red'; }
 			} else {
-				if ($load > 35) { $color = 'yellow'; }
-				if ($load > 40) { $color = 'red'; }
+				if ($load > 34) { $color = 'yellow'; }
+				if ($load > 39) { $color = 'red'; }
 			}
 
 			echo "<tr>
