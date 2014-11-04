@@ -366,8 +366,13 @@ if ($action == "ListStatus")
 			$showControls = false;
 			$load = round($row['load'] / 140000,0);
 			$color = 'green';
-			if ($load > 85) { $color = 'yellow'; }
-			if ($load > 95) { $color = 'red'; }
+			if ($display == "chicago-legacy") {	
+				if ($load > 85) { $color = 'yellow'; }
+				if ($load > 95) { $color = 'red'; }
+			} else {
+				if ($load > 35) { $color = 'yellow'; }
+				if ($load > 40) { $color = 'red'; }
+			}
 
 			echo "<tr>
 				<td class='group".$row['failgroup']."'>" . $row['failgroup'] . "</td>
