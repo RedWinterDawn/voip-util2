@@ -408,7 +408,7 @@ if (isset($dest[0])) //Make sure we got a destination...
 			//Record event in the event database
 			$eventDb = pg_connect("host=rwdb dbname=events user=postgres") or die('Could not connect: '. pg_last_error());
 			$description = $guiltyParty." moved ".$domain." from ".$oldAssigned." in ".$oldLocation." to ".$dest[0]." in ".$location;
-			$eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description) VALUES(DEFAULT, '" . $description . "') RETURNING id;"));
+			$eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description, event_type) VALUES(DEFAULT, '" . $description . "', 'SINGLE') RETURNING id;"));
 			
 			pg_query($eventDb, "INSERT INTO event_domain VALUES('" . $eventID['0'] . "', '" .$id. "')");
 			pg_close($eventDb); //Close the event DB connection

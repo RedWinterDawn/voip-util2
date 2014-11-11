@@ -96,7 +96,7 @@ if ($rwutil = pg_connect("host=rwdb dbname=util user=postgres"))
 					or die('Could not connect: ' . pg_last_error());
 
 				//insert event into event table
-				$eventID = pg_fetch_row(pg_query($events, "INSERT INTO event(id, description) VALUES(DEFAULT, '" . $mail_subject . "') RETURNING id;"));
+				$eventID = pg_fetch_row(pg_query($events, "INSERT INTO event(id, description, event_type) VALUES(DEFAULT, '" . $mail_subject . "', 'ABANDON') RETURNING id;"));
 
 				if ($domains = pg_fetch_all($domainResult))
 				{

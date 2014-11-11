@@ -222,7 +222,7 @@ if ($action == "submit")
 		}
 		echo "<h2>--- Currently moving customers from $source to $second --- </h2>";
     	$description = $guiltyParty." performed a large scale migration from ".$source." going to ".$second;
-        $eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description) VALUES(DEFAULT, '" . $description . "') RETURNING id;"));
+        $eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description, event_type) VALUES(DEFAULT, '" . $description . "', 'MASS') RETURNING id;"));
 		//SQL Select has to change based on whether or not an override is being used
 		if (isset($override)) {
 			$clientsQuery = "SELECT domain, id, assigned_server, location, secondary_location FROM resource_group WHERE (assigned_server = '$source' OR location = '$source') AND state = 'ACTIVE' AND assigned_server like '10.%';";
