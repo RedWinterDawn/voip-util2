@@ -206,7 +206,7 @@ if ($action=="v5migrate")
 	echo "<p>Updating Event DB</p>\n";
 	$eventDb = pg_connect("host=rwdb dbname=events user=postgres") or die('Could not connect: '. pg_last_error());
 	$description = $guiltyParty." migrated ".$domain." to ".$platform;
-	$eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description) VALUES(DEFAULT, '" . $description . "') RETURNING id;"));
+	$eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description, event_type) VALUES(DEFAULT, '" . $description . "', '2V5') RETURNING id;"));
 			
 	pg_query($eventDb, "INSERT INTO event_domain VALUES('" . $eventID['0'] . "', '" .$id. "')");
 	pg_close($eventDb); //Close the event DB connection
@@ -261,7 +261,7 @@ if ($action=="v4migrate")
 	echo "<p>Updating Event DB</p>";
 	$eventDb = pg_connect("host=rwdb dbname=events user=postgres") or die('Could not connect: '. pg_last_error());
 	$description = $guiltyParty." migrated ".$domain." to ".$platform;
-	$eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description) VALUES (DEFAULT, '" . $description . "') RETURNING id;"));
+	$eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, descriptioni, event_type) VALUES (DEFAULT, '" . $description . "', '2V4') RETURNING id;"));
 			
 	pg_query($eventDb, "INSERT INTO event_domain VALUES('" . $eventID['0'] . "', '" .$id. "')");
 	pg_close($eventDb); //Close the event DB connection
