@@ -18,6 +18,11 @@ if ($server == $guiltyParty)
 	$guiltyParty = "AutoAbandon@" . $guiltyParty;
 }
 
+if ($server == "10.101.24.2")
+{
+	$guiltyParty = "Xymon";
+}
+
 if ($routil = pg_connect("host=rodb dbname=util user=postgres"))
 {
 }else
