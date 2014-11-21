@@ -23,6 +23,21 @@ if ($server == "10.101.24.2")
 	$guiltyParty = "Xymon";
 }
 
+if ($server == "10.119.255.224")
+{
+	$guiltyParty = "Xymon";
+}
+
+if ($server == "10.120.255.224")
+{
+	$guiltyParty = "Xymon";
+}
+
+if ($server == "10.122.255.224")
+{
+	$guiltyParty = "Xymon";
+}
+
 if ($routil = pg_connect("host=rodb dbname=util user=postgres"))
 {
 }else
