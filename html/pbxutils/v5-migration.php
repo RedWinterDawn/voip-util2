@@ -12,7 +12,7 @@ include('guiltyParty.php');
 
 if ($_SERVER['SERVER_ADDR'] != '10.101.8.1')
 {
-    echo "for v5 migrations go: <a href='http://10.101.8.1/pbxutils/v5-migration.php?gparty=".$guiltyParty."'>here.</a>";
+    echo "for v5 migrations go: <a href='http://10.101.8.1/pbxutils/v5-migration.php?gParty=".$guiltyParty."'>here.</a>";
     die();
 } else 
 {
@@ -21,7 +21,7 @@ if ($_SERVER['SERVER_ADDR'] != '10.101.8.1')
 		$guiltyParty= $_REQUEST["gParty"];
 	} else
 	{
-		header( 'Location: http://http://prodtools.devops.jive.com/v5-migration.php');
+		header( 'Location: http://prodtools.devops.jive.com/v5-migration.php');
 	}
 }
 
