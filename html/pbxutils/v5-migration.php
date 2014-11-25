@@ -9,6 +9,22 @@
  */
 
 include('guiltyParty.php');
+
+if ($_SERVER['SERVER_ADDR'] != '10.101.8.1')
+{
+    echo "for v5 migrations go: <a href='http://10.101.8.1/pbxutils/v5-migration.php?gparty=".$guiltyParty."'>here.</a>";
+    die();
+} else 
+{
+	if (isset($_REQUEST["gParty"]))
+	{
+		$guiltyParty= $_REQUEST["gParty"];
+	} else
+	{
+		header( 'Location: http://http://prodtools.devops.jive.com/v5-migration.php');
+	}
+}
+
 //CSS Styling:
 echo '<html><head><title>v5 Customer Migration</title>
 <style type="text/css"> 
@@ -21,12 +37,6 @@ function flushOutput() {
         @ob_end_flush();
     }
     flush();
-}
-
-if ($_SERVER['SERVER_ADDR'] != '10.101.8.1')
-{
-    echo "for v5 migrations go: <a href='http://10.101.8.1/pbxutils/v5-migration.php'>here.</a>";
-    die();
 }
 
 //"Header"
