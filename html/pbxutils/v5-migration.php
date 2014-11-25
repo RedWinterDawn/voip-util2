@@ -12,10 +12,9 @@ include('guiltyParty.php');
 
 if ($_SERVER['SERVER_ADDR'] != '10.101.8.1')
 {
-	echo'For v5 migrations go <form action="10.101.8.1/pbxutils/v5-migration.php" method="POST">
-	    <input type="hidden" name="action" value="help">
+	echo'For v5 migrations: <form action="http://10.101.8.1/pbxutils/v5-migration.php" method="POST">
 	    <input type="hidden" name="gParty" value="'.$guiltyParty.'">
-	    <input type="submit" value="HERE" /></form>';
+	    <input type="submit" value="CLICK HERE" /></form>';
     #echo "for v5 migrations go: <a href='http://10.101.8.1/pbxutils/v5-migration.php?gParty=".$guiltyParty."'>here.</a>";
     die();
 } else 
