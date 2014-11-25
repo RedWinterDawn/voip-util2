@@ -12,7 +12,11 @@ include('guiltyParty.php');
 
 if ($_SERVER['SERVER_ADDR'] != '10.101.8.1')
 {
-    echo "for v5 migrations go: <a href='http://10.101.8.1/pbxutils/v5-migration.php?gParty=".$guiltyParty."'>here.</a>";
+	echo'For v5 migrations go <form action="10.101.8.1/pbxutils/v5-migration.php" method="POST">
+	    <input type="hidden" name="action" value="help">
+	    <input type="hidden" name="gParty" value="'.$guiltyParty.'">
+	    <input type="submit" value="HERE" /></form>';
+    #echo "for v5 migrations go: <a href='http://10.101.8.1/pbxutils/v5-migration.php?gParty=".$guiltyParty."'>here.</a>";
     die();
 } else 
 {
@@ -92,13 +96,15 @@ switch ($action) {
 //It shows up every time, making it convenient to search for another domain
 //or repeat the same search if you wish to start over
 echo '<div class="checkbox"><form action="v5-migration.php" method="GET">
-	<input type="hidden" name="action" value="search"> 
+	<input type="hidden" name="action" value="search">
+    <input type="hidden" name="gParty" value="'.$guiltyParty.'">	
 	<p>Enter a domain to search: </p>
 	<p><input type="text" name="search" placeholder="Jive Domain" /></p>
 	<p><input id="exact" class="checkbox" type="checkbox" name="exact"><label for="exact">Exact Search</label></p>
     <p><input type="submit" value="Search" />
 	</form><form action="" method="POST">
 	<input type="hidden" name="action" value="help">
+    <input type="hidden" name="gParty" value="'.$guiltyParty.'">	
 	<input type="submit" value="Help" /></form></p><hr width="500px" align="left"></div></div>';
 
 //===================
@@ -143,7 +149,7 @@ if ($action=="search")
 
 		if ($v5 == 'TRUE') {
 			echo "<td>
-				<a href='v5-migration.php?action=v4migrate&domain=" . $listDomain . "'>Migrate to v4</a>
+				<a href='v5-migration.php?action=v4migrate&domain=" . $listDomain . "&gParty=".$guiltyParty."'>Migrate to v4</a>
 				<list><li>dfw</li><li>pvu</li></list>
 				</td>";
 		} else {
@@ -151,7 +157,7 @@ if ($action=="search")
 		}
 		if ($v5 == 'FALSE') {
 			echo "<td>
-				<a href='v5_migration_queue.php?domain=" . $listDomain . "'>Migrate to v5</a>
+				<a href='v5_migration_queue.php?domain=" . $listDomain . "&gParty=".$guiltyParty."'>Migrate to v5</a>
 				<list><li>dfw</li><li>pvu</li></list>
 				</td>";
 		} else if ($v5 == 'FALSE') {
