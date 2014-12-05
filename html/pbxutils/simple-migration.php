@@ -18,7 +18,7 @@
 // THIS SCRIPT REQUIRES THE FOLLOWING FILES: /var/www/migrate-pbx.sh and /var/www/migrate-files.sh
 include('guiltyParty.php');
 
-if ($_SERVER['SERVER_ADDR'] = '10.101.8.1')
+if ($_SERVER['SERVER_ADDR'] == '10.101.8.1')
 {
     header( 'Location: http://prodtools.devops.jive.com/simple-migration.php');
 }
