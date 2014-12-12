@@ -18,22 +18,22 @@ if ($server == $guiltyParty)
 	$guiltyParty = "AutoAbandon@" . $guiltyParty;
 }
 
-if ($server == "10.101.24.2")
+if ($guiltyParty == "10.101.24.2")
 {
 	$guiltyParty = "Xymon";
 }
 
-if ($server == "10.119.255.224")
+if ($guiltyParty == "10.119.255.224")
 {
 	$guiltyParty = "Xymon";
 }
 
-if ($server == "10.120.255.224")
+if ($guiltyParty == "10.120.255.224")
 {
 	$guiltyParty = "Xymon";
 }
 
-if ($server == "10.122.255.224")
+if ($guiltyParty == "10.122.255.224")
 {
 	$guiltyParty = "Xymon";
 }
