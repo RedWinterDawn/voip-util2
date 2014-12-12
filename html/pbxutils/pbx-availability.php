@@ -30,7 +30,7 @@ if (isset($_GET["display"]))
 {
 	$display = $_GET['display'];
 } else {
-	$display = "chicago-legacy";
+	$display = "101";
 }
 //Don't display the message for auto-clean because its output is sent to a pbx
 if ($action != "AutoCleanComplete") {
@@ -353,7 +353,7 @@ if ($action == "ListStatus")
 		echo "<td><input type='text' name='fgroup' placeholder='e.g. 119'></td></tr>";
 		echo '<tr><td colspan="4" align="center"><input type="submit" name="action" value="'.$gobutton.'"></td></tr></form></table><br>';
 		// query status table for all hosts
-		$result = pg_query($routil, "SELECT failgroup,location,vmhost,host,ip,status,load,message FROM pbxstatus WHERE location = '$display' ORDER BY failgroup,\"order\",status desc,ip limit 1000;");
+		$result = pg_query($routil, "SELECT failgroup,location,vmhost,host,ip,status,load,message FROM pbxstatus WHERE failgroup = '$display' ORDER BY failgroup,\"order\",status desc,ip limit 1000;");
 
 		// Menu with red labels where the dirty pbxs are
 		include('pbx-menu.html');
@@ -366,7 +366,7 @@ if ($action == "ListStatus")
 			$showControls = false;
 			$load = round($row['load'] / 140000,0);
 			$color = 'green';
-			if ($display == "chicago-legacy") {	
+			if ($display == "101") {	
 				if ($load > 85) { $color = 'yellow'; }
 				if ($load > 95) { $color = 'red'; }
 			} else {
