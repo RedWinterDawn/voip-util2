@@ -133,6 +133,9 @@ if ($rwutil = pg_connect("host=rwdb dbname=util user=postgres"))
 				// Close connection 
 				pg_close($events);
 
+				//send -2 to icalls for bar indicating abandon
+				exec("/opt/jive/icalls_abandon.py ".$row['ip']." ", $output, $exitcode);
+
 			}else
 			{
 				// no standby available
