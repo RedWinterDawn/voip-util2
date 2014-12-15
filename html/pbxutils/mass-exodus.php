@@ -275,6 +275,9 @@ if ($action == "submit")
 				$thisName = $client['domain'];
 				$thisServer = $client['assigned_server'];
 				$thisLocation = $client['location'];
+        if ($thisLocation == 'ord') {
+          $thisLocation = 'chicago-legacy';
+        }
 				$thisSecLocation = $client['secondary_location'];
 				$thisLoad = $client['load'];
 				echo "<p class='green'>$thisName (load: $thisLoad) moving to $thisServer in $thisLocation</p>";	
