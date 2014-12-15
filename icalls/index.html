@@ -144,9 +144,10 @@
             for (var ipAddress in pbxData) {
                 if (pbxData[ipAddress]["calls"] == -1) {
                     pbxData[ipAddress]["calls"] = -62;
-                }
-                if (pbxData[ipAddress]["calls"] == -2) {
+                } else if (pbxData[ipAddress]["calls"] == -2) {
                     pbxData[ipAddress]["calls"] = -124;
+                } else if (pbxData[ipAddress]["calls"] == -3) {
+                    pbxData[ipAddress]["calls"] = -248;
                 }
                 if(listOfPbxs.indexOf(ipAddress) < 0) {
                     listOfPbxs.push(ipAddress);

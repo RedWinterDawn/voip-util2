@@ -310,7 +310,7 @@ if ($action == "submit")
 	}
 
 	//Set the PBX to status "moving". If source is a site, not a pbx, nothing will happen
-	$setDirty = "UPDATE pbxstatus SET status = 'dirty' WHERE ip = '$source';";
+	$setDirty = "UPDATE pbxstatus SET status = 'dirty', abandoned='now()', message='Mass Exodus was run leaving this pbx' WHERE ip = '$source';";
 	pg_query($utilConn, $setDirty);
 
    	pg_close($eventDb); //Close the event DB connections
