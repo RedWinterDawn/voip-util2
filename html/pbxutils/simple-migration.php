@@ -77,8 +77,16 @@ switch ($action) {
 		//dest will have indexes [0] and [1] containing the two results.
 		$dest = explode('|', $_REQUEST["dest"]);
 		$location = $_REQUEST["location"];
+    if ($location == 'ord')
+    {
+      $location = 'chicago-legacy';
+    }
 		$domain = $_REQUEST["domain"];
 		$oldLocation = $_REQUEST["oldlocation"];
+    if ($oldLocation == 'ord')
+    {
+      $oldLocation = 'chicago-legacy';
+    }
 		$oldAssigned = $_REQUEST["oldassigned"];
 		$id = $_REQUEST["id"];
 		if (isset($_REQUEST["flush"])) //TECHNICALLY, this is confirmation specific, but can be included in the "move" step harmlessly. 
