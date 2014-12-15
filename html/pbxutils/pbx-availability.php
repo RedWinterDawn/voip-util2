@@ -394,7 +394,7 @@ if ($action == "ListStatus")
 			if ($row['status'] == "active"){
 				echo "<td>-</td>";
 				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "&display=$display\">set standby</a></td>";
-				echo '<td><a href=\"http://10.101.8.1/pbx-sip-failure.php?server=' . $row['ip'] . '" target="_blank">abandon ship</a></td>';
+				echo "<td><a href=\"http://10.101.8.1/pbxutils/pbx-sip-failure.php?server=" . $row['ip'] . '" target="_blank">abandon ship</a></td>';
 			} else if ($row['status'] == "clean") {
 				echo "<td>-</td>";
 				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "&display=$display\">set standby</a></td>";
