@@ -23,12 +23,14 @@ if (isset($_GET["state"]))
 $count = 0;
 $limit = 5000;
 if ($utilConn = pg_connect("host=rodb dbname=util user=postgres")) {
-	$pbxDCresult = pg_fetch_array(pg_query($utilConn, "SELECT location FROM pbxstatus WHERE ip = '$assigned_server'"));
+	$pbxDCresult = pg_fetch_array(pg_query($utilConn, "SELECT location,failgroup FROM pbxstatus WHERE ip = '$assigned_server'"));
 	$pbxDC = $pbxDCresult['location'];
+  $pbxFG = $pbxDCresult['failgroup'];
 	pg_close($utilConn);
 } 
 if (!$pbxDC) {
 	$pbxDC = 'a site, somewhere, almost probably';
+  $pbxFG = 101;
 }
 $dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ")
     or die('Could not connect: ' . pg_last_error());
@@ -59,7 +61,7 @@ while ($count = pg_fetch_assoc($dCount)){
 $query = "SELECT id,domain,name,state,assigned_server,location,v5candidate FROM resource_group WHERE assigned_server='" . $assigned_server . "' " . $query_state . " ORDER BY state,domain LIMIT " . $limit;
 $result = pg_query($dbconn, $query) or die('Query failed: ' . pg_last_error());
 
-echo "<br/><h2>$assigned_server in <a href='pbx-availability.php?display=$pbxDC'>$pbxDC</a></h2>\n";
+echo "<br/><h2>$assigned_server in <a href='pbx-availability.php?display=$pbxFG'>$pbxDC</a></h2>\n";
 
 $loadPercent = round($loadTotal / 140000, 0);
 $color = 'green';

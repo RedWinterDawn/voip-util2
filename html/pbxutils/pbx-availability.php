@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <link rel='stylesheet' href='stylesheet.css'>
 <?php
 include('guiltyParty.php');
@@ -343,8 +344,14 @@ if ($action == "ListStatus")
 		while ($d = pg_fetch_assoc($dirties)) {
 			echo "#${d['location']}-link { color: red; }";
 		}
-		echo "</style>";
-		echo "<body>";
+		echo "</style>\n";
+    echo "<script>\n";
+    echo "function setActive (location) {
+              var elm = document.getElementById(location+'-link');
+              elm.className = elm.className + ' active';
+          }";
+    echo "</script>\n";
+    echo "<body>";
 		echo "Enter IP alone to delete. IP + new field to update. All fields to add new.";
 		echo "<table><tr><th>PBX IP</th><th>Status</th><th>Location</th><th>Fail Group</th></tr>";
 		echo "<form action='' method='POST'><tr><td><input type='text' name='pbx' placeholder='e.g. 10.119.7.1'></td>";
@@ -361,8 +368,13 @@ if ($action == "ListStatus")
 		echo "<h2>$display</h2>";
 		echo "<table border=1>";
 		echo "<tr><th>failgroup</th><th>load</th><th>ip</th><th>status</th><th>activate</th><th>standby</th><th>abandon ship</th><th>message</th></tr>\n";
+    $oneTimer = true;
 		while ($row = pg_fetch_array($result, null, PGSQL_ASSOC))
 		{
+      if ($oneTimer) {
+        echo '<body onload="setActive(\''.$row['location'].'\')"></body>';
+        $oneTimer = false;
+      }
 			$showControls = false;
 			$load = round($row['load'] / 140000,0);
 			$color = 'green';
