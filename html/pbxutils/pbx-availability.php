@@ -363,9 +363,11 @@ if ($action == "ListStatus")
 		$result = pg_query($routil, "SELECT failgroup,location,vmhost,host,ip,status,load,message FROM pbxstatus WHERE failgroup = '$display' ORDER BY failgroup,\"order\",status desc,ip limit 1000;");
 
 		// Menu with red labels where the dirty pbxs are
-		include('pbx-menu.html');
-		
-		echo "<h2>$display</h2>";
+		include('pbx-menu.html'); 
+
+    $site = ['101' => 'Chicago Legacy', '117' => 'Provo', '119' => 'L.A.', '120' => 'New York', '122' => 'Atlanta', '123' => 'Spokane', '125' => 'Chicargo (ORD)','v5' => 'v5'];
+
+		echo "<h2>$site[$display]</h2>";
 		echo "<table border=1>";
 		echo "<tr><th>failgroup</th><th>load</th><th>ip</th><th>status</th><th>activate</th><th>standby</th><th>abandon ship</th><th>message</th></tr>\n";
     $oneTimer = true;
