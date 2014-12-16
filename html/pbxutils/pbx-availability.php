@@ -67,7 +67,7 @@ if (($pbx != "") && (!preg_match('/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\
         $postAction = null;
         $fgroup = null;
 }
-if (preg_match('/[^a-z]/i', $status))
+if (preg_match('/[^a-z_\-0-9]/i', $status))
 {
         echo "<p class='red'> Invalid Input for Status! <br/> Use letters only.</p>";
         echo "<p>You gave the following: ".$pbx." and ".$status."</p>";
