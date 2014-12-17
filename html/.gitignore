@@ -1,5 +1,6 @@
 internal
 internal/*
+misc/*
 *.bak
 ext-5.0.1/
 info.php
@@ -9,4 +10,5 @@ pbxutils/hosttohostname.php
 pbxutils/nohup.out
 pbxutils/rarrow.png
 pbxutils/test.php
+pbxutils/*.log
 test/
