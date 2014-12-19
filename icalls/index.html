@@ -85,12 +85,16 @@
             wsUrl = 'ws://icalls.getjive.com:8080/websocket',
             reconnectInterval = 5000,
             timeoutInterval = 2500;
-            CHIcolors = ['#2d632d','#508c50','#7bb57b','#b0dfb0','#FF0000','#FFFF00','#00FF00','#0000FF'].reverse();
-            LAXcolors = ['#2d635a','#508c82','#7bb5ab','#b0dfd7','#FF0000','#FFFF00','#00FF00','#0000FF'].reverse();
-            NYCcolors = ['#2d4063','#506486','#7b8fb5','#b0bfdf','#FF0000','#FFFF00','#00FF00','#0000FF'].reverse();
-            ATLcolors = ['#542d63','#7b508c','#a57bb5','#d2b0df','#FF0000','#FFFF00','#00FF00','#0000FF'].reverse();
-            ORDcolors = ['#632d40','#8c5065','#b57b8f','#deabbd','#FF0000','#FFFF00','#00FF00','#0000FF'].reverse();
-            V5colors = ['#333333','#666666','#999999','#CCCCCC','#FF0000','#FFFF00','#00FF00','#0000FF'].reverse();
+            color1='#FF0000';
+            color2='#FFDD00';
+            color3='#00DD00';
+            color4='#0000FF';
+            CHIcolors = ['#2d632d','#508c50','#7bb57b','#b0dfb0',color1,color2,color3,color4].reverse();
+            LAXcolors = ['#2d635a','#508c82','#7bb5ab','#b0dfd7',color1,color2,color3,color4].reverse();
+            NYCcolors = ['#2d4063','#506486','#7b8fb5','#b0bfdf',color1,color2,color3,color4].reverse();
+            ATLcolors = ['#542d63','#7b508c','#a57bb5','#d2b0df',color1,color2,color3,color4].reverse();
+            ORDcolors = ['#632d40','#8c5065','#b57b8f','#deabbd',color1,color2,color3,color4].reverse();
+             V5colors = ['#333333','#666666','#999999','#CCCCCC',color1,color2,color3,color4].reverse();
 
         function startws(url) {
             if (!window.WebSocket) {
@@ -148,7 +152,9 @@
                     pbxData[ipAddress]["calls"] = -124;
                 } else if (pbxData[ipAddress]["calls"] == -3) {
                     pbxData[ipAddress]["calls"] = -248;
-                }
+                } else if (pbxData[ipAddress]["calls"] == -4) {
+                    pbxData[ipAddress]["calls"] = -186;
+                  }
                 if(listOfPbxs.indexOf(ipAddress) < 0) {
                     listOfPbxs.push(ipAddress);
                     updated = true;
