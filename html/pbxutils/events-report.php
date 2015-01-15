@@ -189,22 +189,27 @@ if ($action=="domainList" && isset($eventID))
 	//Connect to the pbxsDB and get all the domains 
 	$pbxsDB = pg_connect("host=rodb dbname=pbxs user=postgres ") or die('Could not connect to "pbxs" database: ' . pg_last_error());
 	$pbxq = "SELECT domain, name, assigned_server FROM resource_group WHERE ";
+	$deviceq = "SELECT count(*) FROM user_agent WHERE resource_group_id IN (";
 	$first = true;
 	foreach($eventArray as $event)
 	{
 		if($first)
 		{
 			$first=false;
+		    $deviceq .= "'".$event[domain_id]."'"; 
 		}else
 		{
 			$pbxq .= "OR ";
+	    	$deviceq .= ", '".$event[domain_id]."'"; 
 		}
 		$pbxq .= "id = '" .$event[domain_id]. "' ";	
 	}
 	$pbxq .= 'ORDER BY assigned_server';
+	$deviceq .= ")";
+	$deviceCount = pg_fetch_row(pg_query($pbxsDB, $deviceq)) or die ("Device search failed: " . pg_last_error());
 	$pbxArray = pg_fetch_all(pg_query($pbxsDB, $pbxq)) or die("Domain search failed or no results: " . pg_last_error());
 	pg_close($pbxsDB);
-	echo "<h2>".sizeof($pbxArray)." Domains affected by: " .$eventDescrip. "</h2>";
+	echo "<h2>".sizeof($pbxArray)." Domains with ".$deviceCount[0]." Devices affected by:<br>" .$eventDescrip. "</h2>";
 	echo "<table border='1'<tr><th>Domain</th><th>Name</th><th>Current Location</th></tr>";
 	foreach($pbxArray as $pbx)
 	{
