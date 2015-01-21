@@ -12,29 +12,46 @@ header('Content-Type:text/html');
 
 if (isset($_REQUEST['to'])) {
 	$to = $_REQUEST['to'];
-	if (!preg_match('/^\d*$/', $to)) {
-		die ('Not a valid TO number');
-	}
 } else {
 		$to = "";
+}
+
+if (isset($_REQUEST['from'])) {
+	$from = $_REQUEST['from'];
+} else {
+	$from = false;
+}
+
+function printLcrLookup($to,$from,$address){
+	if ($from) {
+		$url = "http://" . $address . "/lcr/lookup/e164/$to?cli=$from";
+	}else
+	{
+		$url = "http://" . $address . "/lcr/lookup/e164/$to";
+	}
+	print_r($url);
+	echo "<br/>";
+	$curl = curl_init($url);
+	// timeout 4
+	print_r(curl_exec($curl));
+	curl_close();
 }
 
 echo "<h2>Number Cost Finder</h2>";
 echo "<p>Enter an E.164 without the '+'</p></br>";
 echo "<form action='' method='GET'>
 		To Number:+<input type='text' name='to' onchange='document.getElementById(\"phoneNumber\").value=this.value;' value='" . $to . "' />
-        <br>From Number:+<input type='text' name='from' />
+        <br>From Number:+<input type='text' name='from' value='" . $from . "'/>
 		<br><input type='submit' value='Search' />
 		</form>";
 
 if ($to != "") {
 	if (!preg_match('/^\d*$/', $to)) {
-		die ('Not a valid number');
+		die ('To is not a valid number [' . $to . ']');
 	}
-	if (isset($_REQUEST['from'])){
-		$from = $_REQUEST['from'];
+	if ($from){
 		if (!preg_match('/^\d*$/', $from)) {
-			die ('From is not a valid number');
+			die ('From is not a valid number [' . $from . ']');
 		}
 	}
 	echo "<p>To Number: $to
@@ -48,46 +65,20 @@ if ($to != "") {
 	curl_close();
     echo "</p>";
 
-	echo "<p>V4 LCR:<br>";
-	if ($from) {
-		$url = "http://10.103.0.197:9998/lcr/lookup/e164/$to?cli=$from";
-	}else
-	{
-		$url = "http://10.103.0.197:9998/lcr/lookup/e164/$to";
-	}
-	print_r($url);
-	echo "<br/>";
-	$curl = curl_init($url);
-	print_r(curl_exec($curl));
-	curl_close();
+	echo "<hr/><p>V4 LCR:<br>";
+	printLcrLookup($to,$from,"10.103.0.197:9998");
     echo "</p>";
 	
-	echo "<p>PVU LCR:<br>";
-	if ($from) {
-		$url = "http://10.117.255.41:9998/lcr/lookup/e164/$to?cli=$from";
-	}else
-	{
-		$url = "http://10.117.255.41:9998/lcr/lookup/e164/$to";
-	}
-	print_r($url);
-	echo "<br/>";
-	$curl = curl_init($url);
-	print_r(curl_exec($curl));
-	curl_close();
+	echo "<hr/><p>PVU LCR:<br>";
+	printLcrLookup($to,$from,"10.117.255.41:9998");
     echo "</p>";
 	
-	echo "<p>DFW LCR:<br>";
-	if ($from) {
-		$url = "http://10.118.255.41:9998/lcr/lookup/e164/$to?cli=$from";
-	}else
-	{
-		$url = "http://10.118.255.41:9998/lcr/lookup/e164/$to";
-	}
-	print_r($url);
-	echo "<br/>";
-	$curl = curl_init($url);
-	print_r(curl_exec($curl));
-	curl_close();
+	echo "<hr/><p>DFW LCR:<br><pre>";
+	printLcrLookup($to,$from,"10.118.255.41:9998");
+    echo "</p></pre>";
+	
+	echo "<hr/><p>GEG LCR:<br/>";
+	//printLcrLookup($to,$from,"10.123.255.41:9998");
     echo "</p>";
 }
 ?>
