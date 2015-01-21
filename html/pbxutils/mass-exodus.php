@@ -4,7 +4,7 @@ include('guiltyParty.php');
 
 if ($_SERVER['SERVER_ADDR'] != '10.101.8.1')
 {
-  echo'For v5 migrations: <form action="http://10.101.8.1/pbxutils/mass-exodus.php" method="POST">
+  echo'For Mass Exodus: <form action="http://10.101.8.1/pbxutils/mass-exodus.php" method="POST">
       <input type="hidden" name="gParty" value="'.$guiltyParty.'">
       <input type="submit" value="CLICK HERE" /></form>';
     die();
