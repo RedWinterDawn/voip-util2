@@ -95,7 +95,14 @@ switch ($action) {
 		} else
 		{
 			$flush = "N";
-		}
+    }
+    if (isset($_REQUEST["reason"]))
+    {
+      $notes = $_REQUEST["reason"];
+     } else
+     {
+       $notes = '';
+     }
 		break;
 }
 
@@ -317,7 +324,9 @@ if (isset($dest[0])) //Make sure we got a destination...
 			<p>If not, simply leave this page</p>
 			<div class='checkbox'>
 			<p><input id='flush' type='checkbox' name='flush' value='memcache' checked><label for='flush'>Flush Memcache?</label></p>
-			</div>
+      </div>
+      <input type='text' size='60' name='reason' Placeholder='Reason' />
+      </div>
 			<input type='submit' value='Yes, proceed' onClick='working()' />
 			</form>
 			<form action='' method='POST'>
@@ -419,14 +428,22 @@ if (isset($dest[0])) //Make sure we got a destination...
 			}
 
 			//Record event in the event database
-			$eventDb = pg_connect("host=rwdb dbname=events user=postgres") or die('Could not connect: '. pg_last_error());
-			$description = $guiltyParty." moved ".$domain." from ".$oldAssigned." in ".$oldLocation." to ".$dest[0]." in ".$location;
-			$eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description, event_type) VALUES(DEFAULT, '" . $description . "', 'SINGLE') RETURNING id;"));
-			
-			pg_query($eventDb, "INSERT INTO event_domain VALUES('" . $eventID['0'] . "', '" .$id. "')");
-			pg_close($eventDb); //Close the event DB connection
-		}
 
+      $eventDb = pg_connect("host=rwdb dbname=events user=postgres") or die('Could not connect: '. pg_last_error());
+			$description = $guiltyParty." moved ".$domain." from ".$oldAssigned." in ".$oldLocation." to ".$dest[0]." in ".$location;
+      if($notes=="")
+      {
+        $event_query = "INSERT INTO event(id, description, event_type, notes) VALUES(DEFAULT, '" . $description . "', 'SINGLE', NULL ) RETURNING id;";
+      }else
+      {
+        $event_query = "INSERT INTO event(id, description, event_type, notes) VALUES(DEFAULT, '" . $description . "', 'SINGLE', '".$notes."' ) RETURNING id;";
+      } 
+			$eventID = pg_fetch_row(pg_query($eventDb, $event_query));
+    
+			pg_query($eventDb, "INSERT INTO event_domain VALUES('" . $eventID['0'] . "', '" .$id. "')");
+	    pg_close($eventDb); //Close the event DB connection
+    }
+    
 		sleep(1); //give the ro database time to replicate from master
 		$dbconn = pg_connect("host=rodb dbname=pbxs user=postgres ") or die('Could not connect: ' . pg_last_error());
 
