@@ -32,9 +32,17 @@ function printLcrLookup($to,$from,$address){
 	print_r($url);
 	echo "<br/>";
 	$curl = curl_init($url);
-	// timeout 4
-	print_r(curl_exec($curl));
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,1);
+	curl_setopt($curl,CURLOPT_TIMEOUT,2);
+	$result = curl_exec($curl);
+	$curl_errno = curl_errno($curl);
+	$curl_error = curl_error($curl);
 	curl_close();
+	if ($curl_errno > 0) {
+		echo "cURL Error ($curl_errno): $curl_error\n";
+	} else {
+        print_r($result);
+	}
 }
 
 echo "<h2>Number Cost Finder</h2>";
@@ -78,7 +86,7 @@ if ($to != "") {
     echo "</p></pre>";
 	
 	echo "<hr/><p>GEG LCR:<br/>";
-	//printLcrLookup($to,$from,"10.123.255.41:9998");
+	printLcrLookup($to,$from,"10.123.255.41:9998");
     echo "</p>";
 }
 ?>
