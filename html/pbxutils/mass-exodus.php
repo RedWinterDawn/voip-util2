@@ -1,7 +1,26 @@
 <?php
 
-include('loadUpdate.php');
 include('guiltyParty.php');
+
+if ($_SERVER['SERVER_ADDR'] != '10.101.8.1')
+{
+  echo'For v5 migrations: <form action="http://10.101.8.1/pbxutils/mass-exodus.php" method="POST">
+      <input type="hidden" name="gParty" value="'.$guiltyParty.'">
+      <input type="submit" value="CLICK HERE" /></form>';
+    die();
+} else
+{
+  if (isset($_REQUEST["gParty"]))
+  {
+    $guiltyParty= $_REQUEST["gParty"];
+  } else
+  {
+    header( 'Location: http://prodtools.devops.jive.com/mass-exodus.php');
+  }
+}
+
+include('loadUpdate.php');
+
 header('Cache-Control: no-cache');
 //We actually have enough clients that this script runs out of memory 
 //when working with the default 16 MB (can handle ~7,200 clients with 16 MB)
