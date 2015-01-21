@@ -147,7 +147,7 @@ if ($action=="search")
 	{	
 		//Actually connect to postgres for the queries we'll be making
     	$eventsDB = pg_connect("host=rodb dbname=events user=postgres ") or die('Could not connect to "events" database: ' . pg_last_error());
-		$eventQ = "SELECT added AT TIME ZONE 'UTC-7', id, description FROM event WHERE added BETWEEN (timestamp '".$search."' AT TIME ZONE 'America/Boise') AND ((timestamp '".$search."' + interval '1 day') AT TIME ZONE 'America/Boise') ORDER BY number desc;";
+		$eventQ = "SELECT added AT TIME ZONE 'UTC-7', id, description, notes FROM event WHERE added BETWEEN (timestamp '".$search."' AT TIME ZONE 'America/Boise') AND ((timestamp '".$search."' + interval '1 day') AT TIME ZONE 'America/Boise') ORDER BY number desc;";
 		$eventArray = pg_fetch_all(pg_query($eventsDB, $eventQ));
 		pg_close($eventsDB);
 		$count = 0;
@@ -155,7 +155,8 @@ if ($action=="search")
 		{
 			$count ++;
 			$table = $table . "<td> " . strftime('%m-%d-%Y %T', strtotime($event[timezone])) ." </td>
-				  <td> " . $event[description] . " </td>
+        <td> " . $event[description] . " </td>
+        <td> " .$event[notes] . " </td>
 			  	  <td> 
 			  	  </form><form action='' method='get'>
 			      <input type='hidden' name='action' value='domainList'>
@@ -166,7 +167,7 @@ if ($action=="search")
 		echo '<h2>'.$count." Events that occured on: ".strftime('%m-%d-%Y', strtotime($search)) . "</h2>";
 		if ($count > 0)
 		{
-			echo "<table border='1'><tr><th>Date</th><th>Description</th><th>Affected</th></tr>";
+			echo "<table border='1'><tr><th>Date</th><th>Description</th><th>Notes</th><th>Affected</th></tr>";
 			echo $table;
 			echo "</table></div>";
 		}
