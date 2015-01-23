@@ -86,7 +86,7 @@ if ($to != "") {
     echo "</p></pre>";
 	
 	echo "<hr/><p>GEG LCR:<br/>";
-	printLcrLookup($to,$from,"10.123.255.41:9998");
+	printLcrLookup($to,$from,"10.123.253.130:9998");
     echo "</p>";
 }
 ?>
