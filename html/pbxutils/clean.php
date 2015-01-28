@@ -10,9 +10,6 @@ Clean Script
 <?
 $display = $_GET['display'];
 echo "<a href='http://prodtools.devops.jive.com/pbx-availability.php?display=$display'>Back to PBX Availability</a>";
-?>
-<br>Please wait for more information.<br>
-<?
 ini_set('display_startup_errors',1);
 ini_set('display_errors',1);
 error_reporting(-1);
@@ -27,10 +24,9 @@ function flushOutput() {
 
 if (isset($_GET['server'])) {
 	$server = $_GET['server'];
-	echo "<br>Welcome.<br>Cleaning PBX $server<br>";
-	flushOutput();
-	exec('sudo salt -b 1 "'.$server.'" cmd.run "/opt/jive/asterisk-cleanup" 2>&1', $output, $exitcode);
-	echo "<br> Finished.";
+	echo "<br>Initiated clean on PBX $server<br>";
+	exec('sudo salt -b 1 "'.$server.'" cmd.run "/opt/jive/asterisk-cleanup" 1>/dev/null 2>&1 &', $output, $exitcode);
+	echo "You can close this page. The server will automatically change status to standby when it is finished cleaning.";
 	echo "<br><br>";
 	if ($exitcode != 0) {
 		foreach ($output as $out) {
