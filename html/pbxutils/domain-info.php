@@ -82,6 +82,27 @@ while ($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
 	if ($domainRow['v5candidate'] == 'f') { $v5candidate = "false"; }
 	if ($domainRow['sensitive'] == 't') { $sensitive = "TRUE"; }
 	if ($domainRow['sensitive'] == 'f') { $sensitive = "false"; }
+    $dom = $domainRow['domain'];
+    $today = date("Y-m-d");
+    echo "<table border=1><tr>
+    <form action='simple-migration.php' method='POST'><td>
+      <input type='hidden' name='action' value='search' />
+      <input type='hidden' name='exact' value='true' />
+      <input type='hidden' name='search' value='$dom' />
+      <input type='submit' value='Go to Migration Page' />
+      </td></form>
+    <form action='events-report.php' method='POST'><td>
+      <input type='hidden' name='action' value='eventList' />
+      <input type='hidden' name='domain' value='$dom' />
+      <input type='submit' value='Go to Events Page' />
+    </td></form>
+    <td><a href='customer-call-report.php?domain=$dom&birthday=$today&action=doSearch'>
+      <input type='submit' value='Go to Call Reports' />
+      </a></td>
+    <td><a href='https://$dom.onjive.com/admin/'>
+      <input type='submit' value='Go to Portal' />
+      </a></td>
+    </tr></table>";
     echo "<table border=1>\n";
     echo "<tr><th>Domain</th><th>Name</th><th>Server</th><th>ID</th><th>Proxy</th><th>Domain Status</th><th>Area Code</th><th>MPLS</th><th>v5 migrated</th><th>v5 candidate</th><th>Sensitive</th></tr>\n";
 	echo "<th><a href='domain-edit.php?domain=" . $domainRow['domain'] . "'>" . $domainRow['domain'] . "</a></th>"

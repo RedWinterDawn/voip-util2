@@ -25,7 +25,13 @@ function flushOutput() {
 if (isset($_GET['server'])) {
 	$server = $_GET['server'];
 	echo "<br>Initiated clean on PBX $server<br>";
-	exec('sudo salt -b 1 "'.$server.'" cmd.run "/opt/jive/asterisk-cleanup" 1>/dev/null 2>&1 &', $output, $exitcode);
+  if ($_SERVER['SERVER_ADDR'] == '10.101.8.1')
+  {
+	  exec('sudo salt -b 1 "'.$server.'" cmd.run "/opt/jive/asterisk-cleanup" 1>/dev/null 2>&1 &', $output, $exitcode);
+  }else
+  {
+	  exec('sudo ssh root@10.101.8.1 \'salt -b 1 "'.$server.'" cmd.run "/opt/jive/asterisk-cleanup" 1>/dev/null 2>&1 &\'', $output, $exitcode);
+  }
 	echo "You can close this page. The server will automatically change status to standby when it is finished cleaning.";
 	echo "<br><br>";
 	if ($exitcode != 0) {
