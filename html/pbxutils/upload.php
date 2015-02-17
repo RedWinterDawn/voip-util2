@@ -34,6 +34,11 @@ if(isset($_FILES['thinq']) and $_FILES['thinq']['type'] != 'application/zip' and
 }
 
 ## check international file types
+if(isset($_FILES['level3int']) and $_FILES['level3int']['type'] != 'text/csv' and $_FILES['level3int']['size'] > 0)
+{
+  echo '<br>Level3 International Rate Deck must be a csv file not a: ' . $_FILES['level3int']['type'];  
+  $level3int = 'False';
+}
 if(isset($_FILES['bandwidthint']) and $_FILES['bandwidthint']['type'] != 'text/csv' and $_FILES['bandwidthint']['size'] > 0)
 {
   echo '<br>Bandwidth International Rate Deck must be a csv file not a: ' . $_FILES['bandwidthint']['type'];  
@@ -106,6 +111,18 @@ if(isset($_FILES['thinq']) and $_FILES['thinq']['size'] > 0 and $thinq != 'False
 }
 
 ##move uploaded International files
+if(isset($_FILES['level3int']) and $_FILES['level3int']['size'] > 0 and $level3int != 'False')
+{
+  $level3intPath = $target_path . "level3-int-ratedeck.csv";
+  if(move_uploaded_file($_FILES['level3int']['tmp_name'], $level3intPath)) 
+  {
+    echo "<br>Level3 International ratedeck has been uploaded<br>";
+    $level3int = 'True';
+  }else
+  {
+    echo "<br>Failed to upload Level3 International ratedeck<br>";
+  }
+}
 if(isset($_FILES['bandwidthint']) and $_FILES['bandwidthint']['size'] > 0 and $bandwidthint != 'False')
 {
   $bandwidthintPath = $target_path . "bandwidth-int-ratedeck.csv";

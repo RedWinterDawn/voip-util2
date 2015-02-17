@@ -22,6 +22,12 @@ if (isset($_REQUEST['from'])) {
 	$from = false;
 }
 
+if (isset($_REQUEST['domain'])) {
+  $domain = $_REQUEST['domain'];
+} else {
+  $domain = "";
+}
+
 function printLcrLookup($to,$from,$address){
 	if ($from) {
 		$url = "http://" . $address . "/lcr/lookup/e164/$to?cli=$from";
@@ -50,6 +56,7 @@ echo "<p>Enter an E.164 without the '+'</p></br>";
 echo "<form action='' method='GET'>
 		To Number:+<input type='text' name='to' onchange='document.getElementById(\"phoneNumber\").value=this.value;' value='" . $to . "' />
         <br>From Number:+<input type='text' name='from' value='" . $from . "'/>
+        <br>Domain (for Sherlock): <input type='text' name='domain' value='".$domain."'/>
 		<br><input type='submit' value='Search' />
 		</form>";
 
@@ -62,10 +69,23 @@ if ($to != "") {
 			die ('From is not a valid number [' . $from . ']');
 		}
 	}
+  if ($domain != "" || $domain != null) {
+    echo "DOMAIN == |$domain|";
+    try {
+      $dbconn = pg_connect("host=rodb dbname=pbxs user=postgres");
+      $id = pg_fetch_assoc(pg_query($dbconn, "SELECT id FROM resource_group WHERE domain = '$domain'"))["id"];
+    } catch (Exception $e) {
+      echo "Didn't find your domain";
+      $id = 'a';
+    }
+  } else {
+    $id = 'a';
+  }
 	echo "<p>To Number: $to
-		  <br>From Number: $from</p>
+		  <br>From Number: $from
+      <br>ID: $id</p>
 		  <p>Sherlock:<br>";
-	$url = "http://10.125.255.66:6666/score/a/$to";
+	$url = "http://10.125.255.66:6666/score/$id/$to";
 	print_r($url);
     echo "<br/>";
 	$curl = curl_init($url);

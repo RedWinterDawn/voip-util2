@@ -3,6 +3,10 @@
 <input type="file" name="bandwidth" />
 <br>Bandwidth International Rate Deck (csv):
 <input type="file" name="bandwidthint" /></p>
+<p>Level3 Rate Deck (csv):
+<input type="file" name="level3" />
+<br>Level3 International Rate Deck (csv):
+<input type="file" name="level3int" /></p>
 <p>Onvoy Rate Deck (xlsx):
 <input type="file" name="onvoy" />
 <br>Onvoy International Rate Deck (xlsx):
