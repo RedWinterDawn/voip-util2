@@ -1,4 +1,27 @@
 <!DOCTYPE html>
+<?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL ^ E_NOTICE);
+
+function verifyDomains($domainList) {
+  $conn = pg_connect("host=rodb dbname=pbxs user=postgres");
+  $badList = [];
+  foreach ($domainList as $domain) {
+    $query = "SELECT id FROM resource_group WHERE domain = '$domain';";
+    $result = pg_fetch_assoc(pg_query($conn, $query));
+    if (strlen($result['id']) < 1) {
+      array_push($badList, $domain);
+    }
+  }
+  pg_close($conn);
+  return implode(",", $badList);
+}
+
+function domainSeparator($domainBlob) {
+  $domainList = preg_split("/, +|,| +/", $domainBlob);
+  return $domainList;
+}
+?>
 <html>
 <head>
 <link rel='stylesheet' href='stylesheet.css'>
@@ -10,9 +33,10 @@ include('menu.html');
 <h2>Feature Flag Flipper</h2>
 <p>
 Current data<br>
-Flag:<?=$_REQUEST['flag']?><br>
-Toggle:<?=$_REQUEST['toggle']?><br>
-Domains:<?=$_REQUEST['domains']?><br>
+Flag:<?=$_REQUEST['flag'];?><br>
+Toggle:<?=$_REQUEST['toggle'];?><br>
+Domains:<?=implode(",", domainSeparator($_REQUEST['domains']));?><br>
+InvalidDomainList:<?=verifyDomains(domainSeparator($_REQUEST['domains']));?>
 <br>
 <form action="" method="POST">
   Select a flag to toggle: <select name='flag'>
