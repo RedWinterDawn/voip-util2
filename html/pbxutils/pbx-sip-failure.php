@@ -144,8 +144,10 @@ if ($rwutil = pg_connect("host=rwdb dbname=util user=postgres"))
 				pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " failed to abandon per NoStandbyAvailable' WHERE  host='" . $row['host'] . "'");
 				syslog(LOG_WARNING, "application=pbx-sip-failure server=$server action=NoStandbyAvailable state=active guiltyParty=$guiltyParty customMessage='no standby available for pbx $server - no action taken'");
 
-                $mail_subject=$row['host'] . " FAILED to abandon per " . $guiltyParty;
+
+                $mail_subject=$row['host'] . " FAILED to abandon (no standby available) per " . $guiltyParty;
 				$mail_body=$requestTime . " " . $mail_subject;
+				$mail_headers='From: autoabandon-failure@jive.com' . "\r\n";
 				mail($mail_to, $mail_subject,$mail_body);
 			}
 		}else if ($row['status'] == "dirty")

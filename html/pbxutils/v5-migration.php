@@ -27,7 +27,7 @@ if ($_SERVER['SERVER_ADDR'] != '10.101.8.1')
 		header( 'Location: http://prodtools.devops.jive.com/v5-migration.php');
 	}
 }
-
+ 
 //CSS Styling:
 echo '<html><head><title>v5 Customer Migration</title>
 <style type="text/css"> 
@@ -86,6 +86,15 @@ switch ($action) {
 			$search = "%".$search."%";
 		}
 		break;
+	case "v4migrate":
+		if (isset($_REQUEST['reason']))
+		{
+			$notes = $_REQUEST['reason'];
+		}else
+		{
+			$notes = '';
+		}
+		break;
 }
 
 //========
@@ -132,40 +141,48 @@ if ($action=="search")
 	pg_close($dbconn);
 
 	//Output HTML (note and the beginning of the table including column headers
-	echo "<table border='1'><tr><th>v5</th><th>Name</th><th>Domain</th><th>Location</th><th>Server</th><th>Migrate to v4</th><th>Migrate to v5</th><th>v5 Candidate</th></tr>";
+	echo "<table border='1'><tr><th>v5 Candidate</th><th>Name</th><th>Domain</th><th>Location</th><th>Server</th><th>Reason</th><th>Migrate</th></tr>";
 
 	foreach($curAssignment as $dom) //Loop through the domains we found in our first query
 	{
 		if ($dom['v5'] != 't') { $v5 = 'FALSE'; } else { $v5 = 'TRUE'; }
 		if ($dom['v5candidate'] != 't') { $v5candidate = 'FALSE'; } else { $v5candidate = 'TRUE'; }
 		$listDomain = $dom['domain'];
-		echo "<tr>
-			<td>".$v5."</td>
+		echo "
+			<tr>
+			<td>".$v5candidate."</td>
 			<td>".$dom['name']."</td>
 			<td><a href=\"domain-info.php?domain=" . $listDomain . "\">" . $listDomain . "</a></td>
 			<td>".$dom['location']."</td>
 			<td>".$dom['assigned_server']."</td>";
 
 		if ($v5 == 'TRUE') {
-			echo "<td>
-				<a href='v5-migration.php?action=v4migrate&domain=" . $listDomain . "&gParty=".$guiltyParty."'>Migrate to v4</a>
-				<list><li>dfw</li><li>pvu</li></list>
+			echo "
+				<form action='' method 'POST'>
+				<input type='hidden' name='action' value='v4migrate'>
+				<input type='hidden' name='domain' value='".$listDomain."'>
+				<input type='hidden' name='gParty' value='".$guiltyParty."'>
+				<td>
+				<input type='text' size='60' name='reason' Placeholder='Reason' />
+				</td>
+				<td>
+				<input type='submit' value='Migrate to v4' /></form>
 				</td>";
-		} else {
-			echo "<td></td>";
-		}
+		} 
 		if ($v5 == 'FALSE') {
-			echo "<td>
-				<a href='v5_migration_queue.php?domain=" . $listDomain . "&gParty=".$guiltyParty."'>Migrate to v5</a>
-				<list><li>dfw</li><li>pvu</li></list>
+			echo "
+				<form action='v5_migration_queue.php' mehtod='POST'>
+				<input type='hidden' name='domain' value='".$listDomain."'>
+				<input type='hidden' name='gParty' value='".$guiltyParty."'>
+				<td>
+				<input type='text' size='60' name='reason' Placeholder='Reason' />
+				</td>
+				<td>
+				<input type='submit' value='Migrate to v5' /></form>
 				</td>";
 		} else if ($v5 == 'FALSE') {
 			echo "<td>Please migrate to chicago before migrating to v5</td>";
-		} else {
-			echo "<td></td>";
-		}
-        
-	    echo "<td>".$v5candidate."</td>";
+		} 
 		echo "</tr>"; 
 	}
 	echo "</table></div>";
@@ -276,8 +293,16 @@ if ($action=="v4migrate")
 	echo "<p>Updating Event DB</p>";
 	$eventDb = pg_connect("host=rwdb dbname=events user=postgres") or die('Could not connect: '. pg_last_error());
 	$description = $guiltyParty." migrated ".$domain." to ".$platform;
-	$eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description, event_type) VALUES (DEFAULT, '" . $description . "', '2V4') RETURNING id;"));
-			
+	#$eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description, event_type) VALUES (DEFAULT, '" . $description . "', '2V4') RETURNING id;"));
+
+	if($notes=='')
+	{
+		$eventQuery = "INSERT INTO event(id, description, event_type, notes) VALUES (DEFAULT, '" . $description . "', '2V4', NULL) RETURNING id;";
+	}else
+	{
+		$eventQuery = "INSERT INTO event(id, description, event_type, notes) VALUES (DEFAULT, '" . $description . "', '2V4', '".$notes."') RETURNING id;";
+	}
+	$eventID = pg_fetch_row(pg_query($eventDb, $eventQuery));		
 	pg_query($eventDb, "INSERT INTO event_domain VALUES('" . $eventID['0'] . "', '" .$id. "')");
 	pg_close($eventDb); //Close the event DB connection
 

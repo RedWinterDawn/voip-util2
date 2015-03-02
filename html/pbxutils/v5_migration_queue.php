@@ -37,6 +37,13 @@ if (isset ($_REQUEST["domain"]))
 {
   die (("No domain was passed in"));
 }
+if (isset ($_REQUEST["reason"]))
+{
+	  $notes = $_REQUEST["reason"];
+}else
+{
+	  $notes = '';
+}
 include('guiltyParty.php');
 if (isset ($_REQUEST["gParty"]))
 {
@@ -85,7 +92,7 @@ if ($action=='add')
 		$preflight = 'f';
 	}
 
-	$insert = "INSERT INTO v5_migration (domain, migrate_to_chi, preflight, guilty_party) VALUES ('".$domain."', '".$migrateToChi."', '".$preflight."', '".$guiltyParty."');";
+	$insert = "INSERT INTO v5_migration (domain, migrate_to_chi, preflight, guilty_party, notes) VALUES ('".$domain."', '".$migrateToChi."', '".$preflight."', '".$guiltyParty."', '".$notes."');";
   pg_query($utildb, $insert) or die ("failed to add ".$domain." to the queue: ".pg_last_error());
   print "Added ".$domain." to be migrated to v5";
   $pg_close($utildb);

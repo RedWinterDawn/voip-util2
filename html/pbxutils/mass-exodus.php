@@ -2,22 +2,6 @@
 
 include('guiltyParty.php');
 
-if ($_SERVER['SERVER_ADDR'] != '10.101.8.1')
-{
-  echo'For Mass Exodus: <form action="http://10.101.8.1/pbxutils/mass-exodus.php" method="POST">
-      <input type="hidden" name="gParty" value="'.$guiltyParty.'">
-      <input type="submit" value="CLICK HERE" /></form>';
-    die();
-} else
-{
-  if (isset($_REQUEST["gParty"]))
-  {
-    $guiltyParty= $_REQUEST["gParty"];
-  } else
-  {
-    header( 'Location: http://prodtools.devops.jive.com/mass-exodus.php');
-  }
-}
 
 include('loadUpdate.php');
 
