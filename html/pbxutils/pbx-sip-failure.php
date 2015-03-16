@@ -38,6 +38,11 @@ if ($guiltyParty == "10.122.255.224")
 	$guiltyParty = "Xymon";
 }
 
+if ($guiltyParty == "Xymon")
+{
+	// die("Disabled");
+}
+
 if ($routil = pg_connect("host=rodb dbname=util user=postgres"))
 {
 }else
