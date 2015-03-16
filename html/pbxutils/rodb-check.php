@@ -32,11 +32,15 @@ function nowQueryThis($query)
 	echo $query;
 	echo "\n##############################################################################################################\n";
 
-	$result = pg_query($query) or die('Query failed: ' . pg_last_error());
-
-	while ($row = pg_fetch_array($result, null, PGSQL_ASSOC))
+	if ($result = pg_query($query))
 	{
-		print_r($row) . "\n";
+		while ($row = pg_fetch_array($result, null, PGSQL_ASSOC))
+		{
+			print_r($row) . "\n";
+		}
+	} else
+	{
+		echo "<font color='red'>ERROR: Query failed: </font>" . pg_last_error();
 	}
 
 	echo "\n";
@@ -51,11 +55,14 @@ echo "<pre>";
 
 nowQueryThis("select pg_is_in_recovery(),pg_is_xlog_replay_paused(),pg_last_xlog_receive_location(),pg_last_xlog_replay_location(),pg_last_xact_replay_timestamp()");
 nowQueryThis("select count(*),mode from pg_locks group by mode");
-nowQueryThis("select datid,pid,client_addr,backend_start,query_start,waiting,state,now()-query_start as duration, query_start - state_change as zero
-	from pg_stat_activity where pid in (select pid from pg_locks where mode != 'AccessShareLock')
-	order by state_change asc");
 
-echo "<font color=lightblue>\n#####\n This one should fail indicating recovery is in progress:\n</font>\n";
+nowQueryThis("select pg_locks.mode as mode,datid,pg_stat_activity.pid as pid,client_addr,backend_start,query_start,waiting,state,now()-query_start as duration
+   from pg_stat_activity
+   left join pg_locks on pg_stat_activity.pid = pg_locks.pid
+   where pg_locks.mode != 'AccessShareLock'
+   order by state_change asc;");
+
+echo "<font color=orange>\n#####\n This one should fail indicating recovery is in progress:\n</font>\n";
 nowQueryThis("select pg_current_xlog_location()");
 #nowQueryThis("");
 
