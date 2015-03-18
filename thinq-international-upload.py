@@ -48,10 +48,11 @@ with open(fileName, 'rb') as csvfile:
         lrn = row[0]
         dest = row[1].replace("'", "")
         if lrn.isdigit():
+            print 'is digit'
             if count == 0:
                 query = "INSERT INTO thinq_international (carrier_id, destination, prefix, rate, initial, effective, validFrom) VALUES (%s, '%s', '%s', %s, %s, '%s', now())" %(row[0], dest, row[2], row[3], row[4], row[5])
                 count = count + 1
-            elif count < 10000:
+            elif count < 1000:
                 query = "%s, (%s, '%s', '%s', %s, %s, '%s', now())" %(query, row[0], dest, row[2], row[3], row[4], row[5])
                 count  = count + 1
             else:    

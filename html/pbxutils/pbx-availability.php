@@ -1,5 +1,22 @@
 <!DOCTYPE html>
-<link rel='stylesheet' href='stylesheet.css'>
+<link rel='stylesheet' href='stylesheet.css?v=1.5'>
+<link rel='stylesheet' href='toggle.css'>
+<script type="text/javascript">
+  var xmlhttp = new XMLHttpRequest();
+  function toggle(addr) {
+    console.log(addr);
+    console.log(addr.id);
+    if (addr.checked) {
+      xmlhttp.open("GET","failable_updater.php?addr="+addr.id+"&failable=t", true);
+      xmlhttp.send();
+      console.log("Set to true");
+    } else {
+      xmlhttp.open("GET","failable_updater.php?addr="+addr.id+"&failable=f", true);
+      xmlhttp.send();
+      console.log("Set to false");
+    }
+  }
+</script>
 <?php
 include('guiltyParty.php');
 $requestTime = strftime('%Y-%m-%d %H:%M:%S');
@@ -52,7 +69,7 @@ if (isset($_POST['action']))
 	if ($ipPieces[1] == 101) {
 		$cType = "c1";
 	} else {
-		$cType = substr($ipPieces[1], -2);
+		$cType = 'c'.substr($ipPieces[1], -2);
 	}
 	$hostname = $pbxType.$ipPieces[3].'.'.$cType.'.jiveip.net';	
     $status = $_POST['status'];
@@ -359,17 +376,43 @@ if ($action == "ListStatus")
 		echo "<td><input type='text' name='location' placeholder='e.g. lax'></td>";
 		echo "<td><input type='text' name='fgroup' placeholder='e.g. 119'></td></tr>";
 		echo '<tr><td colspan="4" align="center"><input type="submit" name="action" value="'.$gobutton.'"></td></tr></form></table><br>';
+    $siteStatus = pg_fetch_assoc(pg_query($routil, "SELECT universal_failable FROM sitestatus LIMIT 1;"));
+    $togglePosn = '';
+    if ($siteStatus['universal_failable'] == 't') {
+      $togglePosn = 'checked';
+    }
+    echo '<table>
+      <tr><td>Abandons for all of v4: </td><td><div class="onoffswitch">
+    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="all" '.$togglePosn.' onclick="toggle(this)">
+    <label class="onoffswitch-label" for="all">
+    <span class="onoffswitch-inner"></span>
+    <span class="onoffswitch-switch"></span>
+    </label>
+    </div></td></tr></table>';	
 		// query status table for all hosts
-		$result = pg_query($routil, "SELECT failgroup,location,vmhost,host,ip,status,load,message FROM pbxstatus WHERE failgroup = '$display' ORDER BY failgroup,\"order\",status desc,ip limit 1000;");
+		$result = pg_query($routil, "SELECT failgroup,location,vmhost,host,ip,status,load,failable,message FROM pbxstatus WHERE failgroup = '$display' ORDER BY failgroup,\"order\",status desc,ip limit 1000;");
 
 		// Menu with red labels where the dirty pbxs are
 		include('pbx-menu.html'); 
 
-    $site = array('101' => 'Chicago Legacy', '117' => 'Provo', '119' => 'L.A.', '120' => 'New York', '122' => 'Atlanta', '123' => 'Spokane', '125' => 'Chicargo (ORD)','v5' => 'v5');
+    $site = array('101' => 'Chicago Legacy', '117' => 'Provo', '119' => 'L.A.', '120' => 'New York', '122' => 'Atlanta', '123' => 'Spokane', '125' => 'Chicago (ORD)','v5' => 'v5');
+    $site_id = array('101' => 'chicago-legacy', '117' => 'pvu', '119' => 'lax', '120' => 'nyc', '122' => 'atl', '123' => 'geg', '125' => 'ord','v5' => 'v5');
 
-		echo "<h2>$site[$display]</h2>";
+		echo "<table><tr><td><h2>$site[$display]</h2><td>";
+    $siteStatus = pg_fetch_assoc(pg_query($routil, "SELECT failable FROM sitestatus WHERE site_id = '".$site_id[$display]."';"));
+    $togglePosn = '';
+    if ($siteStatus['failable'] == 't') {
+      $togglePosn = 'checked';
+    }
+		echo '<td>&nbsp;&nbsp;Abandons for this site:</td><td><div class="onoffswitch">
+    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="'.$site_id[$display].'" '.$togglePosn.' onclick="toggle(this)">
+    <label class="onoffswitch-label" for="'.$site_id[$display].'">
+    <span class="onoffswitch-inner"></span>
+    <span class="onoffswitch-switch"></span>
+    </label>
+    </div></td></tr></table>';	
 		echo "<table border=1>";
-		echo "<tr><th>failgroup</th><th>load</th><th>ip</th><th>status</th><th>activate</th><th>standby</th><th>abandon ship</th><th>message</th></tr>\n";
+		echo "<tr><th>failgroup</th><th>load</th><th>ip</th><th>status</th><th>activate</th><th>standby</th><th>abandon ship</th><th>failable</th><th>message</th></tr>\n";
     $oneTimer = true;
 		while ($row = pg_fetch_array($result, null, PGSQL_ASSOC))
 		{
@@ -427,7 +470,18 @@ if ($action == "ListStatus")
 				echo "<td>-</td>";
 				echo "<td>-</td>";
 			}
-			
+      $togglePosn = ''; 
+      if ($row['failable'] == 't') {
+        $togglePosn = 'checked'; 
+      }
+		  echo '<td><div class="onoffswitch">
+    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="'.$row['ip'].'" '.$togglePosn.' onclick="toggle(this)">
+    <label class="onoffswitch-label" for="'.$row['ip'].'">
+    <span class="onoffswitch-inner"></span>
+    <span class="onoffswitch-switch"></span>
+    </label>
+    </div>
+    </td>';	
 			echo "<td>" . $row['message'] . "</td>";
 			echo "</tr>\n";
 		}

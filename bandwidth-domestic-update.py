@@ -42,9 +42,9 @@ count = 0
 for rate in rates:
     try:
         if (count == 0):
-            query = "INSERT INTO domestic (carrier_id, prefix, inter, intra) VALUES (1, %s, %s, %s)" %(rate[0], rate[1], rate[2])
+            query = "INSERT INTO domestic (carrier_id, prefix, inter, intra) VALUES (1, '%s', '%s', '%s')" %(rate[0], rate[1], rate[2])
         else:
-            query = "%s, (1, %s, %s, %s)" %(query, rate[0], rate[1], rate[2])
+            query = "%s, (1, '%s', '%s', '%s')" %(query, rate[0], rate[1], rate[2])
 
         count = count + 1
         if (count==1000):

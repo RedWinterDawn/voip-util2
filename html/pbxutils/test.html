@@ -1,0 +1,30 @@
+<!doctype html>
+<HTML>
+<head>
+<title>Test Page</title>
+<link rel="stylesheet" href="toggle.css">
+<script type="text/javascript">
+  var xmlhttp = new XMLHttpRequest();
+  function toggle(server) {
+    if (server.checked) {
+      xmlhttp.open("GET","test.php?server=10.125.60.11&failable=t", true); 
+      xmlhttp.send();
+    } else {
+      xmlhttp.open("GET","test.php?server=10.125.60.11&failable=f", true); 
+      xmlhttp.send();
+    }
+  }
+</script>
+</head>
+
+<body>
+    <div class="onoffswitch">
+    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked onclick="toggle(this)">
+    <label class="onoffswitch-label" for="myonoffswitch">
+    <span class="onoffswitch-inner"></span>
+    <span class="onoffswitch-switch"></span>
+    </label>
+    </div> 
+
+</body>
+</html>

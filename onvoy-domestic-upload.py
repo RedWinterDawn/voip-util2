@@ -45,7 +45,9 @@ except:
     sys.exit(1)
 
 for row in ws.iter_rows():
-    if datas == True and isinstance(row[0].value, float):
+    if row[0].value == 'XXXXXX':
+        print 'inter: %s      intra: %s' %(row[1].value, row[2].value)
+    if datas == True and row[0].value !='XXXXXX':
         if count == 0:
             query = "INSERT INTO onvoy_domestic (lrn, inter, intra, validfrom) VALUES (%s, %s, %s, '%s')" %(row[0].value, row[1].value, row[2].value, date)
             count = count + 1

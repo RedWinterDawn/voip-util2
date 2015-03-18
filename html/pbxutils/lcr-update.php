@@ -3,6 +3,8 @@
 <input type="file" name="bandwidth" />
 <br>Bandwidth International Rate Deck (csv):
 <input type="file" name="bandwidthint" /></p>
+<p>Iristel Rate Deck (csv):
+<input type="file" name="iristel" />
 <p>Level3 Rate Deck (csv):
 <input type="file" name="level3" />
 <br>Level3 International Rate Deck (csv):

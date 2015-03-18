@@ -17,6 +17,11 @@ if(isset($_FILES['bandwidth']) and $_FILES['bandwidth']['type'] != 'text/csv' an
   echo '<br>Bandwidth Rate Deck must be a csv file not a: ' . $_FILES['bandwidth']['type'];  
   $bandwidth = 'False';
 }
+if(isset($_FILES['iristel']) and $_FILES['iristel']['type'] != 'text/csv' and $_FILES['iristel']['size'] > 0)
+{
+  echo '<br>Iristel Rate Deck must be a csv file not a: ' . $_FILES['iristel']['type'];  
+  $iristel = 'False';
+}
 if(isset($_FILES['onvoy']) and $_FILES['onvoy']['type'] != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' and $_FILES['onvoy']['size'] > 0)
 {
   echo '<br>Onvoy Rate Deck must be a xlsx file not a: ' . $_FILES['onvoy']['type'];  
@@ -71,6 +76,18 @@ if(isset($_FILES['bandwidth']) and $_FILES['bandwidth']['size'] > 0 and $bandwid
   }else
   {
     echo "<br>Failed to upload Bandwith ratedeck<br>";
+  }
+}
+if(isset($_FILES['iristel']) and $_FILES['iristel']['size'] > 0 and $iristel != 'False')
+{
+  $iristelPath = $target_path . "iristel-ratedeck.csv";
+  if(move_uploaded_file($_FILES['iristel']['tmp_name'], $iristelPath)) 
+  {
+    echo "<br>Iristel ratedeck has been uploaded<br>";
+    $Iristel = 'True';
+  }else
+  {
+    echo "<br>Failed to upload Iristel ratedeck<br>";
   }
 }
 if(isset($_FILES['onvoy']) and $_FILES['onvoy']['size'] > 0 and $onvoy != 'False')
