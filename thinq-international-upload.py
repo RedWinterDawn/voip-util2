@@ -45,15 +45,14 @@ except:
 with open(fileName, 'rb') as csvfile:
     csvreader = csv.reader(csvfile, delimiter=',')
     for row in csvreader:
-        lrn = row[0]
-        dest = row[1].replace("'", "")
+        lrn = row[1]
+        dest = row[0].replace("'", "")
         if lrn.isdigit():
-            print 'is digit'
             if count == 0:
-                query = "INSERT INTO thinq_international (carrier_id, destination, prefix, rate, initial, effective, validFrom) VALUES (%s, '%s', '%s', %s, %s, '%s', now())" %(row[0], dest, row[2], row[3], row[4], row[5])
+                query = "INSERT INTO thinq_international (carrier_id, destination, prefix, rate, initial, effective, validFrom) VALUES (0, '%s', '%s', %s, %s, '%s', now())" %(dest, lrn, row[2], row[3], row[5])
                 count = count + 1
             elif count < 1000:
-                query = "%s, (%s, '%s', '%s', %s, %s, '%s', now())" %(query, row[0], dest, row[2], row[3], row[4], row[5])
+                query = "%s, (0, '%s', '%s', %s, %s, '%s', now())" %(query, dest, lrn, row[2], row[3], row[5])
                 count  = count + 1
             else:    
                 try:
