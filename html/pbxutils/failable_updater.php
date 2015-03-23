@@ -44,7 +44,7 @@ pg_close($evconn);
 
 if ($isEverything) {
   //If the mail subject isn't empty, it must be for a site or ALL
-  $mail_headers="From: abandon-toggle@jive.com";
+  $mail_headers="From: abandon-toggle@jive.com" . "\r\n";
   $request_time=strftime('%Y-%m-%d %H:%M:%S');
   $mail_body="User: $guiltyParty\nDate: $request_time\nState: $curState";
   $mail_subject="V4 Abandons turned $curState";
