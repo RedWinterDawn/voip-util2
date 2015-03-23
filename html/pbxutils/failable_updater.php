@@ -27,16 +27,16 @@ pg_query($dbconn, $query) or die("Error 3".pg_last_error());
 
 pg_close($dbconn);
 
-//$evconn = pg_connect("host=rwdb dbname=events user=postgres") or die ("Error 5");
-//
-//if ($failable == 't') {
-//  $insertEvent = "INSERT INTO event (description, event_type) VALUES ('$guiltyParty turned on abandons for $addr', 'FAILABILITY')";
-//} else {
-//  $insertEvent = "INSERT INTO event (description, event_type) VALUES ('$guiltyParty turned off abandons for $addr', 'FAILABILITY')";
-//} 
-//
-//$result = pg_query($evconn, $insertEvent) or die ("Error 6");
-//
-//pg_close($evconn);
-//
+$evconn = pg_connect("host=rwdb dbname=events user=postgres") or die ("Error 5");
+
+if ($failable == 't') {
+  $insertEvent = "INSERT INTO event (description, event_type) VALUES ('$guiltyParty turned on abandons for $addr', 'FAILABILITY')";
+} else {
+  $insertEvent = "INSERT INTO event (description, event_type) VALUES ('$guiltyParty turned off abandons for $addr', 'FAILABILITY')";
+} 
+
+$result = pg_query($evconn, $insertEvent) or die ("Error 6");
+
+pg_close($evconn);
+
 ?>
