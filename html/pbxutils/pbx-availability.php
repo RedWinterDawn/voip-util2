@@ -390,7 +390,11 @@ if ($action == "ListStatus")
     </label>
     </div></td></tr></table>';	
 		// query status table for all hosts
-		$result = pg_query($routil, "SELECT failgroup,location,vmhost,host,ip,status,load,failable,message FROM pbxstatus WHERE failgroup = '$display' ORDER BY failgroup,\"order\",status desc,ip limit 1000;");
+    $result = pg_query($routil, "SELECT failgroup, location, vmhost, host, ip, status, color, load, pbx.failable, message, occupant 
+      FROM pbxstatus pbx
+      INNER JOIN status ON pbx.status = status.name 
+      WHERE failgroup = '$display' 
+      ORDER BY failgroup,\"order\",status desc,ip limit 1000;");
 
 		// Menu with red labels where the dirty pbxs are
 		include('pbx-menu.html'); 
@@ -435,18 +439,11 @@ if ($action == "ListStatus")
 				<td class='group".$row['failgroup']."'>" . $row['failgroup'] . "</td>
 				<td class='$color'>" . $load . "%</td>
 				<td><a href='pbx-server-info.php?server=" . $row['ip'] . "'>" . $row['ip'] . "</a></td>
-				<td><div";
-			if ($row['status'] == "active") { echo " class=\"green\" "; }
-			if ($row['status'] == "standby") { echo " class=\"yellow\" "; $showControls = true; }
-			if ($row['status'] == "graveyard") { echo " class=\"gray\" "; }
-			if ($row['status'] == "dirty") { echo " class=\"red\" "; }
-			if ($row['status'] == "moving") { echo " class=\"pink\" "; $showControls = true; }
-			if ($row['status'] == "migrating") { echo " class=\"purple\" "; }
-			if ($row['status'] == "rollback") { echo " class=\"lightbrown\" "; }
-			if ($row['status'] == "special") { echo " class=\"sky\" "; }
-			if ($row['status'] == "quarantine") { echo " class=\"orange\" "; }
-			if ($row['status'] == "clean") { echo " class=\"purple\" "; }
-			echo ">". $row['status'] . "</div></td>";
+        <td><div style='color:".$row['color']."'>". $row['status'];
+      if ($row['status'] == "special" || $row['status'] == "anchor") { echo " [".$row['occupant']."]";}
+        echo "</div></td>";
+			if ($row['status'] == "standby") { $showControls = true; }
+			if ($row['status'] == "moving") { $showControls = true; }
 			
 			if ($row['status'] == "active"){
 				echo "<td>-</td>";
