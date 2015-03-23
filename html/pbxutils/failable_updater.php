@@ -43,6 +43,8 @@ $result = pg_query($evconn, $insertEvent) or die ("Error 6");
 pg_close($evconn);
 
 if ($isEverything) {
+  
+  syslog(LOG_INFO, "application=failable-updater action=abandonToggle guiltyParty=$guiltyParty customMessage='SOMEONE TURNED OFF ALL THE THINGS'");
   //If the mail subject isn't empty, it must be for a site or ALL
   $mail_headers="From: abandon-toggle@jive.com" . "\r\n";
   $request_time=strftime('%Y-%m-%d %H:%M:%S');
