@@ -62,6 +62,9 @@ nowQueryThis("select pg_locks.mode as mode,datid,pg_stat_activity.pid as pid,cli
    where pg_locks.mode != 'AccessShareLock'
    order by state_change asc;");
 
+nowQueryThis("select * from pg_stat_replication ;");
+nowQueryThis("select * from pg_stat_bgwriter ;");
+
 echo "<font color=orange>\n#####\n This one should fail indicating recovery is in progress:\n</font>\n";
 nowQueryThis("select pg_current_xlog_location()");
 #nowQueryThis("");
