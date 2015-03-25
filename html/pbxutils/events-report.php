@@ -240,17 +240,18 @@ if ($action=="eventList" && isset($domainName))
 
 	//Connect to events DB and get events
 	$eventsDB = pg_connect("host=rodb dbname=events user=postgres ") or die('Could not connect to "events" database: ' . pg_last_error());
-	$eventQ = "SELECT added AT TIME ZONE 'UTC-7', description, notes from event, event_domain WHERE domain_id ='".$pbxArray[0]['id']."' AND event_id = id ORDER BY number DESC";
+	$eventQ = "SELECT added AT TIME ZONE 'UTC-7', description, event_type, notes from event, event_domain WHERE domain_id ='".$pbxArray[0]['id']."' AND event_id = id ORDER BY number DESC";
 	$eventArray = pg_fetch_all(pg_query($eventsDB, $eventQ)) or die ("Event search failed or no results: " . pg_last_error());
 	pg_close($eventsDB);
 	echo "<h2>".sizeof($eventArray)." Events that affected: " .$domainName . "</h2>";
 	echo "<h4> All times are in MDT </h4>";
-	echo "<table border='1'<tr><th>Date</th><th>Description</th><th>Notes</th></tr>";
+	echo "<table border='1'<tr><th>Date</th><th>Description</th><th>Type</th><th>Notes</th></tr>";
 	foreach($eventArray as $event)
 	{
 		echo "<tr><td> " . strftime('%m-%d-%Y %T', strtotime($event[timezone])) ."</td>
-      <td>" . $event[description] . "</td>
-      <td>" . $event[notes] . "</td>
+      <td>" . $event['description'] . "</td>
+      <td>" . $event['event_type'] . "</td>
+      <td>" . $event['notes'] . "</td>
 			  </tr>";
 	}
 	echo "</table></div>";
