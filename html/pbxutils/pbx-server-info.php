@@ -20,12 +20,30 @@ if (isset($_GET["state"]))
 	$query_state = "";
 }
 
+//Status Changer
+$statusQuery = "";
+if (isset($_GET['status'])) {
+  $newStatus = $_GET['status'];
+  $statusQuery = "UPDATE pbxstatus SET status = '$newStatus', occupant = '${_GET['occupant']}', message = '${_GET['message']}'";
+  if ($newStatus == 'dirty') {
+    $statusQuery .= ", abandoned = 'now()'";
+  }
+  $statusQuery .= " WHERE ip = '$assigned_server';";
+}
+
 $count = 0;
 $limit = 5000;
 if ($utilConn = pg_connect("host=rodb dbname=util user=postgres")) {
-	$pbxDCresult = pg_fetch_array(pg_query($utilConn, "SELECT location,failgroup FROM pbxstatus WHERE ip = '$assigned_server'"));
+  if ($statusQuery != "") {
+    pg_query($utilConn, $statusQuery);
+  }
+  $pbxStatuses = pg_fetch_all(pg_query($utilConn, "SELECT name, description FROM status ORDER BY displayorder;"));
+	$pbxDCresult = pg_fetch_array(pg_query($utilConn, "SELECT location,failgroup,message,occupant,status FROM pbxstatus WHERE ip = '$assigned_server'"));
 	$pbxDC = $pbxDCresult['location'];
   $pbxFG = $pbxDCresult['failgroup'];
+  $pbxOC = $pbxDCresult['occupant'];
+  $pbxST = $pbxDCresult['status'];
+  $pbxMess = $pbxDCresult['message'];
 	pg_close($utilConn);
 } 
 if (!$pbxDC) {
@@ -70,10 +88,44 @@ if ($loadPercent > 95) { $color = 'red'; }
 
 echo "Server load = $loadTotal, which is <span class='$color'>$loadPercent%</span>";
 echo "<br>Server Device Count = $dTotal";
+?>
+<div>
+<br>
+<table border=1>
+<tr><th>Status</th><th>Occupant</th><th>Message</th></tr>
+<tr><form action='' method='GET'>
+  <input type='hidden' name='server' value='<?=$assigned_server;?>' />
+  <td>
+  <select name='status'>
+  <?
+    foreach($pbxStatuses as $stat) {
+      if ($stat['name'] == $pbxST) {
+        echo "<option value='${stat['name']}' selected>${stat['name']}</option>";
+      } else {
+        echo "<option value='${stat['name']}'>${stat['name']}</option>";
+      }
+    }
+  ?>
+  </select></td>
+  <td><input type='text' name='occupant' value='<?=$pbxOC;?>' /></td>
+  <td><input type='text' name='message' size='80' value='<?=$pbxMess;?>' /></td>
+  <td><input type='submit' value='Update' /></td>
+</form></tr>
+</table>
+</div>
+<br><br>
+<div>
+<table border=1>
+  <tr><th>domain</th>
+    <th>name</th>
+    <th>state</th>
+    <th>assigned_server</th>
+    <th>load</th>
+    <th>device count</th>
+    <th>data location</th>
+    <th>v5 candidate</th></tr>
 
-echo "<table border=1>\n";
-echo "<tr><th>domain</th><th>name</th><th>state</th><th>assigned_server</th><th>load</th><th>device count</th><th>data location</th><th>v5 candidate</th></tr>\n";
-
+<?
 while ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
     $count = $count + 1;
 	if ($line['location'] == $pbxDC) { $locationColor = 'green'; } else { $locationColor = 'red'; }
@@ -99,7 +151,7 @@ while ($line = pg_fetch_array($result, null, PGSQL_ASSOC)) {
 		. "<td><center>" . $v5candidate . "</center></td>";
     echo "</tr>\n";
 }
-echo "</table>\n";
+echo "</table></div>\n";
 echo "Total domains: " . $count . "<br/>\n";
 
 if ($count == $limit) {
