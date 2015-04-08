@@ -41,6 +41,10 @@ function doAllTheTests($ip){
 	testLcrLookup('http://' . $ip . ':9998/lcr/lookup/e164/180006992000?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512');
 	testLcrLookup('http://' . $ip . ':9998/lcr/lookup/e164/011320123456?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512');
 	testLcrLookup('http://' . $ip . ':9998/lcr/lookup/e164/19998887777?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512');
+	testLcrLookup('http://' . $ip . ':9997/lcr/lookup/e164/18016992000?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512');
+	testLcrLookup('http://' . $ip . ':9997/lcr/lookup/e164/180006992000?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512');
+	testLcrLookup('http://' . $ip . ':9997/lcr/lookup/e164/011320123456?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512');
+	testLcrLookup('http://' . $ip . ':9997/lcr/lookup/e164/19998887777?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512');
 	testLcrLookup('http://' . $ip . '/sbc/lcr-validation.php?Dest-Number=18019600060&From-Number=');
 	testLcrLookup('http://' . $ip . '/sbc/lcr-validation.php?Dest-Number=18019600060&From-Number=19998887777');
 	testLcrLookup('http://' . $ip . '/sbc/lcr-validation.php?Dest-Number=19998887777&From-Number=');
@@ -48,9 +52,11 @@ function doAllTheTests($ip){
 	testLcrLookup('http://' . $ip . '/sbc/lcr-validation.php?Dest-Number=011320123456&From-Number=02');
 	echo "<font color='lightblue'>=== Undefined =============================</font><br/>";
 	testLcrLookup('http://' . $ip . ':9998/lcr/lookup/e164/1801?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512');
+	testLcrLookup('http://' . $ip . ':9997/lcr/lookup/e164/1801?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512');
 	testLcrLookup('http://' . $ip . '/sbc/lcr-validation.php?Dest-Number=1801&From-Number=');
 	echo "<font color='orange'>=== Fail these =============================</font><br/>";
 	testLcrLookup('http://' . $ip . ':9998/lcr/lookup/e164/0118?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512');
+	testLcrLookup('http://' . $ip . ':9997/lcr/lookup/e164/0118?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512');
 	testLcrLookup('http://' . $ip . '/sbc/lcr-validation.php?Dest-Number=0118&From-Number=');
 }
 
@@ -79,6 +85,16 @@ if ($site == 'ATL' || $site == 'ALL'){
 if ($site == 'NYC' || $site == 'ALL'){
 	echo "<hr><h3>NYC</h3>";
 	doAllTheTests("10.120.253.226");
+}
+
+if ($site == 'GEG' || $site == 'DEV'){
+	echo "<hr><h3>GEG</h3>";
+	doAllTheTests("10.123.253.89");
+}
+
+if ($site == 'PVU' || $site == 'DEV'){
+	echo "<hr><h3>PVU</h3>";
+	doAllTheTests("10.117.253.121");
 }
 
 // testLcrLookup('');
