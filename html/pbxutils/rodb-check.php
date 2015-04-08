@@ -48,7 +48,7 @@ function nowQueryThis($query)
 }
 
 // Connecting, selecting database
-$dbconn = pg_connect("host=" . $IP . " port = " . $PORT . " dbname=pbxs user=postgres ")
+$dbconn = pg_connect("host=" . $IP . " port = " . $PORT . " dbname=postgres user=postgres ")
     or die('Could not connect: ' . pg_last_error());
 
 echo "<pre>";
