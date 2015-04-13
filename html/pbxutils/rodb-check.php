@@ -56,7 +56,7 @@ echo "<pre>";
 nowQueryThis("select pg_is_in_recovery(),pg_is_xlog_replay_paused(),pg_last_xlog_receive_location(),pg_last_xlog_replay_location(),pg_last_xact_replay_timestamp()");
 nowQueryThis("select count(*),mode from pg_locks group by mode");
 
-nowQueryThis("select pg_locks.mode as mode,datid,pg_stat_activity.pid as pid,client_addr,backend_start,query_start,waiting,state,now()-query_start as duration
+nowQueryThis("select pg_locks.mode as mode,datid,pg_stat_activity.pid as pid,client_addr,backend_start,query_start,query,waiting,state,now()-query_start as duration
    from pg_stat_activity
    left join pg_locks on pg_stat_activity.pid = pg_locks.pid
    where pg_locks.mode != 'AccessShareLock'
