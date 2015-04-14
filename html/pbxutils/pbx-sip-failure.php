@@ -142,17 +142,53 @@ if (!$row = pg_fetch_assoc($result))
 
 		//insert event into event table
 		$eventID = pg_fetch_row(pg_query($events, "INSERT INTO event(id, description, event_type) VALUES(DEFAULT, '" . $mail_subject . "', 'ABANDON') RETURNING id;"));
+		$rgidArray = array();
 
 		if ($domains = pg_fetch_all($domainResult))
 		{
 			foreach ($domains as $domainID)
 			{
 				pg_query($events, "INSERT INTO event_domain VALUES('" . $eventID['0'] . "', '" . $domainID['id'] . "')");
+    			$rgidArray[] = $domainID['id'];
 			}
 		}
 		// Close connection 
 		pg_close($events);
 
+		//#################################################
+		// Send customer id list to proactive notification
+		//#################################################
+
+		// make a json string (not using the function json_encode because this version of php is too old)
+		$rgidJsonString = '[';
+		foreach ($rgidArray as $thisID)
+		{
+			if ($rgidJsonString == '[') 
+			{
+				$rgidJsonString = $rgidJsonString . '"' . $thisID . '"';
+			} else {
+				$rgidJsonString = $rgidJsonString . ',"' . $thisID . '"';
+			}
+		}
+		$rgidJsonString = $rgidJsonString . ']';
+
+		// red rover, red rover, curl it on over
+		// http://10.118.252.48:7676/notify/migrationWatch/
+		$ch = curl_init("http://10.118.252.48:7676/notify/migrationWatch/");
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_FORBID_REUSE, 1);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+		curl_setopt($ch, CURLOPT_PORT, 7676);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $rgidJsonString);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json','Content-Length: ' . strlen($rgidJsonString))); 
+		curl_exec($ch);
+		curl_close($ch);
+
+
+		//#################################################
+		// Notify icalls
+		//#################################################
 		//send -2 to icalls for bar indicating abandon
 		exec("/opt/jive/icalls_abandon.py ".$row['ip']." ".$standbyRow['ip']." ", $output, $exitcode);
 	}else
