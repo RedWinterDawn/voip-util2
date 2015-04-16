@@ -26,10 +26,10 @@ function eventTable($id)
 
 if (isset($_GET["domain"]))
 {
-	$domain = $_GET["domain"];
+	$domain = pg_escape_string($_GET["domain"]);
 } else
 {
-	$domain = '%';
+	$domain = '';
 }
 
 if (isset($_GET["action"]))
@@ -150,23 +150,39 @@ while ($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
 
 echo "<br/>";
 
-$didQuery = "SELECT number,outbound_routable,peer.name as peer,caller_id_name FROM master_did LEFT JOIN peer ON (master_did.source_peer_id = peer.id) WHERE destination_pbx_id = '" . $resource_group_id . "' AND active = 't' ORDER BY number ASC;";
+$didQuery = "SELECT number,master_did.active as active,outbound_routable,peer.name as peer,caller_id_name,destination_pbx_id
+	FROM master_did
+	LEFT JOIN peer ON (master_did.source_peer_id = peer.id)
+	WHERE destination_pbx_id='" . $resource_group_id . "'
+	ORDER BY active DESC,number ASC;";
 $didResult = pg_query($dbconn,$didQuery) or die('DID query failed (for ' . $resource_group_id . ') ' . pg_last_error());
 
 echo "<table border=2>\n";
-echo "<th>number</th><th>outbound_routable</th><th>caller_id_name</th><th>source peer</th>";
+echo "<th>number</th><th>outbound_routable</th><th>caller_id_name</th><th>source peer</th><th>active</th>";
 while ($didRow = pg_fetch_array($didResult, null, PGSQL_ASSOC)) {
-	if ($didRow['outbound_routable'] == 't') {
-		$outbound = "<div class='green'>TRUE</div>";
+
+	if ($didRow['active'] == 't') {
+		$trTag = '<tr>';
+		$tdTag = '<td>';
+	    $active = "<div class='green'>TRUE</div>";
+	    if ($didRow['outbound_routable'] == 't') {
+	  	  $outbound = "<div class='green'>TRUE</div>";
+	    } else {
+		  $outbound = "<div class='yellow'>FALSE</div>";
+	    }
 	} else {
-		$outbound = "<div class='yellow'>FALSE</div>";
+        $active = "<div class='yellow'>FALSE</div>";
+		$outbound = "<div class='gray'>TRUE</div>";
+		$trTag = '<tr bgcolor="#8F0000">';
+		$tdTag = '<td bgcolor="#8F0000">';
 	}
 
-	echo "<tr>"
-		. "<td>" . $didRow['number'] . "</td>"
+	echo $trTag
+		. $tdTag . $didRow['number'] . "</td>"
 		. "<td><center>" . $outbound . "</center></td>"
 		. "<td>" . $didRow['caller_id_name'] . "</td>"
 		. "<td>" . $didRow['peer'] . "</td>"
+		. "<td><center>" . $active . "</center></td>"
 		. "</tr>\n";
 }
 echo "</table>\n";
