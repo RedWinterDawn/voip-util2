@@ -73,7 +73,8 @@ if ($to != "") {
     echo "DOMAIN == |$domain|";
     try {
       $dbconn = pg_connect("host=rodb dbname=pbxs user=postgres");
-      $id = pg_fetch_assoc(pg_query($dbconn, "SELECT id FROM resource_group WHERE domain = '$domain'"))["id"];
+      $result = pg_fetch_assoc(pg_query($dbconn, "SELECT id FROM resource_group WHERE domain = '$domain'"));
+	  $id = $result['id'];
     } catch (Exception $e) {
       echo "Didn't find your domain";
       $id = 'a';
@@ -98,15 +99,15 @@ if ($to != "") {
     echo "</p>";
 	
 	echo "<hr/><p>PVU LCR:<br><pre>";
-	printLcrLookup($to,$from,"10.117.255.41:9998");
+	printLcrLookup($to,$from,"10.117.253.121:9998");
     echo "</p></pre>";
 	
 	echo "<hr/><p>DFW LCR:<br><pre>";
-	printLcrLookup($to,$from,"10.118.255.41:9998");
+	printLcrLookup($to,$from,"10.118.252.190:9998");
     echo "</p></pre>";
 	
 	echo "<hr/><p>GEG LCR:<br/>";
-	printLcrLookup($to,$from,"10.123.253.130:9998");
+	printLcrLookup($to,$from,"10.123.253.89:9998");
     echo "</p>";
 
   echo "<hr/><p>LCR Validator<br/>";
