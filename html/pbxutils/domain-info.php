@@ -178,7 +178,7 @@ while ($didRow = pg_fetch_array($didResult, null, PGSQL_ASSOC)) {
 	}
 
 	echo $trTag
-		. $tdTag . $didRow['number'] . "</td>"
+		. $tdTag . $didRow['number'] . ' <a href="did-info.php?did=' . $didRow['number'] . '">L</a>' . "</td>"
 		. "<td><center>" . $outbound . "</center></td>"
 		. "<td>" . $didRow['caller_id_name'] . "</td>"
 		. "<td>" . $didRow['peer'] . "</td>"
