@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>
+    <title></title>
+    <style>
+        body {
+            background: white;
+            text-align: center;
+            padding: 20px;
+            font-family: Georgia, serif;
+            font-weight: bold;
+            font-style: italic;
+            color: #999;
+        }
+
+        a {
+            color: #99f;
+        }
+
+        h1 {
+            font-size: 16px;
+        }
+
+        h2 {
+            font-size: 12px;
+        }
+
+        #word {
+            font-size: 36px;
+            color: black;
+        }
+
+        button {
+            font-size: 24px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+ 
+    <h1>Enterprisify your Java Class Names!</h1>
+    <h2>By <a href="http://www.haykranen.nl">Hay Kranen</a></h2>
+ 
+    <p id="word"></p>
+ 
+    <button id="enterprise">Enterprisify!</button>
+    <button id="again">Again</button>
+ 
+    <br /><br /><br />
+    <small><a href="https://gist.github.com/1351230">Fork this gist on Github to add your own words ;)</a></small>
+ 
+    <script>
+        var words = [
+                "Factory", "Bean", "Wrapper", "Visitor", "Model", "Singleton",
+                "Method", "Configuration", "Exception", "Error", "Property", "Value",
+                "Identifier", "Attribute", "Authentication", "Policy", "Container",
+                "Order", "Info", "Parameter", "Request", "Adapter", "Bridge",
+                "Decorator", "Facade", "Proxy", "Worker",
+                "Interpreter", "Iterator", "Observer",
+                "State", "Strategy", "Template", "Comparator", "Clone", "Task",
+                "Resolver", "Candidate", "Expression", "Predicate",
+                "Thread", "Pool", "Descriptor", "Interceptor", "Definition",
+                "Getter", "Setter", "Listener", "Proccesor", "Printer",
+                "Prototype", "Composer", "Event", "Helper", "Utils",
+                "Tag", "Context", "Mapping", "Advisor", "Filter", "Field", "Test",
+                "Tests", "Connection", "Annotation", "Service", "Repository",
+                "Stub", "Mock", "Instance", "Dispatcher", "Client", "Server",
+                "Message", "Map", "List", "Collection", "Queue", "Manager",
+                "Database", "Reponse", "Broadcaster",
+                "Watcher", "Schema", "Mapper", "Publisher", "Consumer", "Producer",
+                "Json", "Mongo", "Factory", "Factory", "Implementor", "v4", "v5", "Socket", "Webscale",
+				"Phone", "Registration", "Mobile",
+                "Bridge", "Redneck", "Pecan", "Walnut", "Trailmix", "Raisin", "Sprocket", "Audio",
+                "Rtp", "Sip", "Caller", "Pstn", "Polycom", "Transfer", "Xfer", "Hold", "Music",
+                "Dialplan", "Extension", "Rodb", "Rwdb", "Ping", "Permissions", "SingleColumnTable",
+                "Fmfm", "503", "Voicemail",
+                "Json", "Mongo", "Factory", "Factory", "Implementor", "v4", "v5", "Socket", "Webscale",
+				"Phone", "Registration", "Mobile",
+                "Bridge", "Redneck", "Pecan", "Walnut", "Trailmix", "Raisin", "Sprocket", "Audio",
+                "Rtp", "Sip", "Caller", "Pstn", "Polycom", "Transfer", "Xfer", "Hold", "Music",
+                "Dialplan", "Extension", "Rodb", "Rwdb", "Ping", "Permissions", "SingleColumnTable",
+                "Fmfm", "503", "Voicemail"
+            ],
+            inWords = [
+                "Abstract","Simple", "Aware", "Complex",
+                "Stateless", "Session",
+                "Transaction", "Transactional", "Based", "Meta", "Data",
+                "Literal", "Reflective", "Xml",
+                "Iterable", "Distributed", "Notification", "Failure", "Type",
+                "Http", "Jdbc", "v5", "v4", "Ebc", "Isp", "Factory", "Factory", "Json", "Mongo",
+                "Phone", "Registration", "Mobile",
+                "Bridge", "Redneck", "Pecan", "Walnut", "Trailmix", "Raisin", "Sprocket", "Audio",
+                "Rtp", "Sip", "Caller", "Pstn", "Polycom", "Transfer", "Xfer", "Hold", "Music",
+                "Dialplan", "Extension", "Rodb", "Rwdb", "Ping", "Permissions", "SingleColumnTable",
+                "Fmfm", "503", "Voicemail"
+            ];
+
+        function $(id) {
+            return document.getElementById(id);
+        }
+
+        function rand(min, max) {
+            return Math.round(Math.random() * (max - min)) + min;
+        }
+
+        function generate(min, max) {
+            var allWords = words.concat( inWords ),
+                word = '';
+
+            for (var i = 0, l = rand(min, max) - 1; i < l; i++) {
+                do {
+                    var w = allWords[ rand(0, allWords.length - 1) ];
+                } while (word.indexOf(w) !== -1);
+                word += w;
+            }
+
+            word += words[ rand(0, words.length) ];
+
+            return word;
+        }
+
+        $("again").onclick = function() {
+            $("word").innerHTML = generate(2, 3);
+            $("enterprise").innerHTML = "Enterprisify!";
+        }
+
+        $("enterprise").onclick = function() {
+            var word = $("word").innerHTML;
+            $("word").innerHTML = generate(1, 1) + word;
+            $("enterprise").innerHTML = "Enterprisify even more!";
+        }
+
+        $("word").innerHTML = generate(2, 3);
+    </script>
+ 
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-15405780-12']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>
