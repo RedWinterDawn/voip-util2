@@ -1,0 +1,31 @@
+h1, h2, h3, h4 {
+	color: #08F;
+	background: white;
+	width: 500px;
+	text-shadow: 1px 1px 1px #333;
+	padding: 5px;
+	margins: 0 0 0 0;
+	box-shadow: 3px 3px 2px #888;
+	border: #333 1px solid;
+	border-radius: 8px;
+}
+
+body {
+	background: #EEE;
+	color: #333;
+}
+
+div.panel { 
+	padding: 0 1em 0 1em;
+	width:500px;
+	background: white;
+	border: #333 1px solid;
+	border-radius: 8px;
+	box-shadow: 3px 3px 2px #888;
+}
+
+table {
+	background: white;
+	box-shadow: 3px 3px 2px #888;
+	border: #333 1px solid;	
+}

@@ -68,23 +68,6 @@ if ($action == "AutoCleanComplete") {
 	}
 }
 
-if ($action == "MessageUpdate") {
-	$server = $_GET["server"];
-	$message = $_GET["message"];
-
-    if (preg_match('/[^a-z\-\. 0-9]/i', $message))
-    {   
-        echo "<p class='red'> Invalid Input for Message! <br/> Use numbers, letters, periods, and dashes only!</p>";
-    } else {
-    	$updateQuery = "UPDATE pbxstatus SET message = '$message' WHERE host = '$server'";
-	    $dbconn = pg_connect("host=db dbname=util user=postgres ") or die('Could not connect to "util" database: ' . pg_last_error());
-		pg_query($dbconn, $updateQuery) or die ('Comment update failed!' . pg_last_error());
-    	pg_close($dbconn);
-		sleep(1);
-	}
-	$action = "ListStatus";
-}
-
 if ($action == "Add")
 {
 	if ($rwutil = pg_connect("host=rwdb dbname=util user=postgres "))
@@ -252,13 +235,13 @@ if ($action == "ListStatus")
       FROM pbxstatus pbx
       INNER JOIN status ON pbx.status = status.name 
       WHERE failgroup = '$display' 
-      ORDER BY failgroup,\"order\",status desc,ip limit 1000;");
+      ORDER BY failgroup,status.displayorder,ip limit 1000;");
 
 		// Menu with red labels where the dirty pbxs are
 		include('pbx-menu.html'); 
 
-    $site = array('101' => 'Chicago Legacy', '117' => 'Provo', '119' => 'L.A.', '120' => 'New York', '122' => 'Atlanta', '123' => 'Spokane', '125' => 'Chicago (ORD)','v5' => 'v5');
-    $site_id = array('101' => 'chicago-legacy', '117' => 'pvu', '119' => 'lax', '120' => 'nyc', '122' => 'atl', '123' => 'geg', '125' => 'ord','v5' => 'v5');
+    $site = array('101' => 'Chicago Legacy', '117' => 'Provo', '119' => 'L.A.', '122a' => 'Atlanta 2', '120' => 'New York', '122' => 'Atlanta', '123' => 'Spokane', '125' => 'Chicago (ORD)','v5' => 'v5');
+    $site_id = array('101' => 'chicago-legacy', '117' => 'pvu', '119' => 'lax', '120' => 'nyc', '122' => 'atl', '123' => 'geg', '125' => 'ord','v5' => 'v5', '122a' => 'atlantaA');
 
 		echo "<table><tr><td><h2>$site[$display]</h2><td>";
     $siteStatus = pg_fetch_assoc(pg_query($routil, "SELECT failable FROM sitestatus WHERE site_id = '".$site_id[$display]."';"));
@@ -298,12 +281,12 @@ if ($action == "ListStatus")
 				<td class='$color'>" . $load . "%</td>
 				<td><a href='pbx-server-info.php?server=" . $row['ip'] . "'>" . $row['ip'] . "</a></td>
         <td><div style='color:".$row['color']."'>". $row['status'];
-      if ($row['status'] == "special" || $row['status'] == "anchor") { echo " [".$row['occupant']."]";}
+      if ($row['status'] == "special" || $row['status'] == "nightly") { echo " [".$row['occupant']."]";}
         echo "</div></td>";
 			if ($row['status'] == "standby") { $showControls = true; }
 			if ($row['status'] == "moving") { $showControls = true; }
 			
-			if ($row['status'] == "active"){
+			if ($row['status'] == "active" || $row['status'] == "nightly"){
 				echo "<td>-</td>";
 				echo "<td><a href=\"pbx-availability.php?action=SetStandby&server=" . $row['ip'] . "&display=$display\">set standby</a></td>";
 				echo "<td><a href=\"http://10.101.8.1/pbxutils/pbx-sip-failure.php?server=" . $row['ip'] . '" target="_blank">abandon ship</a></td>';
