@@ -27,7 +27,7 @@ $didQuery = "SELECT number,active,outbound_routable,destination_pbx_id,source_pe
 $didResult = pg_query($didQuery) or die('DID query failed: ' . pg_last_error() . '\n' . '<pre>' . $didQuery . '</pre>');
 
 echo "<table border=2>\n";
-echo "<th>number</th><th>outbound_routable</th><th>caller_id_name</th><th>source peer</th><th>active</th>";
+echo "<th>number</th><th>outbound_routable</th><th>caller_id_name</th><th>source peer</th><th>active</th><th>destination pbx id</th><th>e911 address id</th>";
 while ($didRow = pg_fetch_array($didResult, null, PGSQL_ASSOC)) {
 	if ($didRow['outbound_routable'] == 't') {
 		$didOutbound = "<div class='green'>TRUE</div>";
@@ -47,6 +47,8 @@ while ($didRow = pg_fetch_array($didResult, null, PGSQL_ASSOC)) {
 		. "<td>" . $didRow['caller_id_name'] . "</td>"
 		. "<td>" . $didRow['peer'] . "</td>"
 		. "<td>" . $didActive . "</td>"
+		. "<td>" . $didRow['destination_pbx_id'] . "</td>"
+		. "<td>" . $didRow['e911_address_id'] . "</td>"
 		. "</tr>\n";
 }
 echo "</table>\n";
