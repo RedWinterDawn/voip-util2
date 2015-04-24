@@ -1,4 +1,3 @@
-
 <html>
 <head>
 <title>Pull data from Sherlock</title>
@@ -10,13 +9,11 @@
  <td width="100">Search for PBX ID:</td>
  <td width="150"><input name="pbxid" type="text" id="pbxid"></td>
 <td><input name="input" type="submit" id="send"></td>
-
  </tr>
  </table>
  </form>
  <form method="post" action="<?php $_PHP_SELF ?>">
 <table>
-
  <form method="post" action="<?php $_PHP_SELF ?>">
 <table>
 <tr>
@@ -120,9 +117,7 @@ $ch = curl_init($url);
 curl_setopt($ch, CURLOPT_TIMEOUT, 5);
 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-       'Accept: application/json'
-                        ));
+curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: application/json'));
 $data = curl_exec($ch);
 $array =json_decode($data, true);
 $output = '<table border="1">
