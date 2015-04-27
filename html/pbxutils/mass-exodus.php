@@ -134,6 +134,12 @@ if (isset($argv[1])) {
 		die ("You must provide 3 args: submit {site|pbx} {source-site|source-ip}"); 
 	}
 }
+if (isset($_REQUEST['reason'])) {
+	$reason = $_REQUEST['reason'];
+}
+else {
+	$reason = '';
+}
 
 //THE ACTUAL HTML PAGE
 echo "<html>
@@ -158,6 +164,7 @@ echo "/><label for='site' />By Site</label><br>
 		<br>
 		<input type='hidden' name='action' value='submit' />
 		<input type='text' name='source' placeholder='Source site or IP' />
+		<input type='text' size='60' name='reason' Placeholder='reason' />
 		<input type='submit' value='Begin Exodus!' />
 		<br>
 		<br>
@@ -225,7 +232,12 @@ if ($action == "submit")
 		}
 		echo "<h2>--- Currently moving customers from $source to $second --- </h2>";
     	$description = $guiltyParty." performed a large scale migration from ".$source." going to ".$second;
-        $eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description, event_type) VALUES(DEFAULT, '" . $description . "', 'MASS') RETURNING id;"));
+		if ($reason=="") {
+        $eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description, event_type, notest) VALUES(DEFAULT, '" . $description . "', 'MASS', NULL) RETURNING id;"));
+		}
+		else {
+        $eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description, event_type, notest) VALUES(DEFAULT, '" . $description . "', 'MASS', '" . $reason."') RETURNING id;"));
+		}
 		//SQL Select has to change based on whether or not an override is being used
 		if (isset($override)) {
 			$clientsQuery = "SELECT domain, id, assigned_server, location, secondary_location FROM resource_group WHERE (assigned_server = '$source' OR location = '$source') AND state = 'ACTIVE' AND assigned_server like '10.%';";
