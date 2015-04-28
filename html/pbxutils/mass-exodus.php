@@ -164,13 +164,15 @@ echo "/><label for='site' />By Site</label><br>
 		<br>
 		<input type='hidden' name='action' value='submit' />
 		<input type='text' name='source' placeholder='Source site or IP' />
-		<input type='text' size='60' name='reason' Placeholder='reason' />
 		<input type='submit' value='Begin Exodus!' />
 		<br>
 		<br>
 		Optionally, enter a site (not an IP) to override the secondary locations:
 		<br>
 		<input type='text' name='destination' placeholder='e.g. dfw' /> 
+    <br>
+    <br>
+		<input type='text' size='80' name='reason' Placeholder='Reason (Optional)' />
 		</form>";
 	echo "<br><br><form action='emhalt.php' method='POST' target='_blank'>
 		<input type='hidden' name='stop' value='true' />
@@ -233,10 +235,10 @@ if ($action == "submit")
 		echo "<h2>--- Currently moving customers from $source to $second --- </h2>";
     	$description = $guiltyParty." performed a large scale migration from ".$source." going to ".$second;
 		if ($reason=="") {
-        $eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description, event_type, notest) VALUES(DEFAULT, '" . $description . "', 'MASS', NULL) RETURNING id;"));
+        $eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description, event_type, notes) VALUES(DEFAULT, '" . $description . "', 'MASS', NULL) RETURNING id;"));
 		}
 		else {
-        $eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description, event_type, notest) VALUES(DEFAULT, '" . $description . "', 'MASS', '" . $reason."') RETURNING id;"));
+        $eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description, event_type, notes) VALUES(DEFAULT, '" . $description . "', 'MASS', '" . $reason."') RETURNING id;"));
 		}
 		//SQL Select has to change based on whether or not an override is being used
 		if (isset($override)) {
