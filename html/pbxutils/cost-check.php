@@ -86,7 +86,7 @@ if ($to != "") {
 		  <br>From Number: $from
       <br>ID: $id</p>
 		  <p>Sherlock:<br>";
-	$url = "http://10.125.255.66:6666/score/$id/$to";
+	$url = "http://10.125.255.66:6666/score/$id/$to" . "?queryOnly=true";
 	print_r($url);
     echo "<br/>";
 	$curl = curl_init($url);
