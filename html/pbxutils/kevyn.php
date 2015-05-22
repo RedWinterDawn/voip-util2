@@ -1,6 +1,9 @@
 <html>
 <head>
 <title>Pull data from Sherlock</title>
+<style type="text/css">
+   #pretty {vertical-align: bottom;}
+   </style><link rel="stylesheet" href="stylesheet.css">
 </head>
 <body>
 <form method="post" action="<?php $_PHP_SELF ?>">
