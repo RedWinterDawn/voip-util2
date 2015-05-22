@@ -1,0 +1,331 @@
+
+/*
+ *  * Heading      : #96BC1D
+ *   * Background   : #F2F2F2
+ *    * Borders      : #262626
+ *     * FONT1        : #404040
+ *      * FONT2        : #737373
+ *       * FONT3        : #C0C0C0
+ *        *
+ *         */
+
+html {
+   background-color:#ADBCC5; 
+  color:#737373;
+  font-family:Helvetica,Arial,san-serif;
+  font-size:13px;
+}
+a {
+display:inline;
+color:#0395CC;
+text-decoration: none;
+}
+a:hover {
+color:#7FCDFE;
+}
+#holder {
+margin:0 auto;
+width:800px;
+height:500px;
+background-color: #ADBCC5;
+}
+#header {
+height: 70px;
+}
+#main-contents {
+                                                  /**
+                                                   *      * background-color:#ffffff;
+                                                   *           * background-color: rgba(255,255,255,0.5);
+                                                   *                **/
+background-color: rgb(236,236,236);
+border:1px solid #737373;
+padding:20px;
+margin: 2px 0 0 0;
+-moz-border-radius: 8px;
+border-radius: 8px;
+-webkit-border-radius: 8px;
+}
+#main-contents h1 {
+color: #96BC1D;
+                                                font-size: 30px;
+                                                    font-weight: bold;
+                                                        margin-bottom: 5px;
+                                                      }
+
+                                                      #main-contents h3 {
+                                                            color: #737373;
+                                                                font-size: 25px;
+                                                              }
+
+                                                              #main-contents h3 p {
+                                                                    margin-left: 10px;
+                                                                        margin-top: 0px;
+                                                                            vertical-align: bottom;
+                                                                          }
+#main-contents h2 {
+      font-weight: bold;
+          font-size: 25px;
+              color: #7CB7E3;
+                  margin-top: 10px;
+                }
+
+ h2 {
+font-size: 16px;
+font-weight: 900;
+line-height: 0;
+text-align: justify;
+color: #19435E;
+}
+#main-contents li {
+list-style-image: url(/images/bullet_blue.png);
+margin-left: 20px;
+list-style-type: square;
+}
+.small a{
+font-size: 10px;
+margin-left: 10px;
+}
+.left {
+margin-top: 10px;
+float:left;
+}
+.leftedge {
+margin-top: 10px;
+float:left;
+margin-left: 10px;
+}
+.right {
+float: right;
+                                                            }
+
+.small-head {
+padding: 0 10px;
+font-size: 11px;
+font-weight: bold;
+color: #c0c0c0;
+}
+.small-desc {
+padding: 0 50px 0 10px;
+font-size: 11px;
+color: #c0c0c0;
+}
+.small-last {
+padding: 0 0 0 10px;
+font-size: 11px;
+                                                                                                      color: #c0c0c0;
+                                                                                                    }
+
+                                                                                                    .small-delimeter {
+                                                                                                          font-size: 11px;
+                                                                                                              color: #c0c0c0;
+                                                                                                                  font-weight: bold;
+                                                                                                                }
+
+
+        .input-box {
+              border: 1px solid #19435E;
+                  color: #737373;
+                      font-size: 16px;
+                          padding: 2px;
+                              margin-right: 5px;
+                              width: 150px;
+                            }
+                            .input-box2 {
+                                            border: 1px solid #19435E;
+                                                              color: #737373;
+                                                                                    font-size: 16px;
+                                                                                                              padding: 2px;
+                                                                                                                                            margin-right: 5px;
+                                                                                                                                                                                                      }
+
+                            .input-button {
+                                  border: 1px solid #737373;
+                                      color: white;
+                                          font-size: 16px;
+                                              margin-right: 5px;
+                                                  padding: 1px;
+                                                      cursor:pointer;
+                                                      background-color: #19435E;
+                                                    }
+
+                                                    .input-area {
+                                                          margin-top: 10px;
+                                                              margin-bottom: 10px;
+                                                            }
+
+                                                            .input-box-port {
+                                                                  border: 1px solid #737373;
+                                                                      color: #737373;
+                                                                          font-size: 16px;
+                                                                              padding: 2px;
+                                                                                  margin-right: 5px;
+                                                                                }
+
+                                                                                .status-info {
+                                                                                      font-size: 14px;
+                                                                                          color: #990000;
+                                                                                        }
+
+                                                                                        #ip-container {
+                                                                                              height: 70px;
+                                                                                            }
+
+                                                                                            .error-msg {
+                                                                                                  background-image: url("/images/error.png");
+                                                                                                      background-repeat: no-repeat;
+                                                                                                          background-position: top;
+                                                                                                              background-color: #FACCCC;
+                                                                                                                  font-size: 16px;
+                                                                                                                      color: #f08080;
+                                                                                                                          padding: 8px;
+                                                                                                                        }
+
+                                                                                                                        #ping-table {
+                                                                                                                              width: 760px;
+                                                                                                                                  margin-left: 10px;
+                                                                                                                                  color: #002E4C;
+
+                                                                                                                                }
+
+                                                                                                                                #ping-head {
+                                                                                                                                      background: #002E4C;
+                                                                                                                                          clear: both;
+                                                                                                                                              color: #ffffff;
+                                                                                                                                                  height: 25px;
+                                                                                                                                                }
+#pinghead-packet {
+      float: left;
+          line-height: 25px;
+              width: 100px;
+                  margin-left: 15px;
+                }
+
+                #pinghead-ip {
+                      float: left;
+                          line-height: 25px;
+                              width: 350px;
+                            }
+
+                            #pinghead-ms {
+                                  float: left;
+                                      line-height: 25px;
+                                          width: 80px;
+                                        }
+
+                                        #pinghead-lost {
+                                              float: left;
+                                                  line-height: 25px;
+                                                      width: 100px;
+                                                    }
+
+                                                    #pinghead-ttl {
+                                                          float: left;
+                                                              line-height: 25px;
+                                                                  width: 100px;
+                                                                }
+#break {
+width: 760px;
+border-top: 2px solid white;
+background-color: #002E4C;
+height: 1px;
+float: left;
+}
+.rowping-packet {
+margin-left: 15px;
+line-height: 20px;
+width: 95px;
+float: left;
+}
+.rowping-ip {
+width: 350px;
+line-height: 20px;
+float: left;
+}
+ .rowping-ms {
+width: 80px;
+line-height: 20px;
+float: left;
+}
+.rowping-lost {
+width: 100px;
+line-height: 20px;
+float: left;
+}
+.rowping-ttl {
+width: 100px;
+line-height: 20px;
+float: left;
+}
+label {
+      font-weight: bold;
+          margin: 2px;
+        }
+
+        .pass {
+              color: #1F3B1F;
+            }
+
+            .fail {
+                  color: #F08080;
+                }
+
+                .unknown {
+                      color: #CCCC78;
+                    }
+
+                    #portscan-advance input {
+                          margin-right: 5px;
+                        }
+
+                        #tos-contents {
+                              font-size: 16px;
+                                  margin-top: 15px;
+                                      margin-bottom: 15px;
+                                          text-align: justify;
+                                        }
+
+                                        #tos-contents li {
+                                              list-style-position: inside;
+                                                  list-style-image: url(/images/bullet_blue.png);
+                                                      list-style-type: square;
+                                                          margin: 20px;
+                                                        }
+
+                                                        #tos-acceptance {
+                                                              color: #C0C0C0;
+                                                            }
+
+                                                            #top-ads {
+                                                                  margin: 10px auto 0 auto;
+                                                                      text-align: center;
+                                                                    }
+
+                                                                    #bottom-ads {
+                                                                          margin: 10px auto 0 auto;
+                                                                              text-align: center;
+                                                                            }
+
+                                                                            #footer {
+                                                                                  text-align: center;
+                                                                                      line-height: 20px;
+                                                                                          padding-top: 5px;
+                                                                                              padding-bottom: 10px;
+                                                                                            }
+
+                                                                                            #footer a:visited, #footer a:hover {
+                                                                                                  color: #737373;
+                                                                                                      text-decoration: underline;
+                                                                                                    }
+
+                                                                                                    #cookies_info table, #cookies_info td, #cookies_info tr, #cookies_info th {
+                                                                                                          margin: 0 auto;
+                                                                                                              padding: 5px;
+                                                                                                                  border: 2px;
+                                                                                                                      font-size: 10px;
+                                                                                                                    }
+
+                                                                                                                    #cookies_info h2 {
+                                                                                                                          font-size: 12px;
+                                                                                                                          
+                                                                                                                        }                                                                                                                          
+                                                                                                                                                        

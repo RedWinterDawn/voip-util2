@@ -1,0 +1,51 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Jive DC Ping Utility</title>
+    <style type="text/css" media="all">
+              @import url("/style/default.css");
+            </style>
+
+            <script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+            <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
+            <script type="text/javascript" src="js/ping.js"></script>
+
+          </head>
+          <body  class="home">
+            <div id="holder">
+            <div id="ping-container">
+              <div class="input-area">
+                <div class="leftedge"><h2>JIVE PING UTILITY<h2></div>
+                <div class="leftedge"><input type="text" id="remoteHost" class="input-box" placeholder="Host"></div>
+                <div class="left"><input type="text" id="count"  placeholder="Count" class="input-box"></div>
+                <div class="left"><select name="dc" id="dc" class="input-box2">
+                    <option value="chi">CHI</option>
+                    <option value="lax">LAX</option>
+                    <option value="nyc">NYC</option>
+                    <option value="atl">ATL</option>
+                    <option value="ord">ORD</option>
+                    <option value="dfw">DFW</option>
+                  </select>
+                </div>
+                <div class="left"><input type="submit" value="Ping" class="input-button" onclick="ping5(document.getElementById('remoteHost').value, document.getElementById('count').value), document.getElementById('dc').value;"></div>
+                <div class="left"><input type="submit" value="Stop" class="input-button" onclick="stopPing();"></div>
+                <div class="left" id="ping-status" class="status-info"></div>
+                <div style="clear: both;"></div>
+              </div>
+              <div id="ping-info">
+                <div id="ping-table">
+                  <div id="ping-head">
+                    <div id="pinghead-packet">Packet</div>
+                    <div id="pinghead-ip">IP Address</div>
+                    <div id="pinghead-ms">ms</div>
+                    <div id="pinghead-ttl">TTL</div>
+                    <div id="pinghead-lost">Lost</div>
+                  </div>
+                  <div style="clear: both;"></div>
+                  <div id="ping-row"></div>
+                  <div style="clear: both;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
