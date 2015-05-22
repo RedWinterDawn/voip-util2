@@ -103,7 +103,7 @@ if ($to != "") {
     echo "</p></pre>";
 	
 	echo "<hr/><p>DFW LCR:<br><pre>";
-	printLcrLookup($to,$from,"10.118.252.190:9998");
+	printLcrLookup($to,$from,"10.118.252.190:9997");
     echo "</p></pre>";
 	
 	echo "<hr/><p>GEG LCR:<br/>";
@@ -111,7 +111,7 @@ if ($to != "") {
     echo "</p>";
 
   echo "<hr/><p>LCR Validator<br/>";
-  $url = "http://10.125.252.170/sbc/lcr-validation.php?Dest-Number=".$to."&From-Number=".$from;
+  $url = "http://10.125.252.170/sbc/lcr.php?destNumber=".$to."&cli=".$from;
   print_r($url);
   echo "<br/>";
   $curl = curl_init($url);

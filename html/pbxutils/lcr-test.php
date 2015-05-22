@@ -48,10 +48,10 @@ function testLcrLookup($url){
 
 function doAllTheTests($ip){
 	echo "<font color='lightgreen'>=== Pass these =============================</font><br/>";
-	testLcrLookup('http://' . $ip . ':9998/lcr/lookup/e164/18016992000?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512');
-	testLcrLookup('http://' . $ip . ':9998/lcr/lookup/e164/180006992000?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512');
-	testLcrLookup('http://' . $ip . ':9998/lcr/lookup/e164/011320123456?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512');
-	testLcrLookup('http://' . $ip . ':9998/lcr/lookup/e164/19998887777?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512');
+	testLcrLookup('http://' . $ip . ':9998/lcr/lookup/e164/16785712512?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=18016992000');
+	testLcrLookup('http://' . $ip . ':9998/lcr/lookup/e164/16785712512?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=180006992000');
+	testLcrLookup('http://' . $ip . ':9998/lcr/lookup/e164/16785712512?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=011320123456');
+	testLcrLookup('http://' . $ip . ':9998/lcr/lookup/e164/16785712512?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=19998887777');
 	testLcrLookup('http://' . $ip . ':9997/lcr/lookup/e164/18016992000?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512');
 	testLcrLookup('http://' . $ip . ':9997/lcr/lookup/e164/180006992000?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512');
 	testLcrLookup('http://' . $ip . ':9997/lcr/lookup/e164/011320123456?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512');

@@ -268,12 +268,12 @@ if ($action == "ListStatus")
 			$showControls = false;
 			$load = round($row['load'] / 140000,0);
 			$color = 'green';
-			if ($display == "101") {	
+			if ($display == "101" OR $display == "125") {	
 				if ($load > 85) { $color = 'yellow'; }
 				if ($load > 95) { $color = 'red'; }
 			} else {
-				if ($load > 34) { $color = 'yellow'; }
-				if ($load > 39) { $color = 'red'; }
+				if ($load > 60) { $color = 'yellow'; }
+				if ($load > 69) { $color = 'red'; }
 			}
 
 			echo "<tr>

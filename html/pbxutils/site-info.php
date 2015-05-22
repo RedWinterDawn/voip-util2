@@ -19,7 +19,7 @@ function showSite(_site) {
 </script>
 
 <?
-$subnetSites = array('101'=>'chicago-legacy','117'=>'pvu','118'=>'dfw','119'=>'lax','120'=>'nyc','121'=>'ord','122'=>'atl','123'=>'geg','124'=>'lon');
+$subnetSites = array('101'=>'chicago-legacy','117'=>'pvu','118'=>'dfw','119'=>'lax','120'=>'nyc','125'=>'ord','122'=>'atl','123'=>'geg','124'=>'lon');
 function rekey ($multiArray, $key, $value) {
 	$newArray = Array();
 	foreach ($multiArray as $array) {
