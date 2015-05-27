@@ -14,10 +14,15 @@
           </head>
           <body  class="home">
             <div id="holder">
+              <div class="menubar">
+                <div id="left-title"><h1></h1></div>
+                <div id="menu-items"><a href="/ping.html">PING</a></div>
+                <div id="menu-items"><a href="/trace.html">TRACEROUTE</a></div>
+              </div>
             <div id="ping-container">
               <div class="input-area">
-                <div class="leftedge"><h2>JIVE PING UTILITY<h2></div>
-                <div class="leftedge"><input type="text" id="remoteHost" class="input-box" placeholder="Host"></div>
+                <div class="leftedge"><img src="green_breathing.png" id="logo"><h2>PING UTILITY<h2></div>
+                <div class="left"><input type="text" id="remoteHost" class="input-box" placeholder="Host"></div>
                 <div class="left"><input type="text" id="count"  placeholder="Count" class="input-box"></div>
                 <div class="left"><select name="dc" id="dc" class="input-box2">
                     <option value="chi">CHI</option>
@@ -26,6 +31,8 @@
                     <option value="atl">ATL</option>
                     <option value="ord">ORD</option>
                     <option value="dfw">DFW</option>
+                    <option value="geg">GEG</option>
+                    <option value="pvu">PVU</option>
                   </select>
                 </div>
                 <div class="left"><input type="submit" value="Ping" class="input-button" onclick="ping5(document.getElementById('remoteHost').value, document.getElementById('count').value), document.getElementById('dc').value;"></div>
@@ -37,7 +44,8 @@
                 <div id="ping-table">
                   <div id="ping-head">
                     <div id="pinghead-packet">Packet</div>
-                    <div id="pinghead-ip">IP Address</div>
+                    <div id="pinghead-source">Source IP</div>
+                    <div id="pinghead-ip">Destionation IP</div>
                     <div id="pinghead-ms">ms</div>
                     <div id="pinghead-ttl">TTL</div>
                     <div id="pinghead-lost">Lost</div>
