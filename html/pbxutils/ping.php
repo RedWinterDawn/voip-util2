@@ -35,10 +35,10 @@ if ($dc == 'atl') {
     $address = "172.22.9.5";
 }
 if ($dc == 'ord') {
-    $address = "172.25.9.5";
+    $address = "172.25.9.107";
 }
 if ($dc == 'dfw') {
-      $address = "172.20.9.5";
+      $address = "172.18.9.5";
 }
 if ($dc == 'geg') {
       $address = "172.23.9.5";
@@ -156,6 +156,7 @@ if ($trace) {
 
 else {
 
+$time = $pieces[4];
 $ttl = $pieces[5];
 if (!$ttl2) {
   echo json_encode(array(
