@@ -40,6 +40,14 @@ if (isset($_GET["action"]))
     $action = "List";
 }
 
+if (isset($_GET["did"]))
+{
+    $did = $_GET["did"];
+} else
+{
+    $did = "";
+}
+
 $utildb = pg_connect("host=rodb dbname=util user=postgres ") or die('Could not connect to utildb: '.pg_last_error());
 $mplsQuery = "SELECT id FROM mpls WHERE domain = '".$domain."';";
 $mplsResults = pg_query($utildb, $mplsQuery) or die('Failed to get MPLS: '.pg_last_error());
@@ -175,6 +183,10 @@ while ($didRow = pg_fetch_array($didResult, null, PGSQL_ASSOC)) {
 		$outbound = "<div class='gray'>TRUE</div>";
 		$trTag = '<tr bgcolor="#8F0000">';
 		$tdTag = '<td bgcolor="#8F0000">';
+	}
+
+	if ($didRow['number'] == $did) {
+		$trTag = '<tr bgcolor="#808000">';
 	}
 
 	echo $trTag
