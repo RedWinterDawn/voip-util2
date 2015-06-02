@@ -130,7 +130,7 @@ while ($x < 7)
       }
     }else
     {
-      if ($agiVersions[$agiNodeSite] != $curVersion)
+      if ($agiVersions[$agiNodeSite] != $oldVersion)
       {
         $color = 'yellow';
       }
@@ -151,7 +151,7 @@ while ($x < 7)
       }
     }else
     {
-      if ($agiVersions[$agiNodeSite] != $curVersion)
+      if ($agiVersions[$agiNodeSite] != $oldVersion)
       {
         $color = 'yellow';
       }
@@ -172,7 +172,7 @@ while ($x < 7)
       }
     }else
     {
-      if ($agiVersions[$agiNodeSite] != $curVersion)
+      if ($agiVersions[$agiNodeSite] != $oldVersion)
       {
         $color = 'yellow';
       }

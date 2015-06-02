@@ -61,6 +61,7 @@ ratedeckCur.execute(preFixQuery)
 prefixArray = ratedeckCur.fetchall()
 
 rates = ['inter', 'intra']
+
 k = 0
 for prefix in prefixArray:
     insert = True
@@ -105,5 +106,16 @@ for rate in rates:
     insertQuery = "INSERT INTO domestic_codes (prefix, %s) VALUES ('*', '%s')" %(rate, jdata)
     ratedeckCur.execute(insertQuery)
     ratedeckDB.commit()
+
+## set 400 rates
+incontact = [['INCONTACT']]
+jinter = buildjson (incontact)
+jintra= buildjson(incontact) 
+update = "UPDATE domestic_codes SET intra = '%s', inter = '%s' WHERE prefix = '400'" %(jintra, jinter)
+insert = "INSERT INTO domestic_codes (prefix, intra, inter) VALUES ('400', '%s', '%s')" %(jintra, jinter)
+ratedeckCur.execute(update)
+ratedeckDB.commit()
+
+
 
 ratedeckDB.close()
