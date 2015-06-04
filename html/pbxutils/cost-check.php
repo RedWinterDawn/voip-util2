@@ -38,9 +38,11 @@ function printLcrLookup($to,$from,$address){
 	print_r($url);
 	echo "<br/>";
 	$curl = curl_init($url);
-	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,1);
-	curl_setopt($curl,CURLOPT_TIMEOUT,2);
+	curl_setopt($curl, CURLOPT_CONNECTTIMEOUT ,1);
+	curl_setopt($curl, CURLOPT_TIMEOUT,2);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 	$result = curl_exec($curl);
+	$result = str_replace('"results" : [ ]','<font color="red">"results" : [ ]</font>',$result);
 	$curl_errno = curl_errno($curl);
 	$curl_error = curl_error($curl);
 	curl_close();
@@ -90,7 +92,9 @@ if ($to != "") {
 	print_r($url);
     echo "<br/>";
 	$curl = curl_init($url);
-	print_r(curl_exec($curl));
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+	$sherlockResult=curl_exec($curl);
+	print_r(str_replace("DestinationForbidden","<font color='red'>DestinationForbidden</font>",$sherlockResult));
 	curl_close();
     echo "</p>";
 
