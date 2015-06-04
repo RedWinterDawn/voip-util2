@@ -84,8 +84,20 @@ if ($to != "") {
   } else {
     $id = 'a';
   }
-	echo "<p>To Number: $to
-		  <br>From Number: $from
+	if (substr($to,0,1) == '1'){
+		$toDisplay = $to . " <font color='green'>US Domestic</font>";
+	} else {
+		$toDisplay = $to . ' <font color="yellow">International</font>';
+	}
+	if (substr($from,0,1) == '1'){
+		$fromDisplay = $from . " <font color='green'>US Domestic</font>";
+	} else if ($from == '') {
+		$fromDisplay = '';
+	} else {
+		$fromDisplay = $from . ' <font color="yellow">International</font>';
+	}
+	echo "<p>To Number: $toDisplay
+		  <br>From Number: $fromDisplay
       <br>ID: $id</p>
 		  <p>Sherlock:<br>";
 	$url = "http://10.125.255.66:6666/score/$id/$to" . "?queryOnly=true";
