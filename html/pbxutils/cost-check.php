@@ -110,23 +110,27 @@ if ($to != "") {
 	curl_close();
     echo "</p>";
 
-	echo "<hr/><p>V4 LCR:<br>";
-	printLcrLookup($to,$from,"10.103.0.197:9998");
+	echo "<hr/><p>v5 PVU:<br><pre>";
+	printLcrLookup($to,$from,"10.117.253.121:9997");
+    echo "</p></pre>";
+
+	echo "<hr/><p>v4 DFW:<br>";
+	printLcrLookup($from,$to,"10.118.252.190:9998");
     echo "</p>";
 	
-	echo "<hr/><p>PVU LCR:<br><pre>";
-	printLcrLookup($to,$from,"10.117.253.121:9998");
-    echo "</p></pre>";
-	
-	echo "<hr/><p>DFW LCR:<br><pre>";
+	echo "<hr/><p>v5 DFW LCR:<br><pre>";
 	printLcrLookup($to,$from,"10.118.252.190:9997");
     echo "</p></pre>";
 	
-	echo "<hr/><p>GEG LCR:<br/>";
-	printLcrLookup($to,$from,"10.123.253.89:9998");
+	echo "<hr/><p>v5 GEG:<br/>";
+	printLcrLookup($to,$from,"10.123.253.89:9997");
     echo "</p>";
 
-  echo "<hr/><p>LCR Validator<br/>";
+	echo "<hr/><p>v5 ORD LCR:<br><pre>";
+	printLcrLookup($to,$from,"10.125.252.170:9997");
+    echo "</p></pre>";
+	
+  echo "<hr/><p>ORD LCR<br/>";
   $url = "http://10.125.252.170/sbc/lcr.php?destNumber=".$to."&cli=".$from;
   print_r($url);
   echo "<br/>";
