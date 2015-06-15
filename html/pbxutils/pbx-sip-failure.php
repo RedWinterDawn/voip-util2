@@ -71,7 +71,7 @@ if (!$row = pg_fetch_assoc($result))
 	echo "UnknownHost";
 
 	syslog(LOG_INFO, "application=pbx-sip-failure server=$server action=UnknownHost state=other guiltyParty=$guiltyParty customMessage='pbx $server unknown - no action taken'");
-  $mail_subject="Unknown host " . $row['host'] . " has no entry - requested by " . $guiltyParty;
+  $mail_subject="Unknown host " . $row['host'] . " has no entry - requested by " . $guiltyParty . " Server: " .$server;
   $mail_body=$requestTime . " " . $mail_subject;
 	$mail_headers='From: pbx-sip-failure@jive.com' . "\r\n";
   mail($mail_to, $mail_subject,$mail_body,$mail_headers);
