@@ -76,6 +76,7 @@ function doAllTheTests($ip){
 	testLcrLookup('http://' . $ip . '/sbc/lcr.php?destNumber=19998887777&cli=','{"results":["BANDWIDTH", "VOIP_INNOVATIONS", "ONVOY", "LEVEL3"]}');
 	testLcrLookup('http://' . $ip . '/sbc/lcr.php?destNumber=011320123456&cli=','{"results":["ONVOY", "THINQ", "LEVEL3", "BANDWIDTH"]}');
 	testLcrLookup('http://' . $ip . '/sbc/lcr.php?destNumber=011320123456&cli=02','{"results":["ONVOY", "THINQ", "LEVEL3", "BANDWIDTH"]}');
+	testLcrLookup('http://' . $ip . ':9997/lcr/lookup/e164/19996660000?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512','{"results":["JIVEBGW"]}');
 	echo "<font color='lightblue'>=== Undefined =============================</font><br/>";
 	testLcrLookup('http://' . $ip . ':9998/lcr/lookup/e164/1801?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512','{"results":["BANDWIDTH", "360_NETWORKS", "SIPROUTES:PRIME", "VOIP_INNOVATIONS:LCR", "LEVEL3"]}');
 	testLcrLookup('http://' . $ip . ':9997/lcr/lookup/e164/1801?contextId=014035c0-01ad-da24-1a10-000100420005&callId=b54eb20-6eb37c1b-6ceef172@10.50.40.58&cli=16785712512','{"results":["BANDWIDTH", "VOIP_INNOVATIONS", "ONVOY", "LEVEL3"]}');

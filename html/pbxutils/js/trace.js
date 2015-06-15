@@ -18,7 +18,7 @@ function pingHost (remoteHost, dc) {
         }
         }
     });
-     setTimeout(pingHost2, 1000, remoteHost, dc);
+     setTimeout(pingHost2, 300, remoteHost, dc);
   }
 }
 
@@ -32,7 +32,7 @@ function pingHost (remoteHost, dc) {
                   $('#ping-row').append($(pingJsonData.pingInfo).hide().fadeIn(500));
                                           }
      });
-      setTimeout(pingHost3, 1000, remoteHost, dc);
+      setTimeout(pingHost3, 300, remoteHost, dc);
 
      }
 function pingHost3 (remoteHost, dc) {
@@ -57,7 +57,7 @@ function ping5 (remoteHost, dc) {
   $('#ping-row').children().remove();
   $('#ping-table').fadeIn();
   for(var i=1; i<=16; i++) {
-    nextRun = (i-1) * 3000;
+    nextRun = (i-1) * 1000;
     setTimeout(pingHost, nextRun, remoteHost,  dc);
      }
 };
