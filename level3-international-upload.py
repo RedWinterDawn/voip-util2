@@ -36,12 +36,13 @@ with open(fileName, 'rb') as csvfile:
     csvreader = csv.reader(csvfile, delimiter=',')
     for row in csvreader:
         lrn = "%s" %(row[2])
+#        print row[5][2:]
         if lrn.isdigit():
             if count == 0:
               query = "INSERT INTO level3_international (destination, worldzone, fullcode, countrycode, citycode, rate, effectivedate, changetype, validFrom) VALUES ('%s', %s, '%s', '%s', '%s', %s, '%s', '%s', now())" %(row[0], row[1], row[2], row[3], row[4], row[5][2:], row[6], row[7])
               count = count + 1
             elif count < 100:
-              query = "%s, ('%s', %s, '%s', '%s', '%s', %s, '%s', '%s', now())" %(query, row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7])
+              query = "%s, ('%s', %s, '%s', '%s', '%s', %s, '%s', '%s', now())" %(query, row[0], row[1], row[2], row[3], row[4], row[5][2:], row[6], row[7])
               count  = count + 1
             else:    
                 try:

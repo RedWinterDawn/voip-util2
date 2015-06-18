@@ -45,6 +45,16 @@ except:
     print 'failed to connect to db'
     sys.exit(1)
 
+#drop current/old codes
+v4DropQuery = "DELETE FROM v4domestic_codes"
+dropQuery = "DELETE FROM domestic_codes"
+
+ratedeckCur.execute(v4DropQuery)
+ratedeckDB.commit()
+ratedeckCur.execute(dropQuery)
+ratedeckDB.commit()
+
+
 v4intCarrierQuery = "SELECT DISTINCT v4code as code FROM carrier WHERE international = TRUE"
 v4domCarrierQuery = "SELECT DISTINCT v4code as code FROM carrier WHERE usdomestic = TRUE OR international = TRUE"
 intCarrierQuery = "SELECT DISTINCT code as code FROM carrier WHERE international = TRUE"

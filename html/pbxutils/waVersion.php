@@ -59,7 +59,6 @@ while ($x < 6)
     if ($curVersion == 1)
     {
       $curVersion = $wa[$waNodeSite];
-      echo $curVersion;
     }
     if ($curVersion != $wa[$waNodeSite])
     {
