@@ -130,9 +130,9 @@ if ($showList == true){
 	$domainResult = pg_query($domainQuery) or die('Domain query failed: ' . pg_last_error());
 
 	//Get Santa servers
-	$santadb = pg_connect("host=rodb dbname=util user=postgres ") or die('Could not connect to util: '.pg_last_error());
+	$santadb = pg_connect("host=rwdb dbname=util user=postgres ") or die('Could not connect to util: '.pg_last_error());
 	
-	$santaQuery = "SELECT ip, name, site FROM presence ORDER BY site, ip;";
+	$santaQuery = "SELECT ip, name, site FROM presence WHERE status != 'Inactive' ORDER BY site, ip;";
 	$santas = pg_fetch_all(pg_query($santadb, $santaQuery)) or die ('Failed to get santas: '.pg_last_error());
 
 	if($domainRow = pg_fetch_array($domainResult, null, PGSQL_ASSOC)) {
