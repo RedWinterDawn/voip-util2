@@ -13,6 +13,7 @@ if (isset($_REQUEST['addr']) && isset($_REQUEST['failable'])) {
     $query = "UPDATE pbxstatus SET failable = '$failable' WHERE ip = '$addr';";
   } else if (preg_match('/^[\w-]*$/', $addr)) {
     $query = "UPDATE sitestatus SET failable = '$failable' WHERE site_id = '$addr';";
+	  $wholeSite = true;
     if ($addr == "all" || $addr == "universal") {
       $query = "UPDATE sitestatus SET universal_failable = '$failable';";
       $isEverything = true;
@@ -42,13 +43,17 @@ $evconn = pg_connect("host=rwdb dbname=events user=postgres") or die ("Error 5")
 $result = pg_query($evconn, $insertEvent) or die ("Error 6");
 pg_close($evconn);
 
-if ($isEverything) {
+if ($isEverything || $wholeSite) {
   
   //If the mail subject isn't empty, it must be for a site or ALL
   $mail_headers="From: abandon-toggle@jive.com" . "\r\n";
   $request_time=strftime('%Y-%m-%d %H:%M:%S');
   $mail_body="User: $guiltyParty\nDate: $request_time\nState: $curState";
-  $mail_subject="V4 Abandons turned $curState";
+  if ($isEverything) {
+      $mail_subject="V4 Abandons turned $curState";
+  } else {
+	  $mail_subject="Abandons turned $curState for $addr";
+  }
 
   mail($mail_to, $mail_subject, $mail_body, $mail_headers);
 }
