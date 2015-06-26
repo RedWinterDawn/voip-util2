@@ -1,4 +1,74 @@
 <?php
+/*
+                                                                                                    
+Just a friendly reminder of the guy who created this monstrosity. :D
+                                                                                                    
+                                      `-+ohddddmmddmdyo::`                                          
+                                   .odNMMMMMMMMMMMMMMMMMMmho:.                                      
+                                -+mMMMMMMMMMMMMMMMMMMMMMMMMMMNd+-                                   
+                             `omMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNdo/`                               
+                           .omMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNmhs:`                            
+                         .+mMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNdddo.                          
+                        /dMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNdhdh:`                        
+                      .-sNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNmdmy`                       
+                    `/dmmmMMMMMMMMMMMMMMMMMMMMMMMMMMNmmmmmddmNNNNmmNNNNmmdys/`                      
+                   .hNMMMMMMMMMNNNmdmmdddyyyhdmmmmdyo+//::--.------:::+oyhhh/o/.                    
+                  :yNMMMMMNmhso+/::-::---...--:/:/:`                   ``-/o::-o-                   
+                `+mMMMMNmho:.`                                             .---./.                  
+               :yhMMMNdo-`                                                   `-.`:-                 
+              -hdNMMNs-                                                          `//                
+             `hmMMMNo`                                                          `../.               
+             yNMMMMh-                                                            ``.-.              
+            +NMMMMNo.                                                               ``              
+           -mMMMMMmo.                                                               `-`             
+           yMMMMMMmo.                                                            ``                 
+          `NMMMMMMd/`                                                            `.`                
+          -MMMMMMNy.                                                              ``                
+          `mMMMMMm/`     ``...```````                                             `.` `             
+           yMMMMm+.   .:oyyhddddddhys+/:-.``             `.-/+ssyhys/:..`          .```             
+           :mMMMo. `/ydmNMMMMMMMMMMMMNmhys+:-.``````  `.:+ymNNNNNNmmdyo/:.`        -`..             
+            NMMM/``+dNNmmdhhyhdmmNNNNNmmdhyo/:--..`````-:+oosssssso/:-`            --:-             
+           `NMMM+ .+syso+oosyhdmNNNNNNmddddhyo/-.`    `-/+ssyhdmmmmmdds/-``        .-/:             
+           :MMMMs `:/:/ohmNNMMMMMMMMNMMNmmddhy/`      `./oymNMNmMMMMMN++so-.        `-`             
+           yMMMMo `--:+hNNMMmmMMMMMNmNMMmhdyyy/         `-+ddmdyhhhhy/` `..`         ` ``           
+           oNdNM/ ```.:+oossyhdhmdhhdddhyss+os-           `.::+/-.``                   :-           
+           +d+yN. ``````..-.-://++++++/+////++.              `````                     .:           
+           :s`/y`             `...`.....-::/+/`                                         .           
+           -.-yd`                 ````..-:://-                                                      
+            .ymN.                  ```.-:://-                                                       
+            -hNN-                  ``.-:/+o:`                                        `              
+           `./hN:                  `..:+so+-``                                       .              
+              -d/               ````.:+o/://::.`                                     `              
+              `o+ `   `` `      `...-:oo+oyhhhy+:-.``-//:`                                          
+             ``/o   `````.` ````.--::/oyhmNNNMmdys/-:ohhh/                                          
+               .o.` ``````````.--::://osdNMMMMNNmddo++/::.                                          
+                +/.``..`````..-::::/:+shmMMMMMNNNNNho+.`                                            
+                /y/.....```.-://+ossydmNMMNMMNNmNNNd:/.                                             
+                -yo+:...``-/ooysshhddmmmNNmNNmdmmNNs:..``                                           
+                 osss+-..-+yyyhhyyhdddddmdhddhhhsyy+-...```                                         
+                 /dhhy+:-:sdhdmmmNNNNNNNmdhhyhhhysoso+/:::/.--/.:/:..`                              
+                 `hmdhyo::sdmmNMmhdmmNNNmmdhhddddddhyys+/::://ssshdho:+.                            
+                  /mdddso+shmNNNhsossyhhdhhyo/:---..``         `.:odyso-`       `.                  
+                   smmmhdyyhmNMmhs+ooo+oyddhhso+:--:/-.`          .odo-`        -                   
+                   .yNNNNdhdmNMNdysoo++oshyhdmhssysss/:`          -//-.       .-                    
+                    `hMMNNNNNMMNmdso+osoyyhdmmyohdhho-:`         `::+``````  -:`                    
+                     `yMMMNMMMMMMmdhsssosyhhdmsydmhdy/``         .--.`.//-`-:/`                     
+                 ````:sdMMMMMMMMMNNmdhsssyyhhddddhhso:`         --:-./:+:.:+- .                     
+             `-oo:ohymh-hMMMMMMMMMMNNmyssyyysso+oo:-`           `-:/-+o+//+- `.`                    
+         `-+/: .++sdmMd`/ymMMMMMMMMMNmhyyyyo+/---.`            ..://:syo+:`  :-                     
+        `-:://osssNNNNN-.-/hMMMMMMMMNNmmhys+//--```            :+::/shd/`   .+- `            `      
+     .-/sddmmds/oyMMNNM/.--:shNMMMMMMMMmdhy+:-:-````           .oyo+os-     so`````     .` `        
+  `..```.-..`  .+mNNmNMh::---:omMMMMMMMNhsyoo/-::.-..`   `  `  :hmdy/      -My.-./        ``        
+```         ```::dmMNMMMo::-::/+yNMMMMMMdysdhyso++:.+:`. .--/+/ommo`      `mdo  ```  `:` .-   `     
+`        `.``  /sMMNNMNMNo/:-:::/odNMMMMNdmmhmNsydhyyh+.`-yosdmms.       `hN:d/ ..:   .s    `       
+    ..```.`   .:mNMmMNyMMmo/:/:///oydmMMMMMNNNMdmNmNNmsydohNdho:         sMd +y` .-`   o            
+  -sMNmN+yydy`-hNMMmMydMMMms+/:/://+oymNMMMMMMMNMMNNMNdNMmdo.           +MNy .y: ```  .s            
+ yhsNMNNohmMh:oMMMNNd+mMMMMms++////+ossydmmmmNmmmNNdmNmho:` `         `/NMhy. sh/`..  :y   `.-: `   
+`mMddMMMNmhMmyNMMMmN-sMNMMMMmso+++++osssysyssyssso++++::-..```      `.oNMm/s: `/.     +y    `+..   .
+ oNNmMMMMNoMhNMMMMNy/NMdNMMMMNhsoo+oooosyyysssooooooo+/::---.`     .:oNdNo-:/  /-  `` +o    .h `   `
+`sdMNNMMMM+dmMMMMMm/sMhyMMMMMMNdsooo++ossssysssyssooso+//:---..``.:+yNmmh/-`+- .:` `  /`   `:o      
+`osNMMMMMMsmNMMMMMN:mmsdMMMMMMMMmyo+++++ooosssssssso++/:::------:/shMmNo-s. ho .y:    :   `.ys      
+ */
 /* SINGLE CUSTOMER MIGRATION SCRIPT
  *
  * This script queries the read only database to find a domain based on a user defined search term
