@@ -9,6 +9,14 @@ function flushOutput()
   flush();
 }
 
+function printArray($array)
+{
+  foreach ($array as $value)
+  {
+    echo $value . "<br>";
+  }
+}
+
 $target_path = "/var/www/uploads/";
 
 ## check file types
@@ -36,6 +44,16 @@ if(isset($_FILES['thinq']) and $_FILES['thinq']['type'] != 'application/zip' and
 {
   echo 'ThinQ Rate Deck must be a zip file not a: ' . $_FILES['thinq']['type'];  
   $thinq = 'False';
+}
+if(isset($_FILES['level3']) and $_FILES['level3']['type'] != 'text/csv' and $_FILES['level3']['size'] > 0)
+{
+  echo '<br>Level3 Rate Deck must be a csv file not a: ' . $_FILES['level3']['type'];  
+  $level3 = 'False';
+}
+if(isset($_FILES['level3ext']) and $_FILES['level3ext']['type'] != 'text/csv' and $_FILES['level3ext']['size'] > 0)
+{
+  echo '<br>Level3 Extended Rate Deck must be a csv file not a: ' . $_FILES['level3ext']['type'];  
+  $level3ext = 'False';
 }
 
 ## check international file types
@@ -66,13 +84,21 @@ if(isset($_FILES['thinqint']) and $_FILES['thinqint']['type'] != 'application/zi
 }
 
 ##move uploaded files
+$dbconn = pg_connect("host=cdr dbname=lcr user=postgres ") or die ('Could not connect: ' . pg_last_error());
+
+
+
 if(isset($_FILES['bandwidth']) and $_FILES['bandwidth']['size'] > 0 and $bandwidth != 'False')
 {
   $bandwidthPath = $target_path . "bandwidth-ratedeck.csv";
   if(move_uploaded_file($_FILES['bandwidth']['tmp_name'], $bandwidthPath)) 
   {
-    echo "<br>Bandwith ratedeck has been uploaded<br>";
+    pg_query("INSERT INTO current_ratedeck (carrier_id, region, file) VALUES ('1', 'domestic', '".$_FILES['bandwidth']['name']."')") or die ('current_ratedeck query failed: ' . pg_last_error());
+    $output = array();
+    exec("/var/www/bandwidth-domestic-upload2.py", $output);
+    printArray($output);
     $bandwidth = 'True';
+    echo "<br>Bandwith ratedeck has been uploaded<br>";
   }else
   {
     echo "<br>Failed to upload Bandwith ratedeck<br>";
@@ -124,6 +150,30 @@ if(isset($_FILES['thinq']) and $_FILES['thinq']['size'] > 0 and $thinq != 'False
   }else
   {
     echo "<br>Failed to upload ThinQ ratedeck<br>";
+  }
+}
+if(isset($_FILES['level3']) and $_FILES['level3']['size'] > 0 and $level3 != 'False')
+{
+  $level3Path = $target_path . "level3-ratedeck.csv";
+  if(move_uploaded_file($_FILES['level3']['tmp_name'], $level3Path)) 
+  {
+    echo "<br>Level3 ratedeck has been uploaded<br>";
+    $level3 = 'True';
+  }else
+  {
+    echo "<br>Failed to upload Level3 ratedeck<br>";
+  }
+}
+if(isset($_FILES['level3ext']) and $_FILES['level3ext']['size'] > 0 and $level3ext != 'False')
+{
+  $level3Path = $target_path . "level3-ext-ratedeck.csv";
+  if(move_uploaded_file($_FILES['level3ext']['tmp_name'], $level3Path)) 
+  {
+    echo "<br>Level3 Extended ratedeck has been uploaded<br>";
+    $level3ext = 'True';
+  }else
+  {
+    echo "<br>Failed to upload Level3 Extended Ratedeck<br>";
   }
 }
 
@@ -188,6 +238,8 @@ if(isset($_FILES['thinqint']) and $_FILES['thinqint']['size'] > 0 and $thinqint 
     echo "<br>Failed to upload ThinQ International ratedeck<br>";
   }
 }
+
+pg_close($dbconn);
 
 /*
 if(isset($onvoy) and $onvoy == 'True')

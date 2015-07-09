@@ -127,6 +127,8 @@ if ($trace) {
   else {
     $time = $pieces[4];
     if ($time == "") {
+      $host = "-";
+      $name = "-";
       $time = "*";
     }
     if ($round == 1) {
