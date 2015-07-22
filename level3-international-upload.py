@@ -4,13 +4,15 @@ import csv
 import psycopg2
 import sys
 import os
+import rateupdate
 
 CONFIGURATOR = '10.125.252.170'
+CDR = 'cdr'
 
 #variables
 count = 0
 pushes = 1
-connection = "dbname='ratedeck' user='postgres' host='%s' " %(CONFIGURATOR)
+connection = "dbname='ratedeck' user='postgres' host='%s' " %(CDR)
 fileName = "/var/www//uploads/level3-int-ratedeck.csv"
 
 ## connect to db
@@ -48,7 +50,7 @@ with open(fileName, 'rb') as csvfile:
                 try:
                     cur.execute(query)
                     db.commit()
-                    print pushes
+                    print pushes, ' ',
                     pushes = pushes +1
                     count = 0
                     query = ''
@@ -60,9 +62,12 @@ with open(fileName, 'rb') as csvfile:
 try:
     cur.execute(query)
     db.commit()
-    print "Completed"
 except psycopg2.Error as e:
     print e.pgerror
     pass
 db.close()
 
+print ''
+rateupdate.intUpdate('Level3', 'level3_international', 'destination', 'fullcode', 'rate')
+print ''
+print 'Completed'

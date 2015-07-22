@@ -1,4 +1,6 @@
-<html><head><link rel='stylesheet' href='stylesheet.css'></head><body>
+<html><head>
+<script src="js/sorttable.js"></script>
+<link rel='stylesheet' href='stylesheet.css'></head><body>
 
 <?php
 include 'menu.html';
@@ -115,7 +117,7 @@ echo "<br>Server Device Count = $dTotal";
 </div>
 <br><br>
 <div>
-<table border=1>
+<table class="sortable"  border=1>
   <tr><th>domain</th>
     <th>name</th>
     <th>state</th>

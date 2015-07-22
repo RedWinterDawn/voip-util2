@@ -4,6 +4,7 @@ import csv
 import psycopg2
 import sys
 import os
+import rateupdate
 
 CONFIGURATOR = '10.125.252.170'
 
@@ -48,11 +49,11 @@ with open(fileName, 'rb') as csvfile:
         lrn = row[0]
         if lrn.isdigit():
             if count == 0:
-                query = "INSERT INTO thinq_prime (prefix, inter, intra, validfrom) VALUES (%s, %s, %s, now())" %(row[0], row[1], row[2])
-                count = count + 1
+              query = "INSERT INTO thinq_prime (prefix, inter, intra, validfrom) VALUES (%s, %s, %s, now())" %(row[0][1:], row[1], row[2])
+              count = count + 1
             elif count < 10000:
-                query = "%s, (%s, %s, %s, now())" %(query, row[0], row[1], row[2])
-                count  = count + 1
+              query = "%s, (%s, %s, %s, now())" %(query, row[0][1:], row[1], row[2])
+              count  = count + 1
             else:    
                 try:
                     cur.execute(query)
@@ -73,3 +74,4 @@ except psycopg2.Error as e:
     pass
 db.close()
 
+rateupdate.update('ThinQ', 'thinq_prime', 'prefix')

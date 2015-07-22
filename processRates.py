@@ -32,6 +32,11 @@ def buildjson(carriers):
     jdata = '{"results":%s}' %(jdata)
     return jdata
 
+def upsert (db, cur, update, insert):
+    cur.execute(update)
+    if (cur.rowcount) == 0:
+        cur.execute(insert)
+    db.commit()
 
 #variables
 ratedeckConn = "dbname='nanpa' user='postgres' host='%s' " %(CONFIGURATOR)
@@ -43,6 +48,17 @@ try:
     print 'connected to db'
 except:
     print 'failed to connect to db'
+    sys.exit(1)
+
+##connect to ratedeck
+dbConnection = "dbname='ratedeck' user='postgres' host='%s' " %(CONFIGURATOR)
+
+try:
+    db = psycopg2.connect(dbConnection)
+    dbCur = db.cursor()
+    print 'conectied to db'
+except:
+    print 'failed to connect to db2'
     sys.exit(1)
 
 #drop current/old codes
@@ -187,4 +203,20 @@ update = "UPDATE domestic_codes SET intra = '%s', inter = '%s' WHERE prefix = '4
 ratedeckCur.execute(update)
 ratedeckDB.commit()
 
+##apply overrides
+overrideQuery = "SELECT * FROM override_domestic"
+dbCur.execute(overrideQuery)
+overrideArray = dbCur.fetchall()
+for override in overrideArray:
+    #upsert v4domestic
+    update = "UPDATE v4domestic_codes SET intra = '%s', inter = '%s' WHERE prefix = '%s'" %(override[2], override[3], override[1]) 
+    insert = "INSERT INTO v4domestic_codes (prefix, intra, inter) VALUES ('%s', '%s', '%s')" %(override[1], override[2], override[3])
+    upsert(ratedeckDB, ratedeckCur, update, insert)
+
+    #upsert v5domestic
+    update = "UPDATE domestic_codes SET intra = '%s', inter = '%s' WHERE prefix = '%s'" %(override[4], override[5], override[1]) 
+    insert = "INSERT INTO domestic_codes (prefix, intra, inter) VALUES ('%s', '%s', '%s')" %(override[1], override[4], override[5])
+    upsert(ratedeckDB, ratedeckCur, update, insert)
+
 ratedeckDB.close()
+db.close()

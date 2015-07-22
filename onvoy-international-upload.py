@@ -3,6 +3,7 @@
 import openpyxl
 import psycopg2
 import sys
+import rateupdate
 
 CONFIGURATOR = '10.125.252.170'
 
@@ -66,3 +67,5 @@ except psycopg2.Error as e:
     pass
 db.close()
 
+rateupdate.intUpdate('Onvoy', 'onvoy_international', 'name', 'code')
+print 'completed' 
