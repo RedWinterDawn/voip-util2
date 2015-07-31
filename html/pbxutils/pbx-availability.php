@@ -260,7 +260,7 @@ if ($action == "ListStatus")
     </label>
     </div></td></tr></table>';	
 		echo "<table border=1>";
-		echo "<tr><th>failgroup</th><th>load</th><th onclick=\"getCalls();\">calls</th><th>ip</th><th>status</th><th>activate</th><th>standby</th><th>abandon ship</th><th>failable</th><th>message</th></tr>\n";
+		echo "<tr><th>Alerts</th><th>failgroup</th><th>load</th><th onclick=\"getCalls();\">calls</th><th>ip</th><th>status</th><th>activate</th><th>standby</th><th>abandon ship</th><th>failable</th><th>message</th></tr>\n";
     $oneTimer = true;
 		while ($row = pg_fetch_array($result, null, PGSQL_ASSOC))
 		{
@@ -281,6 +281,7 @@ if ($action == "ListStatus")
 
       $tempip = preg_replace('/[.,]/', '', $row['ip']);
 			echo "<tr>
+        <td><div class='disablealert' id='disable".$tempip."'>Disable Alert</div></td>
 				<td class='group".$row['failgroup']."'>" . $row['failgroup'] . "</td>
 				<td class='$color'>" . $load . "%</td>
         <td id='calls".$tempip."'></td>

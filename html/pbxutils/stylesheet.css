@@ -461,3 +461,20 @@ background-color: #FFF;padding: 20px; padding-right: 23px; border-radius: 4px;
   width: 25%;
   background-color: #C2C2C2;
 }
+.disablealert {
+  font-size: 12px;
+  text-align: center;
+  color: black;
+  background-color:#B2B2B2;
+  margin: auto 0;
+  width: 40px;
+  margin-left: 2px;
+  margin-right: 2px;
+
+}
+.disablealert:hover {
+  background-color:yellow;
+  cursor: pointer;
+}
+
+
