@@ -2,7 +2,7 @@
 <script type="text/javascript" src="js/featurerequest.js"></script>
 <?php
 
-$conn = pg_connect("host=172.25.9.34 dbname=sshkeys user=sshkeys")
+$conn = pg_connect("host=172.25.9.34 dbname=sshkeys user=sshkeys");
     $query = "SELECT count(*) FROM featurerequest;";
     $result = pg_query($conn, $query);
     $row = pg_fetch_array($result, null, PGSQL_ASSOC);
