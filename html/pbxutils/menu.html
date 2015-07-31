@@ -8,7 +8,7 @@ $conn = pg_connect("host=172.25.9.34 dbname=sshkeys user=sshkeys")
     $result = pg_query($conn, $query);
     $row = pg_fetch_array($result, null, PGSQL_ASSOC);
     $total_rows = $row['count'];
-    $rpp = 5;
+    $rpp = 10;
     $last = ceil($total_rows/$rpp);
     if($last < 1) {
           $last = 1;

@@ -12,8 +12,8 @@ include('menu.html');
 
 <form action='' method='GET'>
 <input type='hidden' name='page' value=1 />
-<input type='text' name='start' placeholder='start: 2013-12-31' />
-<input type='text' name='end' placeholder='end: 2015-12-31' /><br>
+Start Date: <input type='date' name='start' placeholder='start: 2013-12-31' />
+End Date:  <input type='date' name='end' placeholder='end: 2015-12-31' /> Note that the start and end dates cannont be the same.<br>
 <select name='etype'>
 	<option value='ABANDON'>Abandon</option>
 	<option value='MASS'>Mass Exodus</option>
