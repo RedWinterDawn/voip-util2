@@ -3,7 +3,6 @@
 <?php
 
 $conn = pg_connect("host=172.25.9.34 dbname=sshkeys user=sshkeys")
-  or die('Could not connect: ' . pg_last_error());
     $query = "SELECT count(*) FROM featurerequest;";
     $result = pg_query($conn, $query);
     $row = pg_fetch_array($result, null, PGSQL_ASSOC);

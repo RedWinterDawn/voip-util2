@@ -27,6 +27,19 @@ function getCalls () {
            });
 }
 
+function disableAlerts (disableip) {
+       $.ajax({
+            type: "post",
+            url: "disablealert.php",
+            dataType: 'json',
+            data: {'ip': disableip},
+               success: function(pingJsonData) {}
+           });
+}
+
+
+
+
 $(document).ready ( function(){
      getCalls();
 });

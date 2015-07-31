@@ -280,8 +280,9 @@ if ($action == "ListStatus")
 			}
 
       $tempip = preg_replace('/[.,]/', '', $row['ip']);
+      $disableip = preg_replace('/[.,]/', 'x', $row['ip']);
 			echo "<tr>
-        <td><div class='disablealert' id='disable".$tempip."'>Disable Alert</div></td>
+        <td><div class='disablealert' onclick='disableip = \"" . $disableip . "\"; disableAlerts(disableip);'>Disable Alert</div></td>
 				<td class='group".$row['failgroup']."'>" . $row['failgroup'] . "</td>
 				<td class='$color'>" . $load . "%</td>
         <td id='calls".$tempip."'></td>
