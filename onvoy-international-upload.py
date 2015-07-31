@@ -6,13 +6,14 @@ import sys
 import rateupdate
 
 CONFIGURATOR = '10.125.252.170'
+CDR = 'cdr'
 
 #variables
 datas = False
 count = 0
 pushes = 1
 fileName = "/var/www/uploads/onvoy-int-ratedeck.xlsx"
-connection = "dbname='ratedeck' user='postgres' host='%s' " %(CONFIGURATOR)
+connection = "dbname='ratedeck' user='postgres' host='%s' " %(CDR)
 
 #load file
 wb = openpyxl.load_workbook(fileName, use_iterators = True)
@@ -41,16 +42,16 @@ except:
 for row in ws.iter_rows():
     if isinstance(row[1].value, int):
         if count == 0:
-            query = "INSERT INTO onvoy_international (name, code, cost, validfrom) VALUES ('%s', %s, %s, now())" %(row[0].value, row[1].value, row[2].value)
+            query = "INSERT INTO onvoy_international (name, code, cost, validfrom) VALUES ('%s', '%s', %s, now())" %(row[0].value, row[1].value, row[2].value)
             count = count + 1
         elif count < 1000:
-            query = "%s, ('%s', %s, %s, now())" %(query, row[0].value, row[1].value, row[2].value)
+            query = "%s, ('%s', '%s', %s, now())" %(query, row[0].value, row[1].value, row[2].value)
             count  = count + 1
         else:    
             try:
                 cur.execute(query)
                 db.commit()
-                print pushes
+                print pushes, ' ',
                 pushes = pushes +1
                 count = 0
                 query = ''
@@ -67,5 +68,7 @@ except psycopg2.Error as e:
     pass
 db.close()
 
+print ''
 rateupdate.intUpdate('Onvoy', 'onvoy_international', 'name', 'code')
+print ''
 print 'completed' 

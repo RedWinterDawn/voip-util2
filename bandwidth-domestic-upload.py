@@ -67,4 +67,5 @@ db.close()
 print ""
 rateupdate.update('Bandwidth', 'bandwidth_domestic')
 print ""
+rateupdate.update('Bandwidth', 'bandwidth_tollfree', 'lrn', 'inter', 'intra', False)
 print "Completed"

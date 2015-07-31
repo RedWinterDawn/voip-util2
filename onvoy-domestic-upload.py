@@ -6,19 +6,14 @@ import sys
 import rateupdate
 
 CONFIGURATOR = '10.125.252.170'
-
-##check for and get args
-length = len(sys.argv)
-if length != 2:
-    print 'Invalid or no args'
-    sys.exit(1)
+CDR = 'cdr'
 
 #variables
 datas = False
 count = 0
 pushes = 1
-fileName = sys.argv[1]
-connection = "dbname='ratedeck' user='postgres' host='%s' " %(CONFIGURATOR)
+fileName = "/var/www/uploads/onvoy-ratedeck.xlsx"
+connection = "dbname='ratedeck' user='postgres' host='%s' " %(CDR)
 
 #load file
 wb = openpyxl.load_workbook(fileName, use_iterators = True)
@@ -59,7 +54,7 @@ for row in ws.iter_rows():
             try:
                 cur.execute(query)
                 db.commit()
-                print pushes
+                print pushes, ' ',
                 pushes = pushes +1
                 count = 0
                 query = ''
@@ -76,4 +71,7 @@ except psycopg2.Error as e:
     pass
 db.close()
 
+print ''
 rateupdate.update('Onvoy', 'onvoy_domestic', 'lrn')
+print ''
+print 'Completed'

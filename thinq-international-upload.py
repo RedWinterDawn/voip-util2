@@ -4,8 +4,10 @@ import csv
 import psycopg2
 import sys
 import os
+import rateupdate
 
 CONFIGURATOR = '10.125.252.170'
+CDR = 'cdr'
 
 ##check for and get args
 ##length = len(sys.argv)
@@ -16,7 +18,7 @@ CONFIGURATOR = '10.125.252.170'
 #variables
 count = 0
 pushes = 1
-connection = "dbname='ratedeck' user='postgres' host='%s' " %(CONFIGURATOR)
+connection = "dbname='ratedeck' user='postgres' host='%s' " %(CDR)
 fileName = "/var/www/uploads/thinq-int/"
 
 ##unzip file
@@ -49,16 +51,16 @@ with open(fileName, 'rb') as csvfile:
         dest = row[0].replace("'", "")
         if lrn.isdigit():
             if count == 0:
-                query = "INSERT INTO thinq_international (carrier_id, destination, prefix, rate, initial, effective, validFrom) VALUES (0, '%s', '%s', %s, %s, '%s', now())" %(dest, lrn, row[2], row[3], row[5])
+                query = "INSERT INTO thinq_international (destination, prefix, rate, initial, effective, validFrom) VALUES ('%s', '%s', %s, %s, '%s', now())" %(dest, lrn, row[2], row[3], row[5])
                 count = count + 1
             elif count < 1000:
-                query = "%s, (0, '%s', '%s', %s, %s, '%s', now())" %(query, dest, lrn, row[2], row[3], row[5])
+                query = "%s, ('%s', '%s', %s, %s, '%s', now())" %(query, dest, lrn, row[2], row[3], row[5])
                 count  = count + 1
             else:    
                 try:
                     cur.execute(query)
                     db.commit()
-                    print pushes
+                    print pushes, ' ',
                     pushes = pushes +1
                     count = 0
                     query = ''
@@ -69,9 +71,13 @@ with open(fileName, 'rb') as csvfile:
 try:
     cur.execute(query)
     db.commit()
-    print "Completed"
 except psycopg2.Error as e:
     print e.pgerror
     pass
 db.close()
+
+print ''
+rateupdate.intUpdate('ThinQ', 'thinq_international', 'destination', 'prefix', 'rate')
+print ''
+print 'Completed'
 
