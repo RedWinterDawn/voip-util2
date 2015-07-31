@@ -17,6 +17,9 @@
     }
   }
 </script>
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+            <script type="text/javascript" src="js/jquery-ui-1.7.2.custom.min.js"></script>
+<script type="text/javascript" src="js/icalls.js"></script>
 <?php
 include('guiltyParty.php');
 $requestTime = strftime('%Y-%m-%d %H:%M:%S');
@@ -257,7 +260,7 @@ if ($action == "ListStatus")
     </label>
     </div></td></tr></table>';	
 		echo "<table border=1>";
-		echo "<tr><th>failgroup</th><th>load</th><th>ip</th><th>status</th><th>activate</th><th>standby</th><th>abandon ship</th><th>failable</th><th>message</th></tr>\n";
+		echo "<tr><th>Alerts</th><th>failgroup</th><th>load</th><th onclick=\"getCalls();\">calls</th><th>ip</th><th>status</th><th>activate</th><th>standby</th><th>abandon ship</th><th>failable</th><th>message</th></tr>\n";
     $oneTimer = true;
 		while ($row = pg_fetch_array($result, null, PGSQL_ASSOC))
 		{
@@ -276,9 +279,13 @@ if ($action == "ListStatus")
 				if ($load > 69) { $color = 'red'; }
 			}
 
+      $tempip = preg_replace('/[.,]/', '', $row['ip']);
+      $disableip = preg_replace('/[.,]/', 'x', $row['ip']);
 			echo "<tr>
+        <td><div class='disablealert' onclick='disableip = \"" . $disableip . "\"; disableAlerts(disableip);'>Disable Alert</div></td>
 				<td class='group".$row['failgroup']."'>" . $row['failgroup'] . "</td>
 				<td class='$color'>" . $load . "%</td>
+        <td id='calls".$tempip."'></td>
 				<td><a href='pbx-server-info.php?server=" . $row['ip'] . "'>" . $row['ip'] . "</a></td>
         <td><div style='color:".$row['color']."'>". $row['status'];
       if ($row['status'] == "special" || $row['status'] == "nightly") { echo " [".$row['occupant']."]";}
