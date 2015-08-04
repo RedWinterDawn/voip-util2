@@ -45,6 +45,7 @@ while ($usernameRow = pg_fetch_array($usernameResult, null, PGSQL_ASSOC)) {
    '},';
    $resultCount = $resultCount + 1;
 }
+if ($resultCount == 0) { echo '{},'; } // so we don't malform the json if there are no results
 echo '"resultCount":' . $resultCount . '}';
 
 pg_free_result($usernameResult);
