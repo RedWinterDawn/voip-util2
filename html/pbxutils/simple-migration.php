@@ -1,4 +1,8 @@
 <?php
+$accesslevel = 2;
+include('checksession.php');
+?>
+<?php
 /*
                                                                                                     
 Just a friendly reminder of the guy who created this monstrosity. :D

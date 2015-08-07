@@ -183,7 +183,7 @@ function request_page(pn){
 </div>
 <?php
 
-$featuser =  $_SERVER["PHP_AUTH_USER"];
+$featuser =  $_SESSION["access"];
 $feature = $_POST['feature-requester'];
 if($feature != NULL) {
 $conn = pg_connect("host=172.25.9.34 dbname=sshkeys user=sshkeys")

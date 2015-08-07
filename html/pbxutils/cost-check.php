@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<?php
+$accesslevel = 1;
+include('checksession.php');
+?>
 <html>
 <head>
 	<link rel='stylesheet' href='stylesheet.css'>

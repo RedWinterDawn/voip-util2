@@ -1,6 +1,10 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+<?php
+$accesslevel = 4;
+include('checksession.php');
+?>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Jinst Logs</title>
 

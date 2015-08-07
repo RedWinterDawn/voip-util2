@@ -3,6 +3,10 @@
 <link rel='stylesheet' href='stylesheet.css'>
 </head>
 <body>
+<?php
+$accesslevel = 3;
+include('checksession.php');
+?>
 
 <table border="1">
 <th>target</th><th>type</th><th>weight</th>

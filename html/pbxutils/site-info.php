@@ -1,3 +1,7 @@
+<?php
+$accesslevel = 2;
+include('checksession.php');
+?>
 <html>
 <head>
 <title>Site Info Page</title>

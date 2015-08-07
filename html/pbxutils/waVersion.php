@@ -1,4 +1,8 @@
 <?php
+$accesslevel = 3;
+include('checksession.php');
+?>
+<?php
 
 echo '<html><head><title>WA/AGI Versions</title>
     <style type="text/css">

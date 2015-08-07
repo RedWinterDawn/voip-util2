@@ -1,5 +1,9 @@
 <html>
 <head>
+<?php
+$accesslevel = 4;
+include('checksession.php');
+?>
 <title>SSH Keys</title>
 <style type="text/css">
    #pretty {vertical-align: bottom;}

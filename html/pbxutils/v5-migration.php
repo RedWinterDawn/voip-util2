@@ -1,4 +1,8 @@
 <?php
+$accesslevel = 3;
+include('checksession.php');
+?>
+<?php
 /* V5 CUSTOMER MIGRATION SCRIPT
  *
  * This is primarily for customer migration to v5.  Migration from v5 to v4 will also be included.

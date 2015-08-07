@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html>
+<?php
+$accesslevel = 4;
+include('checksession.php');
+?>
 <head>
 	<link rel='stylesheet' href='stylesheet.css'>
 	<!-- <script src="libphonenumber-demo.js"></script> -->

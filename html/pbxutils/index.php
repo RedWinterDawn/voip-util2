@@ -2,6 +2,10 @@
 <html>
 <head>
 	<title>ProdTools Main</title>
+<?php
+$accesslevel = 1;
+include('checksession.php');
+?>
 	<? include 'menu.html'; ?>
 	<link rel='stylesheet' href='stylesheet.css'>
     <script type='text/javascript'>
@@ -10,6 +14,10 @@
 	}
 	</script>
 </head>
+<?php
+$variable = $_SERVER['PHP_SELF'];
+echo $variable;
+?>
 <body onload='setFocus()'>
 <h2>Welcome to ProdTools</h2>
 <div class="checkbox">
