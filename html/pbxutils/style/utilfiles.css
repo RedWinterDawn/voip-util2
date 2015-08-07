@@ -1,0 +1,36 @@
+#file-container {
+width: 100%;
+
+}
+#menu-head {
+  background-color:black;
+width: 1250px;
+border-bottom: 1px solid limeGreen;
+padding-left: 10px;
+float: left;
+}
+#file-head {
+  width: 150px;
+float: left;
+}
+#access-head {
+  width: 150px;
+float: left;
+}
+#desc-head {
+  width: 500px;
+float: left;
+}
+
+#author-head {
+  width: 150px;
+float: left;
+}
+#date-head {
+  width: 150px;
+float: left;
+}
+#submit-head {
+  width: 150px;
+float: left;
+}
