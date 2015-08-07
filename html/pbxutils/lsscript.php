@@ -72,5 +72,38 @@ foreach ($files2remove as $file2remove) {
   var_dump($result);
 }
 
+
+//FROM HERE -- we will do the same as above, but will do it to the table util_directories, so we can have a list of all current directories.
+$directoryquery = "SELECT directory FROM util_directories;";
+$result = pg_query($dbconn, $directoryquery);
+if (!$result) {
+      echo "An error occurred.\n";
+            exit;
+}
+// set array for the current subdirectories in the database
+$dbsubdirectories = array();
+while ($row = pg_fetch_row($result)) {
+    $dbsubdirectories[] = $row[0];
+}
+// compare $subdirectories to $subdirectories will create array $subdirectories2update containing all subdirectories current has that $dbsubdirectories does not.
+$subdirectories2update = array_diff($subdirectories, $dbsubdirectories);
+// compare $dbsubdirectories to $subdirectories will create array $subdirectories2remove containing all subdirectories needed to be removed from database.
+$subdirectories2remove = array_diff($dbsubdirectories, $subdirectories);
+foreach ($subdirectories2update as $subdirectory2update) {
+  // inserting the new directories into the database.
+  $insert = 'INSERT INTO util_directories (directory) VALUES (\''.$subdirectory2update.'\');';
+  $result = pg_query($dbconn, $insert);
+  echo $insert;
+  var_dump($result);
+}
+//After adding the new directories, now we will process subdirectories2remove.
+foreach ($subdirectories2remove as $subdirectory2remove) {
+  $delete = 'DELETE FROM util_directories WHERE directory = \''. $subdirectory2remove .'\';';
+  $result = pg_query($dbconn, $delete);
+  echo $delete;
+  var_dump($result);
+}
+
+
 pg_close($dbconn);
 ?>
