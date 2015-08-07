@@ -40,23 +40,37 @@ while ($row = pg_fetch_row($result)) {
 }
 // compare $current to $dbcurrent will create array $files2update containing all files current has that $dbcurrent does not.
 $files2update = array_diff($current, $dbcurrent);
+// compare $dbcurrent to $current will create array $files2remove containing all files needed to be removed from database.
+$files2remove = array_diff($dbcurrent, $current);
 // foreach loop naming each file to be written and creating an insert querry with each name.
 $date = date('Y-m-d H:i:s');
 foreach ($files2update as $file2update) {
+  // subdirectories refers to the directories within pbxutils.
   foreach ($subdirectories as $subdirectory) {
-    $subdirectory = '\''.$subdirectory.'\'';
-    echo $subdirectory;
-    if (preg_match($subdirectory, $file2update)) {
+    //setting delimiters for preg_match, we want to determine the directories that they are in.
+    $subdirectorydel = '!'.$subdirectory. '!';
+    if (preg_match($subdirectorydel, $file2update)) {
       $directory = 'pbxutils/'.$subdirectory;
+      break;
     }
     else {
       $directory = 'pbxutils/';
     }
   }
+  // inserting the new files into the database.
   $insert = 'INSERT INTO util_files (filename, directory, date_created) VALUES (\''.$file2update.'\', \''.$directory.'\', \''.$date.'\');';
- # $result = pg_query($dbconn, $insert);
+  $result = pg_query($dbconn, $insert);
   echo $insert;
   var_dump($result);
 }
+
+//After adding the new files, now we will process files2remove.
+foreach ($files2remove as $file2remove) {
+  $delete = 'DELETE FROM util_files WHERE filename = \''. $file2remove .'\';';
+  $result = pg_query($dbconn, $delete);
+  echo $delete;
+  var_dump($result);
+}
+
 pg_close($dbconn);
 ?>
