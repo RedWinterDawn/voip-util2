@@ -16,8 +16,22 @@ include('checksession.php');
 	}
 	</script>
 </head>
+<div id="result-feature" class="result-position" onclick="toggle_visibility('result-feature');">
+  <div id="result-wrapper" onclick="toggle_visibility('result-feature');">
+    <div id="result-container">
+      <div id="result-exit" onclick="toggle_visibility('result-feature');">
+        X
+      </div> <!-- end of div result-exit-->
+      <div id="result-title"></div>
+      <div id="result-body"></div>
+    </div> <!-- end of div result-container-->
+  </div> <!-- end of div result-wrapper-->
+</div> <!-- end of div result-feature-->
+
 <body>
-<h2>Util Files Management</h2>
+<div id="utilfilestitle"><h2>Util Files Management</h2></div>
+<!-- Button shows the result feature div, and well as runs the script lsscript.php, and then displays the updates in the feature popup - with a link to refresh the page-->
+<div id="updatescript" onclick="toggle_visibility('result-feature');updateFileDB();">Update DB</div>
 <div id="file-container">
   <div id="menu-head">
     <div id="file-head"> FILENAME </div>
@@ -33,3 +47,5 @@ include('checksession.php');
 
 </body>
 </html>
+<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="js/utilfiles.js"></script>

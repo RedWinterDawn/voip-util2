@@ -1,6 +1,11 @@
 <?php
 // This script is used to compile an array of all files in pbxutils and sub directories - it then compares it with a same list of files in a database, and updates any differences. This provides information for the page with all files, descricptions and access levels... Questions or comments ask Kevyn Hale. khale@jive.com
 // $cmd lists all files in pbxutils
+$jsonoutput = array();
+$jsonoutput['addFile'] = '';
+$jsonoutput['addDirectory'] = '';
+$jsonoutput['deleteFile'] = '';
+$jsonoutput['deleteDirectory'] = '';
 $cmd = 'ls -a *.*';
 // adds all files into an array $names
 $result = exec($cmd, $names);
@@ -60,18 +65,15 @@ foreach ($files2update as $file2update) {
   // inserting the new files into the database.
   $insert = 'INSERT INTO util_files (filename, directory, date_created) VALUES (\''.$file2update.'\', \''.$directory.'\', \''.$date.'\');';
   $result = pg_query($dbconn, $insert);
-  echo $insert;
-  var_dump($result);
+  $jsonoutput['addFile'] .= $insert;
 }
 
 //After adding the new files, now we will process files2remove.
 foreach ($files2remove as $file2remove) {
   $delete = 'DELETE FROM util_files WHERE filename = \''. $file2remove .'\';';
   $result = pg_query($dbconn, $delete);
-  echo $delete;
-  var_dump($result);
+  $jsonoutput['deleteFile'] .= $delete;
 }
-
 
 //FROM HERE -- we will do the same as above, but will do it to the table util_directories, so we can have a list of all current directories.
 $directoryquery = "SELECT directory FROM util_directories;";
@@ -93,17 +95,16 @@ foreach ($subdirectories2update as $subdirectory2update) {
   // inserting the new directories into the database.
   $insert = 'INSERT INTO util_directories (directory) VALUES (\''.$subdirectory2update.'\');';
   $result = pg_query($dbconn, $insert);
-  echo $insert;
-  var_dump($result);
+  $jsonoutput['addDirectory'] .= $insert;
 }
 //After adding the new directories, now we will process subdirectories2remove.
 foreach ($subdirectories2remove as $subdirectory2remove) {
   $delete = 'DELETE FROM util_directories WHERE directory = \''. $subdirectory2remove .'\';';
   $result = pg_query($dbconn, $delete);
-  echo $delete;
-  var_dump($result);
+  $jsonoutput['deleteDirectory'] .= $delete;
 }
 
+echo json_encode($jsonoutput);
 
 pg_close($dbconn);
 ?>
