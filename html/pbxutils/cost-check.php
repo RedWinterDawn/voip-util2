@@ -39,8 +39,8 @@ function printLcrLookup($to,$from,$address){
 	{
 		$url = "http://" . $address . "/lcr/lookup/e164/$to";
 	}
-	print_r($url);
-	echo "<br/>";
+#	print_r($url);
+#	echo "<br/>";
 	$curl = curl_init($url);
 	curl_setopt($curl, CURLOPT_CONNECTTIMEOUT ,1);
 	curl_setopt($curl, CURLOPT_TIMEOUT,2);
@@ -51,9 +51,10 @@ function printLcrLookup($to,$from,$address){
 	$curl_error = curl_error($curl);
 	curl_close();
 	if ($curl_errno > 0) {
-		echo "cURL Error ($curl_errno): $curl_error\n";
+#		echo "cURL Error ($curl_errno): $curl_error\n";
 	} else {
-        print_r($result);
+       #print_r($result);
+       return $result;
 	}
 }
 
@@ -112,44 +113,30 @@ if ($to != "") {
 	$sherlockResult=curl_exec($curl);
 	print_r(str_replace("DestinationForbidden","<font color='red'>DestinationForbidden</font>",$sherlockResult));
 	curl_close();
-    echo "</p>";
+    echo "</p><hr/>";
+  echo "<h2> v4 LCR Results </h2>
+        <table border='1'><tr><th>Site</th><th>Keys</th><tr>
+        <tr><td>ATL</td><td>" . printLcrLookup($to,$from,"10.122.252.38:9998")."</td></tr>
+        <tr><td>DFW</td><td>" . printLcrLookup($to,$from,"10.118.252.190:9998")."</td></tr>
+        <tr><td>GEG</td><td>" . printLcrLookup($to,$from,"10.123.253.89:9998")."</td></tr>
+        <tr><td>LAX</td><td>" . printLcrLookup($to,$from,"10.119.252.43:9998")."</td></tr>
+        <tr><td>NYC</td><td>" . printLcrLookup($to,$from,"10.120.253.226:9998")."</td></tr>
+        <tr><td>ORD</td><td>" . printLcrLookup($to,$from,"10.125.252.170:9998")."</td></tr>
+        <tr><td>PVU</td><td>" . printLcrLookup($to,$from,"10.117.253.121:9998")."</td></tr>
+        </table>
+        
+        <h2> v5 LCR Results </h2>
+        <table border='1'><tr><th>Site</th><th>Keys</th><tr>
+        <tr><td>ATL</td><td>" . printLcrLookup($to,$from,"10.122.252.38:9997")."</td></tr>
+        <tr><td>DFW</td><td>" . printLcrLookup($to,$from,"10.118.252.190:9997")."</td></tr>
+        <tr><td>GEG</td><td>" . printLcrLookup($to,$from,"10.123.253.89:9997")."</td></tr>
+        <tr><td>LAX</td><td>" . printLcrLookup($to,$from,"10.119.252.43:9997")."</td></tr>
+        <tr><td>NYC</td><td>" . printLcrLookup($to,$from,"10.120.253.226:9997")."</td></tr>
+        <tr><td>ORD</td><td>" . printLcrLookup($to,$from,"10.125.252.170:9997")."</td></tr>
+        <tr><td>PVU</td><td>" . printLcrLookup($to,$from,"10.117.253.121:9997")."</td></tr>
+        </table>";
+  
 
-	echo "<hr/><p>v5 PVU:<br><pre>";
-	printLcrLookup($to,$from,"10.117.253.121:9997");
-    echo "</p></pre>";
-
-	echo "<hr/><p>v4 DFW:<br>";
-	printLcrLookup($from,$to,"10.118.252.190:9998");
-    echo "</p>";
-	
-	echo "<hr/><p>v5 DFW LCR:<br><pre>";
-	printLcrLookup($to,$from,"10.118.252.190:9997");
-    echo "</p></pre>";
-	
-	echo "<hr/><p>v5 GEG:<br/>";
-	printLcrLookup($to,$from,"10.123.253.89:9997");
-    echo "</p>";
-
-	echo "<hr/><p>v5 ORD LCR:<br><pre>";
-	printLcrLookup($to,$from,"10.125.252.170:9997");
-    echo "</p></pre>";
-	
-  echo "<hr/><p>ORD LCR<br/>";
-  $url = "http://10.125.252.170/sbc/lcr.php?destNumber=".$to."&cli=".$from;
-  print_r($url);
-  echo "<br/>";
-  $curl = curl_init($url);
-  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT ,1);
-  curl_setopt($curl,CURLOPT_TIMEOUT,2);
-  $result = curl_exec($curl);
-  $curl_errno = curl_errno($curl);
-  $curl_error = curl_error($curl);
-  curl_close();
-  if ($curl_errno > 0) {
-    echo "cURL Error ($curl_errno): $curl_error\n";
-  } else {
-        print_r($result);
-  }
 }
 ?>
 
