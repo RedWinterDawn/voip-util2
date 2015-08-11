@@ -130,10 +130,17 @@ function request_page(pn){
 			<li><a href="ebc-status.php">EBC Status</a></li>
 		</ul>
     </li>
+	<li><a href="cost-check.php">LCR</a>
+		<ul>
+			<li><a href="cost-check.php">LCR Lookup</a></li>
+			<li><a href="lcr-test.php?site=ORD">LCR Validator</a></li>
+			<li><a href="override.php">LCR Override</a></li>
+			<li><a href="lcr-update.php">LCR Upload</a></li>
+		</ul>
+    </li>
 	<li><a href="#">Informational</a>
 		<ul>
 			<li><a href="http://icalls.devops.jive.com">iCalls</a></li>
-			<li><a href="cost-check.php">LCR Lookup</a></li>
 			<li><a href="mpls-info.php">MPLS Info</a></li>
 			<li><a href="peer.php">v4 Peer Info</a></li>
 			<li><a href="phone-model-count.php">Phone Count</a></li>
@@ -143,7 +150,6 @@ function request_page(pn){
       <?php
       include('menuinclude/menuwa.php');
       ?>
-			<li><a href="lcr-test.php?site=ORD">LCR Validator Tester</a></li>
 			<li><a href="enterprise.html">Enterprisify</a></li>
 			<li><a href="waVersion.php">WA/AGI Info</a></li>
       <li><a href="ping.html">Network Utility</a></li>
@@ -183,7 +189,7 @@ function request_page(pn){
 </div>
 <?php
 
-$featuser =  $_SESSION["access"];
+$featuser =  $_SESSION["user"];
 $feature = $_POST['feature-requester'];
 if($feature != NULL) {
 $conn = pg_connect("host=172.25.9.34 dbname=sshkeys user=sshkeys")

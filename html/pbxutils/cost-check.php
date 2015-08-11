@@ -116,15 +116,15 @@ if ($to != "") {
     echo "</p><hr/>";
   echo "<h2> v4 LCR Results </h2>
         <table border='1'><tr><th>Site</th><th>Keys</th><tr>
-        <tr><td>ATL</td><td>" . printLcrLookup($to,$from,"10.122.252.38:9998")."</td></tr>
-        <tr><td>DFW</td><td>" . printLcrLookup($to,$from,"10.118.252.190:9998")."</td></tr>
-        <tr><td>GEG</td><td>" . printLcrLookup($to,$from,"10.123.253.89:9998")."</td></tr>
-        <tr><td>LAX</td><td>" . printLcrLookup($to,$from,"10.119.252.43:9998")."</td></tr>
-        <tr><td>NYC</td><td>" . printLcrLookup($to,$from,"10.120.253.226:9998")."</td></tr>
-        <tr><td>ORD</td><td>" . printLcrLookup($to,$from,"10.125.252.170:9998")."</td></tr>
-        <tr><td>PVU</td><td>" . printLcrLookup($to,$from,"10.117.253.121:9998")."</td></tr>
+        <tr><td>ATL</td><td>" . printLcrLookup($from,$to,"10.122.252.38:9998")."</td></tr>
+        <tr><td>DFW</td><td>" . printLcrLookup($from,$to,"10.118.252.190:9998")."</td></tr>
+        <tr><td>GEG</td><td>" . printLcrLookup($from,$to,"10.123.253.89:9998")."</td></tr>
+        <tr><td>LAX</td><td>" . printLcrLookup($from,$to,"10.119.252.43:9998")."</td></tr>
+        <tr><td>NYC</td><td>" . printLcrLookup($from,$to,"10.120.253.226:9998")."</td></tr>
+        <tr><td>ORD</td><td>" . printLcrLookup($from,$to,"10.125.252.170:9998")."</td></tr>
+        <tr><td>PVU</td><td>" . printLcrLookup($from,$to,"10.117.253.121:9998")."</td></tr>
         </table>
-        
+  
         <h2> v5 LCR Results </h2>
         <table border='1'><tr><th>Site</th><th>Keys</th><tr>
         <tr><td>ATL</td><td>" . printLcrLookup($to,$from,"10.122.252.38:9997")."</td></tr>
