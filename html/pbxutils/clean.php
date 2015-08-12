@@ -1,4 +1,8 @@
 <!doctype html>
+<?php
+$accesslevel = 4;
+include('checksession.php');
+?>
 <html>
 <head>
 <title>

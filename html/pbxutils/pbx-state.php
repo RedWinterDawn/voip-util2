@@ -1,3 +1,7 @@
+<?php
+$accesslevel = 4;
+include('checksession.php');
+?>
 <link rel='stylesheet' href='stylesheet.css'>
 <?php
 include('menu.html');

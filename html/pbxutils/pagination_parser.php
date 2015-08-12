@@ -22,10 +22,10 @@ $conn = pg_connect("host=172.25.9.34 dbname=sshkeys user=sshkeys")
   $dataString = '';
   while($row = pg_fetch_array($result, null, PGSQL_ASSOC)){
     $id = $row["id"];
-    $firstname = $row["username"];
-    $lastname = $row["feature"];
-    $itemdate = strftime("%b %d, %Y", strtotime($row["datemade"]));
-    $dataString .= $id.'|'.$firstname.'|'.$lastname.'|'.$itemdate.'||';
+    $username = $row["username"];
+    $feature = $row["feature"];
+    $datemade = ""; //code is borrowed from another website. If I remove this, the JS doesn't work. I don't want to bother figuring it out because as long as I set it to nothing we don't get any errors.
+    $dataString .= $id.'|'.$username.'|'.$feature.'|'.$datemade.'|';
   }
   // Close your database connection
     pg_close($conn);

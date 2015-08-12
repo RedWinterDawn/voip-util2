@@ -1,5 +1,9 @@
 <html>
 <head>
+<?php
+$accesslevel = 1;
+include('checksession.php');
+?>
 <title>Pull data from Sherlock</title>
 <style type="text/css">
    #pretty {vertical-align: bottom;}

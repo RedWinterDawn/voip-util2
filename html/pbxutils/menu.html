@@ -54,6 +54,34 @@ function request_page(pn){
 
 </script>
 
+<div id="popup-feature" class="popup-position" onclick="toggle_visibility('popup-feature');">
+  <div id="popup-wrapper" onclick="toggle_visibility('popup-feature');">
+    <div id="popup-container">
+      <div id="popup-exit" onclick="toggle_visibility('popup-feature');">
+        X
+      </div>
+      <div id="feature-title"> Feature Request </div><br>
+      <div id="feature-form">
+        <form method="post" action="<?php $_PHP_SELF ?>" id="feature-requester-form">
+          <div class="form-heading">
+            </div>
+        </div>
+        <div id="feature-request-input">
+          <textarea id="feature-request-input" width="600px" height="200" name="feature-requester"></textarea>
+        </div>
+        <br>
+        <div id="feature-submit">
+          <input type="submit">
+        </form>
+        </div>
+        <hr>
+        <div id="pagination_controls"></div>
+        <hr>
+        <div id="results_box"></div>
+        <script> request_page(1); </script>
+    </div>
+  </div>
+</div>
 
 
 
@@ -102,57 +130,44 @@ function request_page(pn){
 			<li><a href="ebc-status.php">EBC Status</a></li>
 		</ul>
     </li>
+	<li><a href="cost-check.php">LCR</a>
+		<ul>
+			<li><a href="cost-check.php">LCR Lookup</a></li>
+			<li><a href="lcr-test.php?site=ORD">LCR Validator</a></li>
+			<li><a href="override.php">LCR Override</a></li>
+			<li><a href="lcr-update.php">LCR Upload</a></li>
+		</ul>
+    </li>
 	<li><a href="#">Informational</a>
 		<ul>
 			<li><a href="http://icalls.devops.jive.com">iCalls</a></li>
-			<li><a href="cost-check.php">LCR Lookup</a></li>
 			<li><a href="mpls-info.php">MPLS Info</a></li>
 			<li><a href="peer.php">v4 Peer Info</a></li>
 			<li><a href="phone-model-count.php">Phone Count</a></li>
 			<li><a href="site-info.php">Site Info</a></li>
 			<li><a href="did-info.php?did=9996660000">DID Info</a></li>
 			<li><a href="links.html">Links</a></li>
-			<li><a href="https://10.101.17.1/balancer-manager">C1 WB1 balancer manager</a></li>
-			<li><a href="https://10.101.17.1/jive-monitor">C1 WB1 Apache Status</a></li>
-			<li><a href="lcr-test.php?site=ORD">LCR Validator Tester</a></li>
+      <?php
+      include('menuinclude/menuwa.php');
+      ?>
 			<li><a href="enterprise.html">Enterprisify</a></li>
 			<li><a href="waVersion.php">WA/AGI Info</a></li>
       <li><a href="ping.html">Network Utility</a></li>
 		</ul>
 	</li>
-	<li><a href="#">CTC</a>
-		<ul>
-			<li><a href="http://ctc.devops.jive.com">Inbound Controller</a></li>
-			<li><a href="http://ctc.devops.jive.com/edit_number.php">Manage Numbers</a></li>
-		</ul>
-	</li>
+  <?php
+  include('menuinclude/menuctc.php');
+  ?>
 	<li><a href="#">SBC</a>
 		<ul>
 			<li><a href="sbc-trunkgroup.php">Customer SIP Trunk Groups</a></li>
 			<li><a href="sbc-trunk.php">Customer SIP Trunks</a></li>
 		</ul>
 	</li>
-	<li><a href="#">SmokePing</a>
-		<ul>
-			<li><a href="http://smokeping.devops.jive.com/chi-1a/cgi-bin/smokeping.fcgi">CHI</a></li>
-			<li><a href="http://smokeping.devops.jive.com/atl-1a/cgi-bin/smokeping.fcgi">ATL</a></li>
-			<li><a href="http://smokeping.devops.jive.com/lax-1a/cgi-bin/smokeping.fcgi">LAX</a></li>
-			<li><a href="http://smokeping.devops.jive.com/nyc-1a/cgi-bin/smokeping.fcgi">NYC</a></li>
-			<li><a href="http://smokeping.devops.jive.com/pvu-1a/cgi-bin/smokeping.fcgi">PVU</a></li>
-		</ul>
-	</li>
-  <li><a href="https://10.132.0.224/xymon/">Xymon</a>
-    <ul>
-      <li><a href="https://10.132.0.224/xymon/">OPS (All Sites)</a></li>
-      <li><a href="https://162.250.62.224/xymon/">ATL</a></li>
-      <li><a href="https://199.36.251.224/xymon/">DFW</a></li>
-      <li><a href="https://162.250.63.224/xymon/">GEG</a></li>
-      <li><a href="https://162.250.60.224/xymon/">LAX</a></li>
-      <li><a href="https://199.87.122.224/xymon/">LON</a></li>
-      <li><a href="https://162.250.61.224/xymon/">NYC</a></li>
-      <li><a href="https://199.87.123.224/xymon/">PVU</a></li>
-    </ul>
-  </li>
+  <?php
+  include('menuinclude/menusmokeping.php');
+  include('menuinclude/menuxymon.php');
+  ?>
   <li><a href="#">DB</a>
     <ul>
       <li><a href="rodb-check.php?ip=10.101.4.1">CHI RODB</a></li>
@@ -169,12 +184,14 @@ function request_page(pn){
 <form method="post" action="<?php $_PHP_SELF ?>" id="feature-requester-form">
   <input type="hidden" id="feature-requester" name="feature-requester" />
 </form>
-
+</div>
+</div>
+</div>
 <?php
 
-$featuser =  $_SERVER["PHP_AUTH_USER"];
+$featuser =  $_SESSION["user"];
+if (isset($_POST['feature-requester'])) {
 $feature = $_POST['feature-requester'];
-if($feature != NULL) {
 $conn = pg_connect("host=172.25.9.34 dbname=sshkeys user=sshkeys")
   or die('Could not connect: ' . pg_last_error());
   $query = "INSERT INTO featurerequest (username, feature) VALUES ('".$featuser."', '".$feature."')";

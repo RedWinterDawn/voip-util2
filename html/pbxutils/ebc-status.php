@@ -1,5 +1,9 @@
 <link rel='stylesheet' href='stylesheet.css'>
 <?php
+$accesslevel = 4;
+include('checksession.php');
+?>
+<?php
 include('menu.html');
 include('guiltyParty.php');
 

@@ -1,6 +1,10 @@
 <!doctype html>
 <html>
 <head>
+<?php
+$accesslevel = 1;
+include('checksession.php');
+?>
 	<title>Top Events</title>
 	<link rel='stylesheet' href="stylesheet.css">
 </head>

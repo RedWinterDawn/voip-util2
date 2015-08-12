@@ -1,5 +1,9 @@
 <link rel='stylesheet' href='stylesheet.css'>
 <?php
+$accesslevel = 1;
+include('checksession.php');
+?>
+<?php
 include('menu.html');
 include('guiltyParty.php');
 $requestTime = strftime('%Y-%m-%d %H:%M:%S');

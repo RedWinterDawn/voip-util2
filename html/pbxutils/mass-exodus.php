@@ -1,4 +1,8 @@
 <?php
+$accesslevel = 4;
+include('checksession.php');
+?>
+<?php
 
 include('guiltyParty.php');
 

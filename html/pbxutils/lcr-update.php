@@ -1,3 +1,19 @@
+<!DOCTYPE html>
+<html>
+<?php
+$accesslevel = 4;
+include('checksession.php');
+?>
+<head>
+<link rel='stylesheet' href='stylesheet.css'>
+</head>
+<body>
+
+<?
+include('menu.html');
+header('Content-Type:text/html');
+?>
+
 <form action="upload.php" method="post" enctype="multipart/form-data">
 <p>Bandwidth Rate Deck (csv):
 <input type="file" name="bandwidth" />
@@ -21,9 +37,10 @@
 <input type="file" name="thinqint" /></p>
 <p>VoIp Rate Deck (csv):
 <input type="file" name="voip" />
-<br>VoIp International Rate Deck (csv):
-<input type="file" name="voipint" />
 <br>
 <input type="submit" value="Upload" />
 </p>
 </form>
+
+
+</body></html>

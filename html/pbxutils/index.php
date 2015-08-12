@@ -2,6 +2,10 @@
 <html>
 <head>
 	<title>ProdTools Main</title>
+<?php
+$accesslevel = 1;
+include('checksession.php');
+?>
 	<? include 'menu.html'; ?>
 	<link rel='stylesheet' href='stylesheet.css'>
     <script type='text/javascript'>

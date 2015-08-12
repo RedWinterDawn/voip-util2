@@ -1,4 +1,8 @@
 <?php
+$accesslevel = 1;
+include('checksession.php');
+?>
+<?php
 /* REPORT EVENTS BY DOMAIN SCRIPT
  *
  * DESCRIPTION OF THIS SCRIPT GOES HERE

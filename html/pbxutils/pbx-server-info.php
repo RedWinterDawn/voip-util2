@@ -1,3 +1,7 @@
+<?php
+$accesslevel = 2;
+include('checksession.php');
+?>
 <html><head>
 <script src="js/sorttable.js"></script>
 <link rel='stylesheet' href='stylesheet.css'></head><body>

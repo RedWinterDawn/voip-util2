@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<?php
+$accesslevel = 3;
+include('checksession.php');
+?>
 <html>
 <head>
   <title>Sensitive Customer List</title>

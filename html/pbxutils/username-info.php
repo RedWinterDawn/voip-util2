@@ -1,4 +1,8 @@
 <?php
+$accesslevel = 4;
+include('checksession.php');
+?>
+<?php
 header('Content-Type: application/json');
 include('guiltyParty.php');
 $requestTime = strftime('%Y-%m-%d %H:%M:%S');
