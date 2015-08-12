@@ -1,4 +1,9 @@
 <?php
+
+if ($_SERVER['SERVER_ADDR'] = '10.101.8.1') {
+  // skip security for util so pbxs can report status from the clean script and junk
+} else {
+
 include("authenticate.php");
 $status = session_status();
 $filename = $_SERVER['PHP_SELF'];
@@ -18,5 +23,7 @@ if (!isset($_SESSION['access'])) {
 }
 elseif ($_SESSION['access'] < $accesslevel) {
   header("location: restrictedaccess.php");
+}
+
 }
 ?>
