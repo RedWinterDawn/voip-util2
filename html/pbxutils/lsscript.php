@@ -59,7 +59,7 @@ foreach ($dirs as $dir) {
 }
 // Select from database all the filenames already added inorder to compare, and add only the missing filenames.
 $dbconn = pg_connect("host=rwdb dbname=util user=postgres ") or die('Could not connect to util to look up util_files: '.pg_last_error());
-$query = "SELECT filename, access_set FROM util_files;";
+$query = "SELECT filename FROM util_files;";
 $result = pg_query($dbconn, $query);
 if (!$result) {
     echo "An error occurred.\n";
@@ -67,25 +67,13 @@ if (!$result) {
 }
 // set array for the current files in the database
 $dbcurrent = array();
-$accesscurrent = array();
 while ($row = pg_fetch_row($result)) {
   $dbcurrent[] = $row[0];
-  $accesscurrent[$row[0]] = $row[1];
 }
-//compar $keyvalue to $accesscurrent in order to determine that changes to whether files have access set or not.
-$accesschanges = array_diff_assoc($keyvalue, $accesscurrent);
 // compare $current to $dbcurrent will create array $files2update containing all files current has that $dbcurrent does not.
 $files2update = array_diff($current, $dbcurrent);
 // compare $dbcurrent to $current will create array $files2remove containing all files needed to be removed from database.
 $files2remove = array_diff($dbcurrent, $current);
-
-//foreach loop updating util_files with the right status for access_set:
-foreach ($accesschanges as $name2change => $access2change) {
-  $accessupdate = 'UPDATE util_files SET (access_set) = (\''.$access2change.'\') WHERE filename = \''.$name2change.'\';'; 
-  $result = pg_query($dbconn, $accessupdate);
-  $jsonoutput['updateaccess'] .= $accessupdate;
-}
-
 
 // foreach loop naming each file to be written and creating an insert querry with each name.
 $date = date('Y-m-d H:i:s');
@@ -142,6 +130,28 @@ foreach ($subdirectories2remove as $subdirectory2remove) {
   $delete = 'DELETE FROM util_directories WHERE directory = \''. $subdirectory2remove .'\';';
   $result = pg_query($dbconn, $delete);
   $jsonoutput['deleteDirectory'] .= $delete;
+}
+
+// Now that we have updated the database with the changes in files, let us check to see if we have made and changes to access_set by adding checksession.php.
+$dbconn = pg_connect("host=rwdb dbname=util user=postgres ") or die('Could not connect to util to look up util_files: '.pg_last_error());
+$query = "SELECT filename, access_set FROM util_files;";
+$result = pg_query($dbconn, $query);
+if (!$result) {
+    echo "An error occurred.\n";
+      exit;
+}
+// set array for the current files in the database
+$accesscurrent = array();
+while ($row = pg_fetch_row($result)) {
+  $accesscurrent[$row[0]] = $row[1];
+}
+//compar $keyvalue to $accesscurrent in order to determine that changes to whether files have access set or not.
+$accesschanges = array_diff_assoc($keyvalue, $accesscurrent);
+//foreach loop updating util_files with the right status for access_set:
+foreach ($accesschanges as $name2change => $access2change) {
+  $accessupdate = 'UPDATE util_files SET (access_set) = (\''.$access2change.'\') WHERE filename = \''.$name2change.'\';';
+  $result = pg_query($dbconn, $accessupdate);
+  $jsonoutput['updateaccess'] .= $accessupdate;
 }
 
 echo json_encode($jsonoutput);

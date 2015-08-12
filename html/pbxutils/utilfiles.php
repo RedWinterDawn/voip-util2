@@ -5,7 +5,6 @@
   <title>ProdTools Main</title>
 <!-- setting the access level below, and referring to checksession to confrim login in and users access level -->
 <?php
-$accesslevel = 1;
 include('checksession.php');
 $dbconn = pg_connect("host=rwdb dbname=util user=postgres ") or die('Could not connect to util to look up util_files: '.pg_last_error());
 $queryresult = '';
