@@ -19,6 +19,10 @@ float: left;
     width: 200px;
     float: left;
   }
+#file-head-body:hover {
+  color: #00426A;
+  cursor: pointer;
+}
 #access-head {
   width: 150px;
 float: left;
@@ -55,11 +59,11 @@ float: left;
   z-index: 10000;
 }
 #result-wrapper {
-z-index: 10001; width: 700px; margin: 70px auto;padding:0;
+z-index: 10001; width: 700px; margin: 50px auto;padding:0;
 }
 #result-container {
 background-color: #FFF;padding: 20px; padding-right: 23px; border-radius: 4px;
-height: 400px;
+height: 450px;
 overflow-x: scroll;
 }
 #result-exit {
@@ -179,7 +183,7 @@ input[type=text]#authortext {
   margin-bottom: 4px;
 }
 select#accessoptions {
-  border: 1px solid gray;
+  border: 1px solid black;
   color:black;
   width: 25px;
   background-color: #E3E7E2;
@@ -187,7 +191,24 @@ select#accessoptions {
   padding: 3px;
   padding-left: 5px;
 }
-#accessoptions:hover, input[type=text]#authortext:hover,#desctext:hover {
+#accessoptions:hover, input[type=text]#authortext:hover,#desctext:hover, select#accessoptions.accessone:hover, select#accessoptions.accesstwo:hover, select#accessoptions.accessthree:hover, select#accessoptions.accessfour:hover {
   background-color: white;
   cursor: pointer;
+  color: black;
+}
+select#accessoptions.accessone {
+  background-color: green;
+  color: white;
+}
+select#accessoptions.accesstwo {
+  background-color: blue;
+  color: white;
+}
+select#accessoptions.accessthree {
+  background-color: red;
+  color: white;
+}
+select#accessoptions.accessfour {
+  background-color: orange;
+  color: white;
 }

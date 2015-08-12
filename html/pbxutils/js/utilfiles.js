@@ -29,3 +29,24 @@ function updateFileDB () {
         }
     });
 }
+
+function getUtilFileContents (filename) {
+     document.getElementById("result-title").innerHTML = "Contents of " + filename;
+     $.ajax({
+     type: "post",
+     url: "utilfilecontents.php",
+     dataType: 'json',
+       data: {'filename': filename},
+     success: function(result) {
+       if (result.image == 'false') {
+       result.filecontents = result.filecontents.replace(/>/g, "&gt");
+       result.filecontents = result.filecontents.replace(/</g, "&lt;");
+       result.filecontents = result.filecontents.replace(/aAAbBaZZzyxxB/g, "<br>");
+        document.getElementById("result-body").innerHTML =  result.filecontents ;
+       }
+       else {
+         document.getElementById("result-body").innerHTML =  result.filecontents ;
+       }
+        }
+    });
+}

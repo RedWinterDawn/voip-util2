@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- This page displays all of the files on pbxutils, and allows you to add an access level, description and author. this pulls data from the pbx_files table in the utils database, which data gets stored from the lsscript.php script. -->
 <html>
 <head>
 	<title>ProdTools Main</title>
@@ -63,16 +64,40 @@ if (isset($_POST['fileid'])) {
   <div id="directories-list">
     <div class="directories-row" onclick="toggle_visibility('pbxutils/');">pbxutils/</div>
   <?php
+// This section lists of all of the filenames only in the pbxutils/ directory
 $queryfiles = "SELECT filename, access_level, file_description, author, date_created, id FROM util_files WHERE directory = 'pbxutils/';";
        $resultfiles = pg_query($dbconn, $queryfiles);
         $x = 1;
         echo '<div id="pbxutils/" class="hidden-files">';
         while ($rowfiles = pg_fetch_row($resultfiles)) {
           $x++;
+          if ($rowfiles[1] == '1') {
+            $accesscolor = 'accessone';
+          }
+          elseif ($rowfiles[1] == '2') {
+            $accesscolor = 'accesstwo';
+          }
+          elseif ($rowfiles[1] == '3') {
+            $accesscolor = 'accessthree';
+          }
+          elseif ($rowfiles[1] == '4') {
+            $accesscolor = 'accessfour';
+          }
+          else {
+            $accesscolor = 'none';
+          }
+          //if statement allows me to create even and odd rows, in order to differentiate the background colors.
+          // $rowfiles[0] = filename
+          // $rowfiles[1] = access_level
+          // $rowfiles[2] = file_description
+          // $rowfiles[3] = autho
+          // $rowfiles[4] = date_created
+          // $rowfiles[5] = id 
           if ($x % 2 == 0) {
-                            echo '<div id="menu-row-even"><div id="file-head-body">'.$rowfiles[0].'</div>
+            echo '<div id="menu-row-even">
+              <div id="file-head-body" onclick="filename = \''.$rowfiles[0].'\'; getUtilFileContents(filename); toggle_visibility(\'result-feature\')">'.$rowfiles[0].'</div>
                   <form method="post" action="">
-                  <div id="access-head-body"><select id="accessoptions" name="fileaccess">
+                  <div id="access-head-body"><select id="accessoptions" class="'.$accesscolor.'" name="fileaccess">
                       <option value="'.$rowfiles[1].'">'.$rowfiles[1].'</option>
                       <option value="1">1</option>
                       <option value="2">2</option>
@@ -84,11 +109,13 @@ $queryfiles = "SELECT filename, access_level, file_description, author, date_cre
                   <div id="author-head"><input type="text" id="authortext" name="fileauthor" value="'.$rowfiles[3].'"></div>
                   <div id="date-head">'.$rowfiles[4].'</div>
                   <div id="submit-head"><input type="hidden" name="fileid" value="'.$rowfiles[5].'"><input type="submit" id="filesubmit"></form></div></div>';
+                            // the hidden input above passes through the id of the database row, that way the submit changes will affect the right row.
           }
           else {
-                    echo '<div id="menu-row-odd"><div id="file-head-body">'.$rowfiles[0].'</div>
+            echo '<div id="menu-row-odd">
+              <div id="file-head-body" onclick="filename = \''.$rowfiles[0].'\'; getUtilFileContents(filename); toggle_visibility(\'result-feature\')">'.$rowfiles[0].'</div>
                   <form method="post" action="">
-                  <div id="access-head-body"><select id="accessoptions" name="fileaccess">
+                  <div id="access-head-body"><select id="accessoptions"  class="'.$accesscolor.'" name="fileaccess">
                       <option value="'.$rowfiles[1].'">'.$rowfiles[1].'</option>
                       <option value="1">1</option>
                       <option value="2">2</option>
@@ -104,6 +131,7 @@ $queryfiles = "SELECT filename, access_level, file_description, author, date_cre
                                 }
         echo '</div>';
     $query = "SELECT directory FROM util_directories;";
+        // this query gets all of the other directories, and then follow the same process as done above for each of the directories.
     $result = pg_query($dbconn, $query);
     if (!$result) {
       echo "An error occurred.\n";
@@ -118,10 +146,26 @@ $queryfiles = "SELECT filename, access_level, file_description, author, date_cre
       echo '<div id="'.$row[0].'" class="hidden-files">';
         while ($rowfiles = pg_fetch_row($resultfiles)) {
           $x++;
+          if ($rowfiles[1] == '1') {
+            $accesscolor = 'accessone';
+          }
+          elseif ($rowfiles[1] == '2') {
+            $accesscolor = 'accesstwo';
+          }
+          elseif ($rowfiles[1] == '3') {
+            $accesscolor = 'accessthree';
+          }
+          elseif ($rowfiles[1] == '4') {
+            $accesscolor = 'accessfour';
+          }
+          else {
+            $accesscolor = 'none';
+          }
           if ($x % 2 == 0) {
-            echo '<div id="menu-row-even"><div id="file-head-body">'.$rowfiles[0].'</div>
+            echo '<div id="menu-row-even">
+              <div id="file-head-body" onclick="filename = \''.$rowfiles[0].'\'; getUtilFileContents(filename); toggle_visibility(\'result-feature\')">'.$rowfiles[0].'</div>
                   <form method="post" action="">
-                  <div id="access-head-body"><select id="accessoptions" name="fileaccess">
+                  <div id="access-head-body"><select id="accessoptions" class="'.$accesscolor.'" name="fileaccess">
                       <option value="'.$rowfiles[1].'">'.$rowfiles[1].'</option>
                       <option value="1">1</option>
                       <option value="2">2</option>
@@ -135,9 +179,10 @@ $queryfiles = "SELECT filename, access_level, file_description, author, date_cre
                   <div id="submit-head"><input type="hidden" name="fileid" value="'.$rowfiles[5].'"><input type="submit" id="filesubmit"></form></div></div>';
           }
           else {
-                echo '<div id="menu-row-odd"><div id="file-head-body">'.$rowfiles[0].'</div>
+            echo '<div id="menu-row-odd">
+              <div id="file-head-body" onclick="filename = \''.$rowfiles[0].'\'; getUtilFileContents(filename); toggle_visibility(\'result-feature\')">'.$rowfiles[0].'</div>
                   <form method="post" action="">
-                  <div id="access-head-body"><select id="accessoptions" name="fileaccess">
+                  <div id="access-head-body"><select id="accessoptions"  class="'.$accesscolor.'" name="fileaccess">
                       <option value="'.$rowfiles[1].'">'.$rowfiles[1].'</option>
                       <option value="1">1</option>
                       <option value="2">2</option>
