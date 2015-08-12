@@ -190,8 +190,8 @@ function request_page(pn){
 <?php
 
 $featuser =  $_SESSION["user"];
+if (isset($_POST['feature-requester'])) {
 $feature = $_POST['feature-requester'];
-if($feature != NULL) {
 $conn = pg_connect("host=172.25.9.34 dbname=sshkeys user=sshkeys")
   or die('Could not connect: ' . pg_last_error());
   $query = "INSERT INTO featurerequest (username, feature) VALUES ('".$featuser."', '".$feature."')";
