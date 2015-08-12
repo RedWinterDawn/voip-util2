@@ -13,6 +13,7 @@ function updateFileDB () {
           result.deleteFile = result.deleteFile.replace(/;/g, "<br>");
           result.addDirectory = result.addDirectory.replace(/;/g, "<br>");
           result.deleteDirectory = result.deleteDirectory.replace(/;/g, "<br>");
+          result.updateaccess = result.updateaccess.replace(/;/g, "<br>");
        if (result.addFile == '') {
          result.addFile = 'No changes made.';
        }
@@ -25,7 +26,10 @@ function updateFileDB () {
        if (result.deleteDirectory == '') {
          result.deleteDirectory = 'No changes made.';
        }
-        document.getElementById("result-body").innerHTML = '<div class="update-title">Files Added</div><div>' + result.addFile + '</div><div class="update-title">Files Deleted</div><div>'+result.deleteFile + '</div><div class="update-title">Directories Added</div><div>'+result.addDirectory + '</div><div class="update-title">Directories Deleted</div><div>'+result.deleteDirectory +'</div><div id="refresh"><a href="utilfiles.php">For the changes to show up, Please click here to refresh!</a></div>';
+       if (result.updateaccess == '') {
+         result.updateaccess = 'No changes made.';
+       }
+        document.getElementById("result-body").innerHTML = '<div class="update-title">Files Added</div><div>' + result.addFile + '</div><div class="update-title">Files Deleted</div><div>'+result.deleteFile + '</div><div class="update-title">Directories Added</div><div>'+result.addDirectory + '</div><div class="update-title">Directories Deleted</div><div>'+result.deleteDirectory +'</div><div class="update-title">Access Set Update</div><div>' + result.updateaccess + '</div><div id="refresh"><a href="utilfiles.php">For the changes to show up, Please click here to refresh!</a></div>';
         }
     });
 }

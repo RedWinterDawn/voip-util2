@@ -64,13 +64,16 @@ if (isset($_POST['fileid'])) {
     <div class="directories-row" onclick="toggle_visibility('pbxutils/');">pbxutils/</div>
   <?php
 // This section lists of all of the filenames only in the pbxutils/ directory
-$queryfiles = "SELECT filename, access_level, file_description, author, date_created, id FROM util_files WHERE directory = 'pbxutils/';";
+$queryfiles = "SELECT filename, access_level, file_description, author, date_created, id, access_set FROM util_files WHERE directory = 'pbxutils/' ORDER BY filename ASC;";
        $resultfiles = pg_query($dbconn, $queryfiles);
         $x = 1;
         echo '<div id="pbxutils/" class="hidden-files">';
         while ($rowfiles = pg_fetch_row($resultfiles)) {
           $x++;
-          if ($rowfiles[1] == '1') {
+          if ($rowfiles[6] == 'f') {
+            $accesscolor = 'none';
+          }
+          elseif ($rowfiles[1] == '1') {
             $accesscolor = 'accessone';
           }
           elseif ($rowfiles[1] == '2') {
@@ -92,6 +95,8 @@ $queryfiles = "SELECT filename, access_level, file_description, author, date_cre
           // $rowfiles[3] = autho
           // $rowfiles[4] = date_created
           // $rowfiles[5] = id 
+          // $rowfiles[6] = access_set (There are two options here - f, or t -- depending whether or not the file contains checksession.php. This determines color or not on options).
+ 
           if ($x % 2 == 0) {
             echo '<div id="menu-row-even">
               <div id="file-head-body" onclick="filename = \''.$rowfiles[0].'\'; getUtilFileContents(filename); toggle_visibility(\'result-feature\')">'.$rowfiles[0].'</div>
@@ -139,13 +144,16 @@ $queryfiles = "SELECT filename, access_level, file_description, author, date_cre
     while ($row = pg_fetch_row($result)) {
       echo '
         <div class="directories-row" onclick="toggle_visibility(\''.$row[0].'\');">pbxutils/'.$row[0].'</div>';
-      $queryfiles = "SELECT filename, access_level, file_description, author, date_created, id FROM util_files WHERE directory = 'pbxutils/".$row[0]."';";
+      $queryfiles = "SELECT filename, access_level, file_description, author, date_created, id, access_set FROM util_files WHERE directory = 'pbxutils/".$row[0]."'  ORDER BY filename ASC;";
        $resultfiles = pg_query($dbconn, $queryfiles);
       $x = 1;
       echo '<div id="'.$row[0].'" class="hidden-files">';
         while ($rowfiles = pg_fetch_row($resultfiles)) {
           $x++;
-          if ($rowfiles[1] == '1') {
+          if ($rowfiles[6] == 'f') {
+            $accesscolor = 'none';
+          }
+          elseif ($rowfiles[1] == '1') {
             $accesscolor = 'accessone';
           }
           elseif ($rowfiles[1] == '2') {
