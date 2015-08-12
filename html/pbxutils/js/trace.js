@@ -1,10 +1,7 @@
 var counting = 1;
-var doChange = true;
 var hop = 0;
 function pingHost (remoteHost, dc) {
   hop++;
-  if(doChange) {
-     $('#ping-status').addClass('status-info').html('Querying...').show();
      $.ajax({
      type: "post",
      url: "ping.php",
@@ -13,13 +10,13 @@ function pingHost (remoteHost, dc) {
      success: function(pingJsonData) {
         $('#ping-row').append($("<div class=\"tracerow-hop\">"+counting+"</div>"+pingJsonData.pingInfo).hide().fadeIn(500));
         counting++;
+        
         if ( pingJsonData.status == remoteHost) {
            stopPing ();
         }
         }
     });
      setTimeout(pingHost2, 300, remoteHost, dc);
-  }
 }
 
      function pingHost2 (remoteHost, dc) {
@@ -51,19 +48,17 @@ $.ajax({
  }
 
 
-function ping5 (remoteHost, dc) {
-  counting  = 1;
-  doChange = true;
-  $('#ping-row').children().remove();
+function ping5 (remoteHost, dc, counting) {
+     $('#ping-status').addClass('status-info').html('Querying...').show();
   $('#ping-table').fadeIn();
-  for(var i=1; i<=16; i++) {
-    nextRun = (i-1) * 1000;
-    setTimeout(pingHost, nextRun, remoteHost,  dc);
-     }
+  $('#ping-row').children().remove();
+    pingInterval = setInterval(pingHost, 1500, remoteHost,  dc);
 };
 
 function stopPing () {
-          doChange = false;
+  clearInterval(pingInterval);
+  hop = 0;
+  counting = 1;
           $('#ping-status').fadeOut();
 };
 
