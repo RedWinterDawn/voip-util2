@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <?php
-$accesslevel = 4;
-include('checksession.php');
+
+if ($_SERVER['SERVER_ADDR'] = '10.101.8.1') {
+  // skip security for util so pbxs can report status from the clean script and junk
+} else {
+  $accesslevel = 4;
+  include('checksession.php');
+}
+
 ?>
 <link rel='stylesheet' href='stylesheet.css?v=1.5'>
 <link rel='stylesheet' href='toggle.css'>
