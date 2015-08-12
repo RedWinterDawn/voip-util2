@@ -25,6 +25,7 @@ foreach ($dirs as $dir) {
   $subdirectories[] = $dir;
   // $cmd3 lists all files in the subdirectory, and then we process those files and add them to current.
   $cmd3 = 'ls -a '.$dir.'*.*';
+  unset($subnames);
   $result = exec($cmd3, $subnames);
   foreach ($subnames as $subname) {
     $current[] = $subname;
@@ -63,7 +64,7 @@ foreach ($files2update as $file2update) {
     }
   }
   // inserting the new files into the database.
-  $insert = 'INSERT INTO util_files (filename, directory, date_created) VALUES (\''.$file2update.'\', \''.$directory.'\', \''.$date.'\');';
+  $insert = 'INSERT INTO util_files (filename, directory, date_created, access_level, author, file_description) VALUES (\''.$file2update.'\', \''.$directory.'\', \''.$date.'\', \'4\', \'unkown\', \'unkown\');';
   $result = pg_query($dbconn, $insert);
   $jsonoutput['addFile'] .= $insert;
 }

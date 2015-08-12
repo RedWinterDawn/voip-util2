@@ -3,8 +3,10 @@ width: 100%;
 
 }
 #menu-head {
+  padding: 2px;
   background-color:black;
 width: 1250px;
+width: 100%;
 border-bottom: 1px solid limeGreen;
 padding-left: 10px;
 float: left;
@@ -13,10 +15,18 @@ float: left;
   width: 150px;
 float: left;
 }
+#file-head-body {
+    width: 200px;
+    float: left;
+  }
 #access-head {
   width: 150px;
 float: left;
 }
+#access-head-body {
+    width: 100px;
+    float: left;
+  }
 #desc-head {
   width: 500px;
 float: left;
@@ -91,6 +101,7 @@ margin-bottom: 10px;
   float: left;
   margin-bottom: 15px;
   margin-left: 50px;
+  margin-right: 50px;
   background-color:black;
   padding: 4px;
   font-size: 16px;
@@ -98,5 +109,85 @@ margin-bottom: 10px;
 }
 #updatescript:hover {
   border: 1px solid LimeGreen;
+  cursor: pointer;
+}
+#directories-list {
+  float: left;
+  width: 100%;
+}
+.directories-row {
+  width: 99%;
+  border-bottom: 1px solid #333333;
+  color: #5C5C5C;
+  padding:3px;
+}
+.directories-row:hover {
+  background-color: #222222;
+  cursor: pointer;
+}
+ #menu-row-even {
+     background-color:#8E9D89;
+     width: 1250px;
+     width: 100%;
+     padding: 2px;
+     padding-left: 10px;
+     float: left;
+     font-size: 12px;
+     color: black;
+   }
+#menu-row-odd {
+  color: black;
+  padding: 2px;
+     background-color:#B8C2B6;
+     width: 1250px;
+     width: 100%;
+     padding-left: 10px;
+     float: left;
+     font-size: 12px;
+   }
+.even {
+  background-color: white;
+}
+.hidden-files {
+display: none;
+}
+#queryresult {
+  padding-left: 30px;
+  line-height: 400%;
+}
+input[type=submit]#filesubmit {
+  border: 0px;
+  height: 18px;
+  color: white;
+}
+input[type=submit]#filesubmit:hover {
+  cursor: pointer;
+  color: LimeGreen;
+}
+#desctext {
+  width: 475px;
+  background-color:#E3E7E2;
+  border:1px solid gray;
+  color:black;
+  font-size: 10px;
+  height: 15px;
+}
+input[type=text]#authortext {
+  background-color: #E3E7E2;
+  color:black;
+  border: 1px solid gray;
+  margin-bottom: 4px;
+}
+select#accessoptions {
+  border: 1px solid gray;
+  color:black;
+  width: 25px;
+  background-color: #E3E7E2;
+  text-align: center;
+  padding: 3px;
+  padding-left: 5px;
+}
+#accessoptions:hover, input[type=text]#authortext:hover,#desctext:hover {
+  background-color: white;
   cursor: pointer;
 }
