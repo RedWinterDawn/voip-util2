@@ -151,7 +151,7 @@ if ($action=="search")
 	{	
 		//Actually connect to postgres for the queries we'll be making
     	$eventsDB = pg_connect("host=rodb dbname=events user=postgres ") or die('Could not connect to "events" database: ' . pg_last_error());
-		$eventQ = "SELECT added AT TIME ZONE 'UTC-7', id, description, notes FROM event WHERE added BETWEEN (timestamp '".$search."' AT TIME ZONE 'America/Boise') AND ((timestamp '".$search."' + interval '1 day') AT TIME ZONE 'America/Boise') ORDER BY number desc;";
+		$eventQ = "SELECT added AT TIME ZONE 'UTC-6', id, description, notes FROM event WHERE added BETWEEN (timestamp '".$search."' AT TIME ZONE 'America/Boise') AND ((timestamp '".$search."' + interval '1 day') AT TIME ZONE 'America/Boise') ORDER BY number desc;";
 		$eventArray = pg_fetch_all(pg_query($eventsDB, $eventQ));
 		pg_close($eventsDB);
 		$count = 0;
