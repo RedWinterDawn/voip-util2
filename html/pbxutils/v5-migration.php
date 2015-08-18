@@ -7,7 +7,6 @@
  * then call the voicemail migration script.
  *
  */
-include('checksession.php');
 include('guiltyParty.php');
 if ($_SERVER['SERVER_ADDR'] != '10.101.8.1')
 {
@@ -18,6 +17,7 @@ if ($_SERVER['SERVER_ADDR'] != '10.101.8.1')
     die();
 } else 
 {
+  include('checksession.php');
   if (isset($_REQUEST["gParty"]))
   {
     $guiltyParty= $_REQUEST["gParty"];
