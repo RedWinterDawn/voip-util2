@@ -17,6 +17,7 @@ echo '</h2>';
 
 ## active agi servers
 exec('sudo ssh root@10.101.8.1 \'grep -F "add" agi.srv.txt | cut -d " " -f 10 | cut -d "." -f 1 | cut -d "i" -f 2\'', $chiagi, $exitcode);
+exec('sudo ssh root@10.101.8.1 \'grep -F "add" agi.c25.srv.txt | cut -d " " -f 10 | cut -d "." -f 1 | cut -d "i" -f 2\'', $ordagi, $exitcode);
 exec('sudo ssh root@10.101.8.1 \'salt "net.c19*" cmd.run "grep -F add agi.srv.txt | cut -d\  -f 10 | cut -d \'.\' -f 1"\'', $laxagi, $exitcode);
 exec('sudo ssh root@10.101.8.1 \'salt "net.c20*" cmd.run "grep -F add agi.srv.txt | cut -d\  -f 10 | cut -d \'.\' -f 1"\'', $nycagi, $exitcode);
 exec('sudo ssh root@10.101.8.1 \'salt "net.c22*" cmd.run "grep -F add agi.srv.txt | cut -d\  -f 10 | cut -d \'.\' -f 1"\'', $atlagi, $exitcode);
@@ -92,7 +93,7 @@ while ($x < 6)
 }
 echo'</table>';
 
-echo '<br>AGI Versions<br><table border="1"><tr><th></th><th>Chicago</th><th>Los Angeles</th><th>New York</th><th>Atlanta</th></tr>';
+echo '<br>AGI Versions<br><table border="1"><tr><th></th><th>Chicago Legacy</th><th>Chicago (ORD)</th><th>Los Angeles</th><th>New York</th><th>Atlanta</th></tr>';
 $x = 1;
 while ($x < 7)
 {
@@ -120,6 +121,27 @@ while ($x < 7)
 
   if($x <5)
   {
+    $color = '';
+    $agiNodeSite = $agiNode .'.c25.jiveip.net:';
+    $y = substr($ordagi[2], 4, 10);
+    $z = substr($ordagi[1], 4, 10);
+    if ($agiNode == $y || $agiNode == $z)
+    {
+      $color = 'green';
+      if ($agiVersions[$agiNodeSite] != $curVersion)
+      {
+        $color = 'red';
+      }
+    }else
+    {
+      if ($agiVersions[$agiNodeSite] != $oldVersion)
+      {
+        $color = 'yellow';
+      }
+    }
+    echo "<td class='".$color."'>";
+    echo $agiVersions[$agiNodeSite].'</td>';
+
     $color = '';
     $agiNodeSite = $agiNode .'.c19.jiveip.net:';
     $y = substr($laxagi[2], 4, 10);
