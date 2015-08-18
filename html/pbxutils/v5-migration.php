@@ -10,6 +10,7 @@
 include('guiltyParty.php');
 if ($_SERVER['SERVER_ADDR'] != '10.101.8.1')
 {
+  include('checksession.php');
   echo'For v5 migrations: <form action="http://10.101.8.1/pbxutils/v5-migration.php" method="POST">
       <input type="hidden" name="gParty" value="'.$guiltyParty.'">
       <input type="submit" value="CLICK HERE" /></form>';
