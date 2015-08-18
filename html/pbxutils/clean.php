@@ -1,7 +1,6 @@
 <!doctype html>
 <?php
 $accesslevel = 4;
-include('checksession.php');
 ?>
 <html>
 <head>
@@ -34,6 +33,7 @@ if (isset($_GET['server'])) {
 	  exec('sudo salt -b 1 "'.$server.'" cmd.run "/opt/jive/asterisk-cleanup" 1>/dev/null 2>&1 &', $output, $exitcode);
   }else
   {
+    include('checksession.php');
 	  exec('sudo ssh root@10.101.8.1 \'salt -b 1 "'.$server.'" cmd.run "/opt/jive/asterisk-cleanup" 1>/dev/null 2>&1 &\'', $output, $exitcode);
   }
 	echo "You can close this page. The server will automatically change status to standby when it is finished cleaning.";
