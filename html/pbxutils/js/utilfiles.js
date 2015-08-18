@@ -54,3 +54,7 @@ function getUtilFileContents (filename) {
         }
     });
 }
+function fileDocumentation() {
+document.getElementById("result-title").innerHTML = "Util File Documentation";
+document.getElementById("result-body").innerHTML = 1;
+}

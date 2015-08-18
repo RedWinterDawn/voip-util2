@@ -49,21 +49,23 @@ if (isset($_POST['fileid'])) {
 <body>
 <div id="utilfilestitle"><h2>Util Files Management</h2></div>
 <!-- Button shows the result feature div, and well as runs the script lsscript.php, and then displays the updates in the feature popup - with a link to refresh the page-->
-<div id="updatescript" onclick="toggle_visibility('result-feature');updateFileDB();">Update DB</div><div id="queryresult"><?php if ($queryresult) { echo $queryresult;} ?> </div>
+<div id="updatescript" onclick="toggle_visibility('result-feature');updateFileDB();">Update DB</div>
+<div id="updatescript" onclick="toggle_visibility('result-feature');fileDocumentation();">Documentation</div>
+<div id="queryresult"><?php if ($queryresult) { echo $queryresult;} ?> </div>
 <div id="file-container">
   <div id="menu-head">
     <div id="file-head"> FILENAME </div>
     <div id="access-head">ACCESS-LEVEL</div>
     <div id="desc-head">DESCRIPTION</div>
     <div id="author-head">AUTHOR</div>
-    <div id="date-head">DATE ADDED</div>
+    <div id="date-head">DATE</div>
     <div id="submit-head">SUBMIT</div>
   </div> <!-- End of menu-head -->
   <div id="directories-list">
     <div class="directories-row" onclick="toggle_visibility('pbxutils/');">pbxutils/</div>
   <?php
 // This section lists of all of the filenames only in the pbxutils/ directory
-$queryfiles = "SELECT filename, access_level, file_description, author, date_created, id, access_set FROM util_files WHERE directory = 'pbxutils/' ORDER BY filename ASC;";
+$queryfiles = "SELECT filename, access_level, file_description, author, date_created, id, access_set, utilnopass FROM util_files WHERE directory = 'pbxutils/' ORDER BY filename ASC;";
        $resultfiles = pg_query($dbconn, $queryfiles);
         $x = 1;
         echo '<div id="pbxutils/" class="hidden-files">';
@@ -95,6 +97,11 @@ $queryfiles = "SELECT filename, access_level, file_description, author, date_cre
           // $rowfiles[4] = date_created
           // $rowfiles[5] = id 
           // $rowfiles[6] = access_set (There are two options here - f, or t -- depending whether or not the file contains checksession.php. This determines color or not on options).
+          // $rowfiles[7] = utilnopass
+           $checked = "";
+          if ($rowfiles[7] == 't') {
+            $checked = "checked";
+          }
  
           if ($x % 2 == 0) {
             echo '<div id="menu-row-even">
