@@ -206,7 +206,7 @@ if ($action=="v5migrate")
 
 	//Update the database
 	echo "<p>Updating DB</p>";
-	$dbconn = pg_connect("host=rwdb dbname=pbxs user=postgres ") or die('Could not connect: '.pg_last_error());
+	$dbconn = pg_connect("host=rwdb dbname=pbxs user=postgres ") or die('Could not connect rwdb: '.pg_last_error());
 	$updateQuery = "UPDATE resource_group SET v5=true,v5candidate=true,assigned_server='199.36.251.38' WHERE domain = '".$domain."' AND location = 'chicago-legacy' RETURNING id;";
 	$updateRow = pg_fetch_row(pg_query($dbconn, $updateQuery)) or die("<p class='red'>Failed to update database: ".pg_last_error()."</p></div>");
 	$id = $updateRow['0'];
@@ -240,7 +240,7 @@ if ($action=="v5migrate")
 
 	//Record event in the event database
 	echo "<p>Updating Event DB</p>\n";
-	$eventDb = pg_connect("host=rwdb dbname=events user=postgres") or die('Could not connect: '. pg_last_error());
+	$eventDb = pg_connect("host=rwdb dbname=events user=postgres") or die('Could not connect rwdb events: '. pg_last_error());
 	$description = $guiltyParty." migrated ".$domain." to ".$platform;
 	$eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description, event_type) VALUES(DEFAULT, '" . $description . "', '2V5') RETURNING id;"));
 			
@@ -270,7 +270,7 @@ if ($action=="v4migrate")
 
 	//Update the database
 	echo "<p>Updating DB</p>";
-	$dbconn = pg_connect("host=rwdb dbname=pbxs user=postgres ") or die('Could not connect: '.pg_last_error());
+	$dbconn = pg_connect("host=rwdb dbname=pbxs user=postgres ") or die('Could not connect rwdb pbxs: '.pg_last_error());
 	$updateQuery = "UPDATE resource_group SET v5=false,assigned_server='10.101.7.1' WHERE domain = '".$domain."' RETURNING id;";
 	$updateRow = pg_fetch_row(pg_query($dbconn, $updateQuery)) or die("<p class='red'>Failed to update database: ".pg_last_error()."</p></div>");
 	$id = $updateRow['0'];
@@ -295,7 +295,7 @@ if ($action=="v4migrate")
 
 	//Record event in the event database
 	echo "<p>Updating Event DB</p>";
-	$eventDb = pg_connect("host=rwdb dbname=events user=postgres") or die('Could not connect: '. pg_last_error());
+	$eventDb = pg_connect("host=rwdb dbname=events user=postgres") or die('Could not connect rwdb events: '. pg_last_error());
 	$description = $guiltyParty." migrated ".$domain." to ".$platform;
 	#$eventID = pg_fetch_row(pg_query($eventDb, "INSERT INTO event(id, description, event_type) VALUES (DEFAULT, '" . $description . "', '2V4') RETURNING id;"));
 
