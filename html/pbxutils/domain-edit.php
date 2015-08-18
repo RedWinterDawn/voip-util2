@@ -1,3 +1,6 @@
+<?php
+include('checksession.php');
+?>
 <html><head><link rel='stylesheet' href='stylesheet.css'></head><body>
 
 <?php
