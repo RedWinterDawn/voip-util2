@@ -56,5 +56,14 @@ function getUtilFileContents (filename) {
 }
 function fileDocumentation() {
 document.getElementById("result-title").innerHTML = "Util File Documentation";
-document.getElementById("result-body").innerHTML = 1;
+var resultBody = document.getElementById("result-body");
+resultBody.innerHTML = "<div class='docLevel'>";
+resultBody.innerHTML += "<div class='levelRow'><div class='docLevels' id='docLevelOne'>1</div><div class='docGroups'> - Tech Solutions Team<br></div></div>";
+resultBody.innerHTML += "<div class='levelRow'><div class='docLevels' id='docLevelTwo'>2</div><div class='docGroups'> - Tech Solutions Team Leads, Field Engineers<br></div></div>";
+resultBody.innerHTML += "<div class='levelRow'><div class='docLevels' id='docLevelThree'>3</div><div class='docGroups'> - Development<br></div></div>";
+resultBody.innerHTML += "<div class='levelRow'><div class='docLevels' id='docLevelFour'>4</div><div class='docGroups'> - Devops<br></div></div>";
+resultBody.innerHTML += "<p>This page is used to manage all of the files and subdirectories on produtils /var/www/html/pbxutils. This page uses the following resources.";
+resultBody.innerHTML += "<ul><li>Database: -h rwdb -d util -tables util_files util_directories</li><li>lsscript.php -- Pulls information of files and puts it into db.</li><li>utilfilecontents.php - Pulls the contents of a file and outputs in json format. Also checks if file is an image</li><li>utilfiles.php - homebase to view information and call scripts </li></ul>";
+resultBody.innerHTML += "<p>The page utilfiles.php contains the follow features:";
+resultBody.innerHTML += "<ul><li>Update DB - This button calls the script lsscript.php, which determines all files deleted or added, directories delted or added, or files with checksession.php added or removed.</li><li>Documentation - This button shows this page.</li><li>filename - click on the filename and a window will pop up with the contents of file. If file is an image, it will display the image.</li><li>Access-Level - click here and it will allow you to select options 1-4 to change access level of file. If it is colored, checksession.php has been added to the file and authorization will be applied.</li><li> Description";
 }

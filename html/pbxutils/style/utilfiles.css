@@ -216,3 +216,33 @@ select#accessoptions.accessfour {
   background-color: orange;
   color: white;
 }
+.docLevels {
+border: 1px solid black;
+font-size: 15px;
+  color:white;
+  width: 25px;
+  text-align: center;
+  padding: 5px;
+  padding-right: 2px;
+  padding-left: 2px;
+  border-radius: 5px;
+  float: left;
+}
+#docLevelOne {background-color: green;}
+#docLevelTwo {background-color: blue;}
+#docLevelThree {background-color: red;}
+#docLevelFour {background-color: orange;}
+.docGroups {
+  float: left;
+  font-size: 20px;
+  margin-left: 10px;
+}
+.levelRow {
+  width: 100%;
+  margin-bottom: 2px;
+  float: left;
+}
+.levelRow:last-of-type {
+  padding-bottom: 12px;
+  border-bottom: 1px dotted gray;
+}
