@@ -98,6 +98,8 @@ if (!$row = pg_fetch_assoc($result))
 		// Connecting, selecting database
 		$rwpbxs = pg_connect("host=rwdb dbname=pbxs user=postgres ")
 			or die('Could not connect: ' . pg_last_error());
+		$ropbxs = pg_connect("host=rwdb dbname=pbxs user=postgres ")
+			or die('Could not connect: ' . pg_last_error());
 
 		//get domains to be changed for event logging
 		$domainResultQ = "SELECT id FROM resource_group WHERE assigned_server='" . $row['ip'] . "';";
@@ -121,15 +123,28 @@ if (!$row = pg_fetch_assoc($result))
 		pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " abandoned to " . $standbyRow['ip'] . " per " . $guiltyParty . "' WHERE ip='" . $row['ip'] . "'");
 		pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " accepted abandon from " . $row['host'] . " per " . $guiltyParty . "' WHERE ip='" . $standbyRow['ip'] . "'");
 
-    if ($curStatus == 'special') {
-      $mail_subject= 'Customer '. $curOccupant. ' on '. $row['host'] . "has abandoned to " . $standbyRow['ip'] . " per " . $guiltyParty;
-      $mail_body=$requestTime . " " . $mail_subject;
-          $mail_headers='From: pbx-sip-failure@jive.com' . "\r\n";
-          mail($mail_to, $mail_subject,$mail_body,$mail_headers);
+    //################## SEND OUT EMAIL INFORMING ABANDONS ON SPECIAL PBXS ######################//
 
-    }
+    $resourceQ = "SELECT domain FROM resource_group WHERE assigned_server = '".$standbyRow['ip']."';";
+$affectedDomains = pg_query($ropbxs, $resourceQ) or die('Query failed: ' . pg_last_error());
+$affectedArray = array();
+while ($rows = pg_fetch_row($affectedDomains)) {
+  $affectedArray[] = $rows['0'];
+}
+$mailListQ = "SELECT domain FROM special_pbxs WHERE mail_list = 't';";
+$mailDomains = pg_query($routil, $mailListQ) or die('Query failed: ' . pg_last_error());
+$mailArray = array();
+while ($rows = pg_fetch_row($mailDomains)) {
+  $mailArray[] = $rows['0'];
+}
+$mailList = array_intersect($affectedArray, $mailArray);
+print_r($mailList);
+$list = "";
+foreach ($mailList as $domain) {
+$list .= $domain.', ';
+}
 
-		$mail_subject=$row['host'] . " abandoned to " . $standbyRow['ip'] . " per " . $guiltyParty;
+		$mail_subject=$row['host'] . "with ".$list." abandoned to " . $standbyRow['ip'] . " per " . $guiltyParty;
 		$mail_body=$requestTime . " " . $mail_subject;
 		$mail_headers='From: pbx-sip-failure@jive.com' . "\r\n";
 		mail($mail_to, $mail_subject,$mail_body,$mail_headers);
@@ -139,7 +154,7 @@ if (!$row = pg_fetch_assoc($result))
 			$mail_subject = "${row['ip']}, ${standbyRow['ip']} failed abandon";
 			$mail_body = "$guiltyParty, $requestTime";
       $mail_headers='From: load-update@jive.com' . "\r\n";
-			mail("noc@jive.com",$mail_subject, $mail_body, $mail_headers);
+			mail("ajensen@jive.com",$mail_subject, $mail_body, $mail_headers);
 		}					
 		pg_close($rwCDR);
 		//update events db
@@ -207,13 +222,6 @@ if (!$row = pg_fetch_assoc($result))
 		pg_query($rwutil, "UPDATE pbxstatus SET message='" . $requestTime . " failed to abandon per NoStandbyAvailable' WHERE  host='" . $row['host'] . "'");
 		syslog(LOG_WARNING, "application=pbx-sip-failure server=$server action=NoStandbyAvailable state=active guiltyParty=$guiltyParty customMessage='no standby available for pbx $server - no action taken'");
 
-
-    if ($curStatus == 'special') {
-      $mail_subject= 'Customer '. $curOccupant. ' FAILED to abandon (no standby available) per ' . $guiltyParty;
-      $mail_body=$requestTime . " " . $mail_subject;
-$mail_headers='From: autoabandon-failure@jive.com' . "\r\n";
-          mail($mail_to, $mail_subject,$mail_body,$mail_headers);
-    }
 
     $mail_subject=$row['host'] . " FAILED to abandon (no standby available) per " . $guiltyParty;
 		$mail_body=$requestTime . " " . $mail_subject;
