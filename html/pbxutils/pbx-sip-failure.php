@@ -225,15 +225,20 @@ $list .= $domain.', ';
 
 
        //################## SEND OUT EMAIL INFORMING ABANDONS ON SPECIAL PBXS ######################//
+	
+		$ropbxs = pg_connect("host=rodb dbname=pbxs user=postgres ")
+			or die('Could not connect: ' . pg_last_error());
+		$routil = pg_connect("host=rodb dbname=util user=postgres ")
+			or die('Could not connect: ' . pg_last_error());
 
-        $resourceQ = "SELECT domain FROM resource_group WHERE assigned_server = '".$row['host']."';";
+        $resourceQ = "SELECT domain FROM resource_group WHERE assigned_server = '".$row['ip']."';";
     $affectedDomains = pg_query($ropbxs, $resourceQ) or die('Query failed: ' . pg_last_error());
     $affectedArray = array();
     while ($rows = pg_fetch_row($affectedDomains)) {
         $affectedArray[] = $rows['0'];
     }
     $mailListQ = "SELECT domain FROM special_pbxs WHERE mail_list = 't';";
-    $mailDomains = pg_query($routil, $mailListQ) or die('Query failed: ' . pg_last_error());
+    $mailDomains = pg_query($routil, $mailListQ) or die('Query failed test: ' . pg_last_error());
     $mailArray = array();
     while ($rows = pg_fetch_row($mailDomains)) {
         $mailArray[] = $rows['0'];
