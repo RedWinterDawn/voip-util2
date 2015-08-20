@@ -144,7 +144,7 @@ foreach ($mailList as $domain) {
 $list .= $domain.', ';
 }
 
-		$mail_subject=$row['host'] . "with ".$list." abandoned to " . $standbyRow['ip'] . " per " . $guiltyParty;
+		$mail_subject=$row['host'] . " with ".$list." abandoned to " . $standbyRow['ip'] . " per " . $guiltyParty;
 		$mail_body=$requestTime . " " . $mail_subject;
 		$mail_headers='From: pbx-sip-failure@jive.com' . "\r\n";
 		mail($mail_to, $mail_subject,$mail_body,$mail_headers);
