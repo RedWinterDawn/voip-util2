@@ -138,13 +138,14 @@ while ($rows = pg_fetch_row($mailDomains)) {
   $mailArray[] = $rows['0'];
 }
 $mailList = array_intersect($affectedArray, $mailArray);
-print_r($mailList);
 $list = "";
 foreach ($mailList as $domain) {
 $list .= $domain.', ';
 }
 
-		$mail_subject=$row['host'] . " with ".$list." abandoned to " . $standbyRow['ip'] . " per " . $guiltyParty;
+    //################## END ######################//
+
+		$mail_subject=$row['host'] ." ".$list." abandoned to " . $standbyRow['ip'] . " per " . $guiltyParty;
 		$mail_body=$requestTime . " " . $mail_subject;
 		$mail_headers='From: pbx-sip-failure@jive.com' . "\r\n";
 		mail($mail_to, $mail_subject,$mail_body,$mail_headers);
@@ -223,7 +224,29 @@ $list .= $domain.', ';
 		syslog(LOG_WARNING, "application=pbx-sip-failure server=$server action=NoStandbyAvailable state=active guiltyParty=$guiltyParty customMessage='no standby available for pbx $server - no action taken'");
 
 
-    $mail_subject=$row['host'] . " FAILED to abandon (no standby available) per " . $guiltyParty;
+       //################## SEND OUT EMAIL INFORMING ABANDONS ON SPECIAL PBXS ######################//
+
+        $resourceQ = "SELECT domain FROM resource_group WHERE assigned_server = '".$row['host']."';";
+    $affectedDomains = pg_query($ropbxs, $resourceQ) or die('Query failed: ' . pg_last_error());
+    $affectedArray = array();
+    while ($rows = pg_fetch_row($affectedDomains)) {
+        $affectedArray[] = $rows['0'];
+    }
+    $mailListQ = "SELECT domain FROM special_pbxs WHERE mail_list = 't';";
+    $mailDomains = pg_query($routil, $mailListQ) or die('Query failed: ' . pg_last_error());
+    $mailArray = array();
+    while ($rows = pg_fetch_row($mailDomains)) {
+        $mailArray[] = $rows['0'];
+    }
+    $mailList = array_intersect($affectedArray, $mailArray);
+    $list = "";
+    foreach ($mailList as $domain) {
+      $list .= $domain.', ';
+    }
+
+        //################## END ######################//
+
+    $mail_subject=$row['host'] ." ". $list. " FAILED to abandon (no standby available) per " . $guiltyParty;
 		$mail_body=$requestTime . " " . $mail_subject;
 		$mail_headers='From: autoabandon-failure@jive.com' . "\r\n";
 		mail($mail_to, $mail_subject,$mail_body,$mail_headers);
