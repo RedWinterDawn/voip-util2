@@ -1,6 +1,6 @@
 <?php
-$accesslevel = 4;
-include('checksession.php');
+#$accesslevel = 4;
+#include('checksession.php');
 ?>
 <?php
 header('Content-Type: application/json');
@@ -36,9 +36,9 @@ $resultCount = 0;
 echo '{"queryResult":"OK","results":';
 while ($usernameRow = pg_fetch_array($usernameResult, null, PGSQL_ASSOC)) {
   echo '{' . 
-   '"username":"' . $usernameRow['username'] . '",' . 
-   '"name":"' . $usernameRow['name'] . '",' . 
-   '"callerid":"' . $usernameRow['callerid'] . '",' . 
+   '"username":"' . $usernameRow['username'] . '",' .
+   '"name":"' . trim(preg_replace('/\t+/', '', $usernameRow['name'])) . '",' . 
+   '"callerid":"' . trim(preg_replace('/\t+/', '',$usernameRow['callerid'])) . '",' . 
    '"domain":"' . $usernameRow['domain'] . '",' . 
    '"assigned_server":"' . $usernameRow['assigned_server'] . '",' . 
    '"ip_address":"' . $usernameRow['ip_address'] . '",' . 
