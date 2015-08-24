@@ -140,6 +140,7 @@ while ($rows = pg_fetch_row($mailDomains)) {
 $mailList = array_intersect($affectedArray, $mailArray);
 $list = "";
 foreach ($mailList as $domain) {
+  $domain = strtoupper($domain);
 $list .= $domain.', ';
 }
 
@@ -246,6 +247,7 @@ $list .= $domain.', ';
     $mailList = array_intersect($affectedArray, $mailArray);
     $list = "";
     foreach ($mailList as $domain) {
+  $domain = strtoupper($domain);
       $list .= $domain.', ';
     }
 
