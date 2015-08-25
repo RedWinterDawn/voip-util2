@@ -1,6 +1,10 @@
 <?php
 header('Content-Type: application/json');
-$cmd = 'curl http://10.101.8.1/pbxutils/icallstest2.php';
+if(isset($_POST['dc'])) {
+        $ip = $_POST['dc'];
+                }
+
+$cmd = 'curl -d "dc='.$ip.'" http://10.101.8.1/pbxutils/icallstest2.php';
 exec($cmd, $output);
 $test = implode("\n", $output);
 echo json_encode(array(

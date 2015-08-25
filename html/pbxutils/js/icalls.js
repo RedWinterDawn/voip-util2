@@ -1,10 +1,11 @@
 
 
-function getCalls () {
+function getCalls (dc) {
        $.ajax({
               type: "post",
             url: "icallstest.php",
             dataType: 'json',
+            data: {'dc': dc},
             success: function(get) {
                 calls = get.jinstLog
                 console.log(calls.length);
@@ -41,5 +42,5 @@ function disableAlerts (disableip) {
 
 
 $(document).ready ( function(){
-     getCalls();
+     getCalls(dc);
 });
