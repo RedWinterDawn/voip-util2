@@ -29,10 +29,25 @@ if ($dc == '122') {
   $loc = 'atl-MegaPBX';
   $host = '10.122.255.224';
 }
+$host2 = '10.132.0.224';
+
+if ($dc != '101') {
 
 $msg = $host.' '.$loc.$pbx.'.sip 60 pbx-availability';
+$msg2 = $host2.' '.$loc.$pbx.'.sip 60 pbx-availability';
 $cmd = 'perl /var/www/html/pbxutils/disablealert.pl '.$msg;
+$cmd2 = 'perl /var/www/html/pbxutils/disablealert.pl '.$msg2;
 $output = exec($cmd);
+$output = exec($cmd2);
+}
+else {
+
+  $msg = $host.' '.$loc.$pbx.'.sip 60 pbx-availability';
+  $cmd = 'perl /var/www/html/pbxutils/disablealert.pl '.$msg;
+  $output = exec($cmd);
+
+
+}
 
 
 
