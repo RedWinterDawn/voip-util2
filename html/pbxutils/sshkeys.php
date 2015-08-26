@@ -232,7 +232,7 @@ if(isset($_POST["username"]) && isset($_POST["sshkey"])) {
  
   ##Define variables for new job to add a key
   $startdate = date("Y-m-d H:i:s");
-  $user =  $_SERVER["PHP_AUTH_USER"];
+  $user =  $_SESSION["user"];
   $change = 'add.'.$username;
   $status = 'PENDING';
   
