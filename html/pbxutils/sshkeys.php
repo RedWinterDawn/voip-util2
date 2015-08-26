@@ -271,7 +271,7 @@ if ($test) {
 
   ##Define variables for new job to add a key
     $startdate = date("Y-m-d H:i:s");
-    $user =  $_SERVER["PHP_AUTH_USER"];
+    $user =  $_SESSION["user"];
     $change = 'del.'.$username;
     $status = 'PENDING';
 
@@ -326,7 +326,7 @@ echo '<div id="delsubmit"><input type="submit" value="delete"></div><div id="upd
 <br>
 <div id="errors">
 <?php
-$sql = "SELECT jobid, startdate, username, change, status, finishdate, updateall FROM jobs ORDER BY jobid DESC limit 5;";
+$sql = "SELECT jobid, startdate, username, change, status, finishdate, updateall FROM jobs ORDER BY jobid DESC limit 20;";
 $result = pg_query($conn, $sql);
 
 
@@ -341,7 +341,10 @@ echo '<div id="errorhead">
   <div id="errorhead-tfailed">User</div></div></div>';
 
   while($row = pg_fetch_array($result, null, PGSQL_ASSOC)) {
-    echo '<div id="errorheadbelow" onclick="document.getElementById(\'errors'.$row["jobid"].'\').style.display = \'block\';">
+    if ($row["finishdate"] == NULL) {
+      $row["finishdate"] = '-';
+    }
+    echo '<div id="errorheadbelow" onclick="toggle_visibility(\'errors'.$row["jobid"].'\');">
        <div id="errorhead-id">'.$row["jobid"].'</div>
          <div id="errorhead-status">'.$row["status"].'</div>
            <div id="errorhead-change">'.$row["change"].'</div>
