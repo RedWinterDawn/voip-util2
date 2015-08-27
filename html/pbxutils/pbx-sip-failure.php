@@ -1,7 +1,6 @@
 <?php
 
 include('loadUpdate.php');
-include('authenticate.php');
 include('guiltyParty.php');
 $requestTime = strftime('%Y-%m-%d %H:%M:%S');
 $mail_to='noc@getjive.com';
@@ -30,6 +29,11 @@ switch ($guiltyParty) {
     $guiltyParty = "Xymon";
     break;
 }
+
+if (isset($_GET["guilty"])) {
+  $guiltyParty = $_GET["guilty"];
+}
+
 
 if (!$routil = pg_connect("host=rodb dbname=util user=postgres")) {
     echo "Error opening DB (rodb.util) " . pg_last_error();
