@@ -16,7 +16,7 @@ function authenticate($user, $password) {
   // Active Directory manager group
   $technicals = "Technical-Solutions";
   $fe = 'Field-Engineering';
-  $produtils = "ProdUtils";
+  $produtils = "Tech Sol Leads";
   $IT = "cn=IT,OU=Groups,OU=HQ,ou=Jive,dc=jiveip,dc=net";
   $devops = "cn=DevOps,cn=IT,OU=Groups,OU=HQ,ou=Jive,dc=jiveip,dc=net";
   // Domain, for purposes of constructing $user
