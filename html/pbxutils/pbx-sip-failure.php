@@ -157,7 +157,7 @@ $list .= $domain.', ';
     //################## END ######################//
 
 if ($ABCause == 'nightly') {
-  $eventSubject = " NIGHTLY abandoned to ";
+  $eventSubject = " NIGHTLY migrated to ";
 }
 elseif ($ABCause == 'manual') {
   $eventSubject = " MANUALLY abandoned to";
