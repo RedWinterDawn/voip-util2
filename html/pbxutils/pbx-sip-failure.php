@@ -13,6 +13,11 @@ if (isset($_GET["server"]))
 	$server = $guiltyParty;
 }
 
+$nightlyAB = 'no';
+if (isset($_GET["nightly"])) {
+  $nightlyAB = $_GET["nightly"];
+}
+
 switch ($guiltyParty) {
   case $server:
     $guiltyParty = "AutoAbandon@" . $guiltyParty;
@@ -146,7 +151,14 @@ $list .= $domain.', ';
 
     //################## END ######################//
 
-		$mail_subject=$row['host'] ." ".$list." abandoned to " . $standbyRow['ip'] . " per " . $guiltyParty;
+if ($nightlyAB == 'yes') {
+  $eventSubject = " NIGHTLY abandoned to ";
+}
+else {
+  $eventSubject = " abandoned to ";
+}
+
+		$mail_subject=$row['host'] ." ".$list. $eventSubject . $standbyRow['ip'] . " per " . $guiltyParty;
 		$mail_body=$requestTime . " " . $mail_subject;
 		$mail_headers='From: pbx-sip-failure@jive.com' . "\r\n";
 		mail($mail_to, $mail_subject,$mail_body,$mail_headers);
