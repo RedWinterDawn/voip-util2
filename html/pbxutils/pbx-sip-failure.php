@@ -13,9 +13,8 @@ if (isset($_GET["server"]))
 	$server = $guiltyParty;
 }
 
-$nightlyAB = 'no';
 if (isset($_GET["nightly"])) {
-  $nightlyAB = $_GET["nightly"];
+  $ABCause = 'nightly';
 }
 
 switch ($guiltyParty) {
@@ -32,6 +31,7 @@ switch ($guiltyParty) {
 
 if (isset($_GET["guilty"])) {
   $guiltyParty = $_GET["guilty"];
+  $ABCause = 'manual';
 }
 
 
@@ -156,8 +156,11 @@ $list .= $domain.', ';
 
     //################## END ######################//
 
-if ($nightlyAB == 'yes') {
+if ($ABCause == 'nightly') {
   $eventSubject = " NIGHTLY abandoned to ";
+}
+elseif ($ABCause == 'manual') {
+  $eventSubject = " MANUALLY abandoned to";
 }
 else {
   $eventSubject = " abandoned to ";
