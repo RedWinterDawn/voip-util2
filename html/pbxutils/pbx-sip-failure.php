@@ -32,6 +32,9 @@ switch ($guiltyParty) {
 if (isset($_GET["guilty"])) {
   $guiltyParty = $_GET["guilty"];
   $ABCause = 'manual';
+  if(isset($_GET["presence"])) {
+    $ABCause = 'presence';
+  }
 }
 
 
@@ -161,6 +164,9 @@ if ($ABCause == 'nightly') {
 }
 elseif ($ABCause == 'manual') {
   $eventSubject = " MANUALLY abandoned to";
+}
+elseif ($ABCause == 'presence') {
+ $eventSubject = " PRESENCE move to ";
 }
 else {
   $eventSubject = " abandoned to ";
