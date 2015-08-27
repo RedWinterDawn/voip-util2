@@ -1,6 +1,7 @@
 <?php
 
 include('loadUpdate.php');
+include('authenticate.php');
 include('guiltyParty.php');
 $requestTime = strftime('%Y-%m-%d %H:%M:%S');
 $mail_to='noc@getjive.com';
